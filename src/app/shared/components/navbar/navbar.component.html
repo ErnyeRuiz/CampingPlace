@@ -1,0 +1,38 @@
+<nav class="navbar navbar-expand-lg fixed-top"
+     [class.navbar-transparent]="!scrolled() && !menuOpen()"
+     [class.navbar-solid]="scrolled() || menuOpen()">
+  <div class="container">
+
+    <a class="navbar-brand" routerLink="/campings" (click)="closeMenu()">
+      <i class="fas fa-campground me-2"></i>
+      CampingPlace
+    </a>
+
+    <button class="navbar-toggler navbar-burger"
+            type="button"
+            (click)="toggleMenu()"
+            [attr.aria-expanded]="menuOpen()"
+            aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon">
+        <i class="fas" [class.fa-bars]="!menuOpen()" [class.fa-times]="menuOpen()"></i>
+      </span>
+    </button>
+
+    <div class="navbar-collapse" [class.show]="menuOpen()">
+      <ul class="navbar-nav ml-auto">
+        @for (item of items; track item.routerLink){
+          <li class="nav-item">
+            <a class="nav-link"
+               [routerLink]="item.routerLink"
+               [routerLinkActive]="item.routerLinkActive"
+               [routerLinkActiveOptions]="item.routerLinkActiveOptions"
+               (click)="closeMenu()">
+              <i [class]="item.class"></i> {{ item.label }}
+            </a>
+          </li>
+        }
+      </ul>
+    </div>
+
+  </div>
+</nav>

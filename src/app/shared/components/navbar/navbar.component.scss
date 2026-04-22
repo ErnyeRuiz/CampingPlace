@@ -1,0 +1,140 @@
+// ─── Navbar ───────────────────────────────────────────────────────────────────
+
+.navbar {
+  height: 70px;
+  z-index: 1030;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  padding: 0 1rem;
+
+  &.navbar-transparent {
+    background-color: transparent;
+
+    .navbar-brand,
+    .nav-link {
+      color: rgba(255, 255, 255, 0.95) !important;
+
+      &:hover {
+        color: #fff !important;
+      }
+    }
+
+    .navbar-toggler-icon i {
+      color: #fff;
+    }
+  }
+
+  &.navbar-solid {
+    background-color: rgba(255, 255, 255, 0.97);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, .12);
+
+    .navbar-brand {
+      color: #f96332 !important;
+    }
+
+    .nav-link {
+      color: #444 !important;
+
+      &:hover,
+      &.active {
+        color: #f96332 !important;
+      }
+    }
+
+    .navbar-toggler-icon i {
+      color: #444;
+    }
+  }
+}
+
+// ─── Brand ────────────────────────────────────────────────────────────────────
+
+.navbar-brand {
+  font-weight: 700;
+  font-size: 1.2rem;
+  letter-spacing: -0.01em;
+  transition: color 0.3s ease;
+
+  i {
+    font-size: 1.3rem;
+  }
+}
+
+// ─── Nav Links ────────────────────────────────────────────────────────────────
+
+.nav-link {
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.5rem 0.9rem !important;
+  transition: color 0.3s ease;
+
+  i {
+    font-size: 0.9rem;
+  }
+}
+
+// ─── Toggler ──────────────────────────────────────────────────────────────────
+
+.navbar-toggler {
+  border: none;
+  background: transparent;
+  padding: 0.4rem;
+
+  &:focus {
+    outline: none;
+    box-shadow: none;
+  }
+
+  .navbar-toggler-icon {
+    background: none;
+    width: auto;
+    height: auto;
+
+    i {
+      font-size: 1.3rem;
+      transition: all 0.3s ease;
+    }
+  }
+}
+
+// ─── Collapse (mobile) ────────────────────────────────────────────────────────
+
+.navbar-collapse {
+  display: none;
+
+  &.show {
+    display: block;
+  }
+
+  @media (min-width: 992px) {
+    display: flex !important;
+  }
+}
+
+// ─── Mobile dropdown ──────────────────────────────────────────────────────────
+
+@media (max-width: 991.98px) {
+  .navbar-collapse.show {
+    background-color: rgba(255, 255, 255, 0.97);
+    border-top: 1px solid #eee;
+    padding: 0.5rem 0 1rem;
+    margin: 0 -1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .navbar-collapse.show .nav-link {
+    color: #444 !important;
+    padding: 0.6rem 0 !important;
+    border-bottom: 1px solid #f0f0f0;
+
+    &:hover {
+      color: #f96332 !important;
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}
