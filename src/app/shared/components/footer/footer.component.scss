@@ -1,0 +1,45 @@
+.footer {
+  padding: 2rem 0;
+  background-color: #1a1a1a;
+  color: #aaa;
+
+  &.footer-black {
+    background-color: #1a1a1a;
+  }
+}
+
+.footer-brand {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #fff;
+
+  i {
+    color: #f96332;
+  }
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 0;
+
+  li a {
+    color: #aaa;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: #f96332;
+    }
+  }
+}
+
+.footer-copy {
+  font-size: 0.8rem;
+  color: #666;
+}

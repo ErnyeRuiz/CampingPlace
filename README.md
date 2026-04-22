@@ -1,59 +1,91 @@
-# CampingPlace
+# CampingPlace — Web App
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.8.
+Aplicación web para encontrar y explorar lugares de camping en Costa Rica. Parte del portafolio **CampingCore**.
 
-## Development server
+## Stack
 
-To start a local development server, run:
+| Capa | Tecnología |
+|---|---|
+| Frontend | Angular 21 (Standalone Components + Signals) |
+| UI | Angular Material 3 |
+| Mapas | @angular/google-maps |
+| Estilos | SCSS |
+| API | .NET 8 REST API |
+| Linting | angular-eslint 21 |
 
-```bash
-ng serve
+## Arquitectura
+
+```
+src/app/
+├── core/
+│   ├── models/          # Interfaces TypeScript (Camping, CampingFilter, etc.)
+│   ├── services/        # CampingService con Signals API
+│   └── interceptors/    # authInterceptor (Bearer token)
+├── features/
+│   ├── camping-list/    # Listado con filtros — lazy loaded
+│   ├── camping-detail/  # Detalle de lugar — lazy loaded
+│   └── map-view/        # Vista de mapa con pins — lazy loaded
+└── shared/
+    ├── components/      # Componentes reutilizables
+    ├── pipes/
+    └── directives/
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Configuración local
 
-## Code scaffolding
+### Requisitos
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+- Node 22+
+- npm 10+
 
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### Instalar dependencias
 
 ```bash
-ng generate --help
+npm install
 ```
 
-## Building
+### Configurar API
 
-To build the project run:
+Edita `src/environments/environment.ts` y actualiza la URL de la API:
+
+```typescript
+export const environment = {
+  production: false,
+  apiUrl: 'http://localhost:5000/api',
+  googleMapsApiKey: 'TU_CLAVE_AQUI'
+};
+```
+
+La API .NET 8 se encuentra en: [CampingCore API](../../../API/)
+
+### Iniciar servidor de desarrollo
 
 ```bash
-ng build
+npm start
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Navega a `http://localhost:4200`.
 
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+### Build de producción
 
 ```bash
-ng test
+npm run build
 ```
 
-## Running end-to-end tests
+## Rutas
 
-For end-to-end (e2e) testing, run:
+| Ruta | Feature |
+|---|---|
+| `/campings` | Listado de lugares con filtros |
+| `/campings/:id` | Detalle de un lugar |
+| `/map` | Vista de mapa interactivo |
 
-```bash
-ng e2e
-```
+## Patrones Angular modernos usados
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- **Standalone components** sin NgModules
+- **Signals** (`signal()`, `computed()`) para estado reactivo en servicios y componentes
+- **Lazy loading** de rutas por feature
+- **`input.required()`** para pasar parámetros de ruta a componentes
+- **`withComponentInputBinding()`** en el router para binding automático de params
+- **`withViewTransitions()`** para animaciones de navegación
+- **Functional interceptors** (`HttpInterceptorFn`)

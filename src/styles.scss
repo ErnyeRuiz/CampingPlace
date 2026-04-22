@@ -1,1 +1,151 @@
-/* You can add global styles to this file, and also import other style files */
+// Google Fonts
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
+
+// Bootstrap 4 is loaded via angular.json styles array (pre-compiled CSS)
+
+// ─── Paper Kit 2 Global Variables ────────────────────────────────────────────
+
+:root {
+  --pk-primary:       #f96332;
+  --pk-text-dark:     #2c2c2c;
+  --pk-text-muted:    #888;
+  --pk-bg-light:      #f9f9f9;
+  --pk-card-shadow:   0 6px 10px -4px rgba(0, 0, 0, .15);
+  --pk-navbar-height: 70px;
+}
+
+// ─── Base ─────────────────────────────────────────────────────────────────────
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  color: var(--pk-text-dark);
+  background-color: #fff;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// ─── Paper Kit Typography ─────────────────────────────────────────────────────
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+// ─── Paper Kit Buttons ────────────────────────────────────────────────────────
+
+.btn {
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.6rem 1.75rem;
+  transition: all 0.3s ease;
+
+  &.btn-primary {
+    background-color: var(--pk-primary);
+    border-color: var(--pk-primary);
+    color: #fff;
+
+    &:hover {
+      background-color: #d94e1e;
+      border-color: #d94e1e;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(249, 99, 50, 0.35);
+    }
+  }
+
+  &.btn-outline-light {
+    &:hover {
+      transform: translateY(-1px);
+    }
+  }
+
+  &.btn-neutral {
+    background-color: #fff;
+    border-color: #fff;
+    color: var(--pk-primary);
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+  }
+}
+
+// ─── Paper Kit Cards ──────────────────────────────────────────────────────────
+
+.card {
+  border: 0;
+  border-radius: 6px;
+  box-shadow: var(--pk-card-shadow);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 12px 24px -4px rgba(0, 0, 0, .2);
+    transform: translateY(-4px);
+  }
+}
+
+// ─── Wrapper ──────────────────────────────────────────────────────────────────
+
+.wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+// ─── Page Header (Hero Section) ───────────────────────────────────────────────
+
+.page-header {
+  min-height: 100vh;
+  max-height: 999px;
+  position: relative;
+  background-position: center center;
+  background-size: cover;
+  display: flex;
+  align-items: center;
+
+  .filter {
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    top: 0;
+    left: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 2;
+  }
+}
+
+// ─── Star Rating ──────────────────────────────────────────────────────────────
+
+.star-rating {
+  color: #ffb236;
+  font-size: 0.85rem;
+
+  .star-empty {
+    color: #ddd;
+  }
+}
+
+// ─── Section ──────────────────────────────────────────────────────────────────
+
+.section {
+  padding: 4rem 0;
+}
+
+.section-gray {
+  background-color: var(--pk-bg-light);
+}

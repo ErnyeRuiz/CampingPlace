@@ -1,0 +1,26 @@
+.detail {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+
+  &__loading {
+    text-align: center;
+    padding: 3rem;
+    color: #666;
+  }
+
+  &__header {
+    margin-bottom: 1.5rem;
+
+    h1 { font-size: 2rem; font-weight: 600; }
+  }
+
+  &__location {
+    color: #666;
+    font-size: 1rem;
+  }
+
+  &__body {
+    line-height: 1.8;
+  }
+}
