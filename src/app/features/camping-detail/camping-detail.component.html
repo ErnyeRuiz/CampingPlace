@@ -1,18 +1,18 @@
-@if (loading()) {
+<!-- @if (loading()) {
   <div class="detail__loading">Cargando...</div>
-}
+} -->
 
-@if (camping(); as c) {
+@if (campsite(); as c) {
   <article class="detail">
     <header class="detail__header">
       <h1>{{ c.name }}</h1>
-      <p class="detail__location">{{ c.province }}, {{ c.country }}</p>
+      <p class="detail__location">{{ c.latitude }}, {{ c.longitude }}</p>
     </header>
     <section class="detail__body">
       <p>{{ c.description }}</p>
       <p><strong>Precio:</strong> {{ c.pricePerNight | currency:'CRC' }} / noche</p>
-      <p><strong>Capacidad:</strong> {{ c.capacity }} personas</p>
-      <p><strong>Rating:</strong> {{ c.rating }} ({{ c.reviewCount }} reseñas)</p>
+      <p><strong>Agua:</strong> {{ c.hasWater ? 'Si' : 'No' }}</p>
+      <p><strong>Electricidad:</strong> {{ c.hasElectricity ? 'Si' : 'No' }}</p>
     </section>
   </article>
 }

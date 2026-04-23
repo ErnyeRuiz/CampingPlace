@@ -10,7 +10,7 @@ import { UserRequest } from "../../models/user/user-request";
 export class UserService {
 
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${environment.apiUrl}/auth`;
+  private readonly baseUrl = `${environment.apiUrl}/users`;
 
   readonly loading = signal(false);
 
@@ -21,7 +21,7 @@ export class UserService {
   public getMe(): Observable<UserResponse | null> {
     this.loading.set(true);
     return this.http.get<ApiResponse<UserResponse>>(
-        `${this.baseUrl}/users/me`
+        `${this.baseUrl}/me`
     ).pipe(
         take(1), 
         map(response => response.data),
@@ -37,7 +37,7 @@ export class UserService {
   public updateMe(request: UserRequest): Observable<boolean> {
     this.loading.set(true);
     return this.http.put<ApiResponse<void>>(
-        `${this.baseUrl}/users/me`,
+        `${this.baseUrl}/me`,
         request
     ).pipe(
         take(1), 

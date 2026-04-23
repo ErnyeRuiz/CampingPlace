@@ -76,12 +76,12 @@
 
     @if (!loading()) {
       <div class="row">
-        @for (camping of campings(); track camping.id) {
+        @for (campite of campites(); track campite.id) {
           <div class="col-md-6 col-lg-4 mb-4">
             <div class="card camping-card h-100">
 
               <div class="card-img-wrapper">
-                @if (camping.images && camping.images.length > 0) {
+                <!-- @if (campite.images && campite.images.length > 0) {
                   <img [src]="camping.images[0]"
                        [alt]="camping.name"
                        class="card-img-top"
@@ -90,27 +90,27 @@
                   <div class="card-img-placeholder">
                     <i class="fas fa-campground"></i>
                   </div>
-                }
+                } -->
                 <span class="card-badge">
-                  {{ camping.province }}
+                  {{ campite.latitude }}, {{ campite.longitude }}
                 </span>
               </div>
 
               <div class="card-body d-flex flex-column">
-                <h5 class="card-title">{{ camping.name }}</h5>
+                <h5 class="card-title">{{ campite.name }}</h5>
 
                 <p class="card-location text-muted mb-2">
                   <i class="fas fa-map-pin mr-1"></i>
-                  {{ camping.province }}, {{ camping.country }}
+                  {{ campite.latitude }}, {{ campite.longitude }}
                 </p>
 
-                @if (camping.description) {
+                @if (campite.description) {
                   <p class="card-text card-description text-muted small mb-3">
-                    {{ camping.description | slice:0:90 }}{{ camping.description.length > 90 ? '...' : '' }}
+                    {{ campite.description | slice:0:90 }}{{ campite.description.length > 90 ? '...' : '' }}
                   </p>
                 }
 
-                <div class="card-rating mb-2">
+                <!-- <div class="card-rating mb-2">
                   @for (star of [1, 2, 3, 4, 5]; track star) {
                     <i class="fas fa-star"
                        [class.star-filled]="star <= camping.rating"
@@ -119,16 +119,16 @@
                   <span class="rating-count ml-1 text-muted small">
                     ({{ camping.reviewCount }})
                   </span>
-                </div>
+                </div> -->
 
                 <div class="mt-auto pt-3 d-flex justify-content-between align-items-center card-footer-row">
                   <div class="card-price">
                     <span class="price-amount">
-                      {{ camping.pricePerNight | currency:'CRC':'symbol-narrow':'1.0-0' }}
+                      {{ campite.pricePerNight | currency:'CRC':'symbol-narrow':'1.0-0' }}
                     </span>
                     <span class="price-label text-muted"> / noche</span>
                   </div>
-                  <a [routerLink]="['/campings', camping.id]" class="btn btn-primary btn-sm">
+                  <a [routerLink]="['/campings', campite.id]" class="btn btn-primary btn-sm">
                     Ver detalle
                   </a>
                 </div>

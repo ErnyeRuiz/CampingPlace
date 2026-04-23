@@ -10,7 +10,7 @@ import { TripRequest } from "../../models/trips/trip-request";
 export class TripsService {
 
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${environment.apiUrl}/auth`;
+  private readonly baseUrl = `${environment.apiUrl}/trips`;
 
   readonly loading = signal(false);
 
@@ -21,7 +21,7 @@ export class TripsService {
   public getAll(): Observable<TripResponse[]> {
     this.loading.set(true);
     return this.http.get<ApiResponse<TripResponse[]>>(
-        `${this.baseUrl}/trips`
+        `${this.baseUrl}`
     ).pipe(
         take(1), 
         map(response => response.data ?? []),
@@ -37,7 +37,7 @@ export class TripsService {
   public getById(id: number): Observable<TripResponse | null> {
     this.loading.set(true);
     return this.http.get<ApiResponse<TripResponse>>(
-        `${this.baseUrl}/trips/${id}`
+        `${this.baseUrl}/${id}`
     ).pipe(
         take(1), 
         map(response => response.data),
@@ -53,7 +53,7 @@ export class TripsService {
   public create(request: TripRequest): Observable<boolean> {
     this.loading.set(true);
     return this.http.post<ApiResponse<{id: number}>>(
-        `${this.baseUrl}/trips`,
+        `${this.baseUrl}`,
         request
     ).pipe(
         take(1), 
@@ -71,7 +71,7 @@ export class TripsService {
   public update(id: number, request: TripRequest): Observable<boolean> {
     this.loading.set(true);
     return this.http.put<ApiResponse<void>>(
-        `${this.baseUrl}/trips/${id}`,
+        `${this.baseUrl}/${id}`,
         request
     ).pipe(
         take(1), 
@@ -88,7 +88,7 @@ export class TripsService {
   public delete(id: number): Observable<boolean> {
     this.loading.set(true);
     return this.http.delete<ApiResponse<void>>(
-        `${this.baseUrl}/trips/${id}`
+        `${this.baseUrl}/${id}`
     ).pipe(
         take(1), 
         map(response => response.success),
@@ -105,7 +105,7 @@ export class TripsService {
   public addCampsite(id: number, campsiteId: number): Observable<boolean> {
     this.loading.set(true);
     return this.http.post<ApiResponse<void>>(
-        `${this.baseUrl}/trips/${id}/campsites/${campsiteId}`,
+        `${this.baseUrl}/${id}/campsites/${campsiteId}`,
         null
     ).pipe(
         take(1), 
@@ -123,7 +123,7 @@ export class TripsService {
   public removeCampsite(id: number, campsiteId: number): Observable<boolean> {
     this.loading.set(true);
     return this.http.delete<ApiResponse<void>>(
-        `${this.baseUrl}/trips/${id}/campsites/${campsiteId}`
+        `${this.baseUrl}/${id}/campsites/${campsiteId}`
     ).pipe(
         take(1), 
         map(response => response.success),

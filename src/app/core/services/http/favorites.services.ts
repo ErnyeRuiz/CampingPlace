@@ -9,7 +9,7 @@ import { FavoriteResponse } from "../../models/favorites/favotire-response";
 export class FavoritesService {
 
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${environment.apiUrl}/auth`;
+  private readonly baseUrl = `${environment.apiUrl}/favorites`;
 
   readonly loading = signal(false);
 
@@ -20,7 +20,7 @@ export class FavoritesService {
   public getAll(): Observable<FavoriteResponse[]> {
     this.loading.set(true);
     return this.http.get<ApiResponse<FavoriteResponse[]>>(
-        `${this.baseUrl}/favorites`
+        `${this.baseUrl}`
     ).pipe(
         take(1), 
         map(response => response.data ?? []),
@@ -36,7 +36,7 @@ export class FavoritesService {
   public create(campsiteId: number): Observable<boolean> {
     this.loading.set(true);
     return this.http.post<ApiResponse<{ id: number }>>(
-        `${this.baseUrl}/favorites/${campsiteId}`,
+        `${this.baseUrl}/${campsiteId}`,
         null,
     ).pipe(
         take(1), 
@@ -53,7 +53,7 @@ export class FavoritesService {
   public delete(campsiteId: number): Observable<boolean> {
     this.loading.set(true);
     return this.http.delete<ApiResponse<void>>(
-        `${this.baseUrl}/favorites/${campsiteId}`
+        `${this.baseUrl}/${campsiteId}`
     ).pipe(
         take(1), 
         map(response => response.success),

@@ -9,7 +9,7 @@ export const routes: Routes = [
   {
     path: 'campings',
     loadChildren: () =>
-      import('./features/camping-list/camping-list.routes').then(m => m.CAMPING_LIST_ROUTES)
+      import('./features/home/home.routes').then(m => m.HOME_ROUTES)
   },
   {
     path: 'campings/:id',

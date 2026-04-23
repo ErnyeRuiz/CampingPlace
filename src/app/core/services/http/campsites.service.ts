@@ -12,7 +12,7 @@ import { CampsiteReviewResponse } from "../../models/campsites/campsite-review-r
 export class CampsitesService {
 
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${environment.apiUrl}/auth`;
+  private readonly baseUrl = `${environment.apiUrl}/campsites`;
 
   readonly loading = signal(false);
 
@@ -24,7 +24,7 @@ export class CampsitesService {
   public create(request: CampsiteRequest): Observable<boolean> {
     this.loading.set(true);
     return this.http.post<ApiResponse<{ id: number }>>(
-        `${this.baseUrl}/campsites`, 
+        `${this.baseUrl}`, 
         request
     ).pipe(
         take(1), 
@@ -41,7 +41,7 @@ export class CampsitesService {
   public update(request: CampsiteRequest): Observable<boolean> {
     this.loading.set(true);
     return this.http.put<ApiResponse<void>>(
-        `${this.baseUrl}/campsites`, 
+        `${this.baseUrl}`, 
         request
     ).pipe(
         take(1), 
@@ -57,7 +57,7 @@ export class CampsitesService {
   public getAll(): Observable<CampsiteResponse[]> {
     this.loading.set(true);
     return this.http.get<ApiResponse<CampsiteResponse[]>>(
-        `${this.baseUrl}/campsites`
+        `${this.baseUrl}`
     ).pipe(
         take(1), 
         map(response => response.data ?? []),
@@ -73,7 +73,7 @@ export class CampsitesService {
   public getbyId(id: number): Observable<CampsiteResponse | null> {
     this.loading.set(true);
     return this.http.get<ApiResponse<CampsiteResponse>>(
-        `${this.baseUrl}/campsites/${id}`
+        `${this.baseUrl}/${id}`
     ).pipe(
         take(1), 
         map(response => response.data),
@@ -89,7 +89,7 @@ export class CampsitesService {
   public delete(id: number): Observable<boolean> {
     this.loading.set(true);
     return this.http.delete<ApiResponse<void>>(
-        `${this.baseUrl}/campsites/${id}`
+        `${this.baseUrl}/${id}`
     ).pipe(
         take(1), 
         map(response => response.success),
@@ -106,7 +106,7 @@ export class CampsitesService {
   public createReview(id: number, request: CampsiteReviewRequest): Observable<boolean> {
     this.loading.set(true);
     return this.http.post<ApiResponse<void>>(
-        `${this.baseUrl}/campsites/${id}/reviews`,
+        `${this.baseUrl}/${id}/reviews`,
         request
     ).pipe(
         take(1), 
@@ -124,7 +124,7 @@ export class CampsitesService {
   public updateReview(id: number, request: CampsiteReviewRequest): Observable<boolean> {
     this.loading.set(true);
     return this.http.put<ApiResponse<void>>(
-        `${this.baseUrl}/campsites/${id}/reviews`,
+        `${this.baseUrl}/${id}/reviews`,
         request
     ).pipe(
         take(1), 
@@ -141,7 +141,7 @@ export class CampsitesService {
   public getReviewsById(id: number): Observable<CampsiteReviewResponse[]> {
     this.loading.set(true);
     return this.http.get<ApiResponse<CampsiteReviewResponse[]>>(
-        `${this.baseUrl}/campsites/${id}/reviews`
+        `${this.baseUrl}/${id}/reviews`
     ).pipe(
         take(1), 
         map(response => response.data ?? []),

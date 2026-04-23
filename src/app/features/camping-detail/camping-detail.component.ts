@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CampingService } from '../../core/services';
-import { Camping } from '../../core/models';
+import { CampsitesService } from '../../core/services/http/campsites.service';
+import { CampsiteResponse } from '../../core/models/campsites/campsite-response';
 
 @Component({
   selector: 'cp-camping-detail',
@@ -11,21 +11,16 @@ import { Camping } from '../../core/models';
   styleUrl: './camping-detail.component.scss'
 })
 export class CampingDetailComponent implements OnInit {
-  private readonly campingService = inject(CampingService);
+  private readonly campsiteService = inject(CampsitesService);
 
   readonly id = input.required<number>();
-
-  readonly camping = signal<Camping | null>(null);
-  readonly loading = signal(false);
+  readonly campsite = signal<CampsiteResponse | null>(null);
 
   ngOnInit(): void {
-    this.loading.set(true);
-    this.campingService.getById(this.id()).subscribe({
+    this.campsiteService.getbyId(this.id()).subscribe({
       next: data => {
-        this.camping.set(data);
-        this.loading.set(false);
+        this.campsite.set(data);
       },
-      error: () => this.loading.set(false)
     });
   }
 }
