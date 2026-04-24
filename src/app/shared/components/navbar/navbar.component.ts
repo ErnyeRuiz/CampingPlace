@@ -1,28 +1,34 @@
-import { Component, HostListener, Input, signal } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, HostListener, signal, inject } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthService } from '../../../core/services/http/auth.service';
+import { ThemeService } from '../../../core/services/theme.service';
+
+interface NavItem {
+  label: string;
+  routerLink: string;
+  routerLinkActive: string;
+  routerLinkActiveOptions: { exact: boolean };
+  class: string;
+}
 
 @Component({
   selector: 'cp-navbar',
   standalone: true,
   imports: [RouterLink, RouterLinkActive],
   templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.scss'
+  styleUrl: './navbar.component.scss',
 })
 export class NavbarComponent {
 
-  protected readonly items: { 
-    label: string, 
-    routerLink: string, 
-    routerLinkActive: string, 
-    icon: string, 
-    routerLinkActiveOptions: { exact: boolean },
-    class: string,
-  }[] = [
+  protected readonly authService  = inject(AuthService);
+  protected readonly themeService = inject(ThemeService);
+  private  readonly router       = inject(Router);
+
+  protected readonly items: NavItem[] = [
     {
       label: 'Inicio',
       routerLink: '/campings',
       routerLinkActive: 'active',
-      icon: 'fas fa-home',
       routerLinkActiveOptions: { exact: true },
       class: 'fas fa-home mr-1',
     },
@@ -30,52 +36,33 @@ export class NavbarComponent {
       label: 'Explorar',
       routerLink: '/campings',
       routerLinkActive: 'active',
-      icon: 'fas fa-list',
-      routerLinkActiveOptions: { exact: true },
+      routerLinkActiveOptions: { exact: false },
       class: 'fas fa-list mr-1',
     },
     {
       label: 'Mapa',
       routerLink: '/map',
       routerLinkActive: 'active',
-      icon: 'fas fa-map-marked-alt',
       routerLinkActiveOptions: { exact: true },
       class: 'fas fa-map-marked-alt mr-1',
     },
-    {
-      label: 'Idioma',
-      routerLink: '/idioma',
-      routerLinkActive: 'active',
-      icon: 'fas fa-language',
-      routerLinkActiveOptions: { exact: true },
-      class: 'fas fa-language mr-1',
-    },
-    {
-      label: 'Perfil',
-      routerLink: '/perfil',
-      routerLinkActive: 'active',
-      icon: 'fas fa-user',
-      routerLinkActiveOptions: { exact: true },
-      class: 'fas fa-user mr-1',
-    },
   ];
-  
-  readonly scrolled = signal(false);
-  readonly menuOpen = signal(false);
+
+  readonly scrolled  = signal(false);
+  readonly menuOpen  = signal(false);
 
   @HostListener('window:scroll')
   onScroll(): void {
     this.scrolled.set(window.scrollY > 80);
-    if (window.scrollY > 80) {
-      this.menuOpen.set(false);
-    }
+    if (window.scrollY > 80) this.menuOpen.set(false);
   }
 
-  toggleMenu(): void {
-    this.menuOpen.update(v => !v);
-  }
+  toggleMenu(): void { this.menuOpen.update(v => !v); }
+  closeMenu():  void { this.menuOpen.set(false); }
 
-  closeMenu(): void {
-    this.menuOpen.set(false);
+  logout(): void {
+    this.authService.logout();
+    this.closeMenu();
+    this.router.navigate(['/campings']);
   }
 }

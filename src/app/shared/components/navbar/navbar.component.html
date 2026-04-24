@@ -3,11 +3,13 @@
      [class.navbar-solid]="scrolled() || menuOpen()">
   <div class="container">
 
+    <!-- Brand -->
     <a class="navbar-brand" routerLink="/campings" (click)="closeMenu()">
-      <i class="fas fa-campground me-2"></i>
+      <i class="fas fa-campground mr-2"></i>
       CampingPlace
     </a>
 
+    <!-- Mobile toggler -->
     <button class="navbar-toggler navbar-burger"
             type="button"
             (click)="toggleMenu()"
@@ -18,20 +20,63 @@
       </span>
     </button>
 
+    <!-- Collapsible content -->
     <div class="navbar-collapse" [class.show]="menuOpen()">
-      <ul class="navbar-nav ml-auto">
-        @for (item of items; track item.routerLink){
+
+      <!-- Main nav links -->
+      <ul class="navbar-nav">
+        @for (item of items; track item.routerLink) {
           <li class="nav-item">
             <a class="nav-link"
                [routerLink]="item.routerLink"
                [routerLinkActive]="item.routerLinkActive"
                [routerLinkActiveOptions]="item.routerLinkActiveOptions"
                (click)="closeMenu()">
-              <i [class]="item.class"></i> {{ item.label }}
+              <i [class]="item.class"></i>{{ item.label }}
             </a>
           </li>
         }
       </ul>
+
+      <!-- Auth & Theme actions -->
+      <div class="navbar-actions ml-auto">
+
+        <!-- Theme toggle -->
+        <button class="btn-theme-toggle"
+                (click)="themeService.toggle()"
+                [title]="themeService.isDark() ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'">
+          <i class="fas" [class.fa-moon]="!themeService.isDark()" [class.fa-sun]="themeService.isDark()"></i>
+        </button>
+
+        <!-- Logged in: user name + logout -->
+        @if (authService.isLoggedIn()) {
+          <span class="navbar-username">
+            <i class="fas fa-user-circle mr-1"></i>
+            {{ authService.currentUser()?.name }}
+          </span>
+          <button class="btn btn-nav-logout" (click)="logout()">
+            <i class="fas fa-sign-out-alt mr-1"></i>
+            Cerrar Sesión
+          </button>
+        }
+
+        <!-- Not logged in: register + login -->
+        @else {
+          <a class="btn btn-nav-register"
+             routerLink="/auth/register"
+             (click)="closeMenu()">
+            <i class="fas fa-user-plus mr-1"></i>
+            Registrarse
+          </a>
+          <a class="btn btn-nav-login"
+             routerLink="/auth/login"
+             (click)="closeMenu()">
+            <i class="fas fa-sign-in-alt mr-1"></i>
+            Iniciar Sesión
+          </a>
+        }
+
+      </div>
     </div>
 
   </div>

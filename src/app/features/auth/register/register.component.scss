@@ -1,0 +1,203 @@
+// ─── Register Page Layout ────────────────────────────────────────────────────────
+
+.register-page {
+  min-height: 100vh;
+  background-color: var(--cp-bg);
+}
+
+.register-row {
+  min-height: 100vh;
+}
+
+// ─── Left: Image Panel ────────────────────────────────────────────────────────
+
+.register-image-panel {
+  width: 100%;
+  position: relative;
+  background-image: url('https://images.unsplash.com/photo-1478827387698-1527781a4887?q=80&w=1600&auto=format&fit=crop');
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+}
+
+.register-image-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    160deg,
+    rgba(74, 143, 217, 0.80) 0%,
+    rgba(13, 27, 42, 0.85) 100%
+  );
+  display: flex;
+  align-items: flex-end;
+  padding: 3.5rem;
+}
+
+.register-image-content {
+  color: #fff;
+
+  i.fas.fa-campground {
+    font-size: 2.8rem;
+    margin-bottom: 1.25rem;
+    display: block;
+    opacity: 0.9;
+  }
+
+  h2 {
+    font-size: 2.1rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 0.9rem;
+    color: #fff;
+  }
+
+  p {
+    font-size: 0.95rem;
+    opacity: 0.85;
+    line-height: 1.65;
+    margin-bottom: 1.5rem;
+    max-width: 380px;
+  }
+}
+
+.register-image-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+
+  .badge-item {
+    background: rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(8px);
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    letter-spacing: 0.02em;
+  }
+}
+
+// ─── Right: Form Panel ────────────────────────────────────────────────────────
+
+.register-form-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100vh;
+  padding: var(--pk-navbar-height) 2.5rem 3rem;
+  background-color: var(--cp-bg-card);
+
+  @media (min-width: 768px) {
+    padding: 4rem 4rem 3rem;
+  }
+
+  @media (min-width: 1200px) {
+    padding: 4rem 5rem 3rem;
+  }
+}
+
+// ─── Brand ────────────────────────────────────────────────────────────────────
+
+.register-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  text-decoration: none;
+  margin-bottom: 2.5rem;
+  justify-content: center;
+
+  i {
+    font-size: 1.75rem;
+    color: var(--cp-primary);
+  }
+
+  span {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--cp-text);
+    letter-spacing: -0.02em;
+  }
+}
+
+// ─── Titles ───────────────────────────────────────────────────────────────────
+
+.register-title {
+  font-size: 1.8rem;
+  color: var(--cp-text);
+  margin-bottom: 0.4rem;
+}
+
+.register-subtitle {
+  color: var(--cp-text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 2rem;
+}
+
+// ─── Submit Button ────────────────────────────────────────────────────────────
+
+.btn-register-submit {
+  height: 50px;
+  border-radius: 10px;
+  background-color: var(--cp-primary);
+  border-color: var(--cp-primary);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  margin-top: 0.25rem;
+
+  &:hover:not(:disabled) {
+    background-color: var(--cp-primary-hover);
+    border-color: var(--cp-primary-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--cp-shadow);
+    color: #fff;
+  }
+
+  &:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+  }
+}
+
+// ─── Footer ───────────────────────────────────────────────────────────────────
+
+.register-footer {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--cp-text-muted);
+
+  a {
+    color: var(--cp-primary);
+    font-weight: 600;
+    text-decoration: none;
+    margin-left: 0.3rem;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+// ─── Mobile: show hero band ───────────────────────────────────────────────────
+
+@media (max-width: 767.98px) {
+  .register-page::before {
+    content: '';
+    display: block;
+    height: 180px;
+    background-image: url('https://images.unsplash.com/photo-1445307806294-bff7f67ff225?q=80&w=800&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center 40%;
+    position: relative;
+  }
+
+  .register-form-panel {
+    min-height: auto;
+    padding: 2rem 1.5rem 3rem;
+  }
+}

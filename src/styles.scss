@@ -3,15 +3,81 @@
 
 // Bootstrap 4 is loaded via angular.json styles array (pre-compiled CSS)
 
-// ─── Paper Kit 2 Global Variables ────────────────────────────────────────────
+// ─── Color System: Pastel Blues (Light Theme) ────────────────────────────────
 
 :root {
-  --pk-primary:       #f96332;
-  --pk-text-dark:     #2c2c2c;
-  --pk-text-muted:    #888;
-  --pk-bg-light:      #f9f9f9;
-  --pk-card-shadow:   0 6px 10px -4px rgba(0, 0, 0, .15);
-  --pk-navbar-height: 70px;
+  // Primary palette – pastel cornflower blue
+  --cp-primary:         #4A8FD9;
+  --cp-primary-hover:   #2E74C0;
+  --cp-primary-light:   #7EB5E8;
+  --cp-primary-pale:    #EBF4FF;
+  --cp-primary-rgb:     74, 143, 217;
+
+  // Backgrounds
+  --cp-bg:              #F4F9FF;
+  --cp-bg-card:         #FFFFFF;
+  --cp-surface:         #EBF4FF;
+  --cp-surface-2:       #D6EBFF;
+
+  // Text
+  --cp-text:            #1A2F4B;
+  --cp-text-muted:      #6B8EB5;
+  --cp-text-light:      #FFFFFF;
+
+  // Borders & shadows
+  --cp-border:          #C5DCF2;
+  --cp-border-focus:    #4A8FD9;
+  --cp-shadow:          0 6px 20px rgba(74, 143, 217, 0.18);
+  --cp-shadow-hover:    0 12px 32px rgba(74, 143, 217, 0.28);
+  --cp-shadow-card:     0 6px 10px -4px rgba(74, 143, 217, 0.18);
+
+  // Semantic
+  --cp-success:         #52C47A;
+  --cp-danger:          #E85D5D;
+  --cp-warning:         #F5A623;
+
+  // Legacy Paper Kit compat (keeps existing components working)
+  --pk-primary:         #4A8FD9;
+  --pk-text-dark:       #1A2F4B;
+  --pk-text-muted:      #6B8EB5;
+  --pk-bg-light:        #EBF4FF;
+  --pk-card-shadow:     0 6px 10px -4px rgba(74, 143, 217, .18);
+  --pk-navbar-height:   70px;
+}
+
+// ─── Dark Theme ───────────────────────────────────────────────────────────────
+
+[data-theme="dark"] {
+  --cp-primary:         #6BAED6;
+  --cp-primary-hover:   #9ECAE1;
+  --cp-primary-light:   #4393C4;
+  --cp-primary-pale:    #1C2D3F;
+  --cp-primary-rgb:     107, 174, 214;
+
+  --cp-bg:              #0D1B2A;
+  --cp-bg-card:         #162233;
+  --cp-surface:         #1C2D3F;
+  --cp-surface-2:       #243447;
+
+  --cp-text:            #D4E9F7;
+  --cp-text-muted:      #8AB3CF;
+  --cp-text-light:      #FFFFFF;
+
+  --cp-border:          #2A4060;
+  --cp-border-focus:    #6BAED6;
+  --cp-shadow:          0 6px 20px rgba(0, 0, 0, 0.4);
+  --cp-shadow-hover:    0 12px 32px rgba(0, 0, 0, 0.5);
+  --cp-shadow-card:     0 6px 10px -4px rgba(0, 0, 0, 0.3);
+
+  --cp-success:         #3DA868;
+  --cp-danger:          #E85D5D;
+  --cp-warning:         #D4921A;
+
+  --pk-primary:         #6BAED6;
+  --pk-text-dark:       #D4E9F7;
+  --pk-text-muted:      #8AB3CF;
+  --pk-bg-light:        #1C2D3F;
+  --pk-card-shadow:     0 6px 10px -4px rgba(0, 0, 0, .3);
 }
 
 // ─── Base ─────────────────────────────────────────────────────────────────────
@@ -24,13 +90,14 @@ html, body {
 
 body {
   font-family: 'Montserrat', sans-serif;
-  color: var(--pk-text-dark);
-  background-color: #fff;
+  color: var(--cp-text);
+  background-color: var(--cp-bg);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-// ─── Paper Kit Typography ─────────────────────────────────────────────────────
+// ─── Typography ───────────────────────────────────────────────────────────────
 
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Montserrat', sans-serif;
@@ -38,7 +105,7 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: -0.01em;
 }
 
-// ─── Paper Kit Buttons ────────────────────────────────────────────────────────
+// ─── Buttons ──────────────────────────────────────────────────────────────────
 
 .btn {
   border-radius: 30px;
@@ -50,15 +117,27 @@ h1, h2, h3, h4, h5, h6 {
   transition: all 0.3s ease;
 
   &.btn-primary {
-    background-color: var(--pk-primary);
-    border-color: var(--pk-primary);
+    background-color: var(--cp-primary);
+    border-color: var(--cp-primary);
     color: #fff;
 
     &:hover {
-      background-color: #d94e1e;
-      border-color: #d94e1e;
+      background-color: var(--cp-primary-hover);
+      border-color: var(--cp-primary-hover);
       transform: translateY(-1px);
-      box-shadow: 0 8px 20px rgba(249, 99, 50, 0.35);
+      box-shadow: var(--cp-shadow);
+    }
+  }
+
+  &.btn-outline-primary {
+    color: var(--cp-primary);
+    border-color: var(--cp-primary);
+
+    &:hover {
+      background-color: var(--cp-primary);
+      border-color: var(--cp-primary);
+      color: #fff;
+      transform: translateY(-1px);
     }
   }
 
@@ -71,7 +150,7 @@ h1, h2, h3, h4, h5, h6 {
   &.btn-neutral {
     background-color: #fff;
     border-color: #fff;
-    color: var(--pk-primary);
+    color: var(--cp-primary);
 
     &:hover {
       transform: translateY(-1px);
@@ -80,16 +159,17 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-// ─── Paper Kit Cards ──────────────────────────────────────────────────────────
+// ─── Cards ────────────────────────────────────────────────────────────────────
 
 .card {
   border: 0;
   border-radius: 6px;
-  box-shadow: var(--pk-card-shadow);
+  box-shadow: var(--cp-shadow-card);
+  background-color: var(--cp-bg-card);
   transition: box-shadow 0.3s ease, transform 0.3s ease;
 
   &:hover {
-    box-shadow: 0 12px 24px -4px rgba(0, 0, 0, .2);
+    box-shadow: var(--cp-shadow-hover);
     transform: translateY(-4px);
   }
 }
@@ -102,7 +182,7 @@ h1, h2, h3, h4, h5, h6 {
   flex-direction: column;
 }
 
-// ─── Page Header (Hero Section) ───────────────────────────────────────────────
+// ─── Page Header (Hero) ───────────────────────────────────────────────────────
 
 .page-header {
   min-height: 100vh;
@@ -147,5 +227,100 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .section-gray {
-  background-color: var(--pk-bg-light);
+  background-color: var(--cp-surface);
+}
+
+// ─── Shared Form Input ────────────────────────────────────────────────────────
+
+.cp-input-group {
+  position: relative;
+
+  > .cp-input-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--cp-text-muted);
+    font-size: 0.9rem;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .form-control {
+    padding-left: 2.75rem;
+    padding-right: 2.75rem;
+    border: 1.5px solid var(--cp-border);
+    border-radius: 10px;
+    background-color: var(--cp-bg);
+    color: var(--cp-text);
+    height: 48px;
+    font-size: 0.9rem;
+    font-family: 'Montserrat', sans-serif;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.3s ease;
+
+    &::placeholder {
+      color: var(--cp-text-muted);
+      opacity: 0.7;
+    }
+
+    &:focus {
+      border-color: var(--cp-border-focus);
+      box-shadow: 0 0 0 3px rgba(var(--cp-primary-rgb), 0.15);
+      background-color: var(--cp-bg-card);
+      outline: none;
+    }
+
+    &.is-invalid {
+      border-color: var(--cp-danger);
+    }
+  }
+
+  .cp-password-toggle {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--cp-text-muted);
+    cursor: pointer;
+    padding: 0.25rem 0.4rem;
+    transition: color 0.2s;
+    z-index: 2;
+
+    &:hover { color: var(--cp-primary); }
+    &:focus { outline: none; }
+  }
+}
+
+// ─── Auth Form Label ──────────────────────────────────────────────────────────
+
+.cp-form-label {
+  font-weight: 600;
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--cp-text);
+  margin-bottom: 0.4rem;
+  display: block;
+}
+
+// ─── Auth Alert ───────────────────────────────────────────────────────────────
+
+.cp-alert-danger {
+  background-color: rgba(232, 93, 93, 0.12);
+  border: 1px solid rgba(232, 93, 93, 0.3);
+  color: var(--cp-danger);
+  border-radius: 8px;
+  font-size: 0.875rem;
+  padding: 0.65rem 1rem;
+}
+
+.cp-alert-success {
+  background-color: rgba(82, 196, 122, 0.12);
+  border: 1px solid rgba(82, 196, 122, 0.3);
+  color: var(--cp-success);
+  border-radius: 8px;
+  font-size: 0.875rem;
+  padding: 0.65rem 1rem;
 }

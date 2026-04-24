@@ -31,7 +31,6 @@ export class HomeComponent implements OnInit {
     this.loading.set(true);
     this.campsiteService.getAll().subscribe({
       next: result => {
-        debugger;
         this.campites.set(result);
         this.totalCount.set(result.length);
         this.loading.set(false);

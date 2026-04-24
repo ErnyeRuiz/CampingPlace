@@ -9,4 +9,9 @@ export interface CampsiteResponse {
     hasElectricity: boolean;
     createdByUserId: number;
     createdAt: Date;
+    rating: number;
+    idProvince: number;
+    idCanton: number;
+    idDistrito: number;
+    direccionExacta: string;
 }

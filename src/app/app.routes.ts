@@ -22,6 +22,11 @@ export const routes: Routes = [
       import('./features/map-view/map-view.routes').then(m => m.MAP_VIEW_ROUTES)
   },
   {
+    path: 'auth',
+    loadChildren: () =>
+      import('./features/auth/auth.routes').then(m => m.AUTH_ROUTES)
+  },
+  {
     path: '**',
     redirectTo: 'campings'
   }

@@ -6,6 +6,10 @@ export class CampsiteRequest {
         public longitude: number,
         public pricePerNight: number,
         public hasWater: boolean,
-        public hasElectricity: boolean
+        public hasElectricity: boolean,
+        public idProvince: number,
+        public idCanton: number,
+        public idDistrito: number,
+        public direccionExacta: string | null
     ){}
 }
