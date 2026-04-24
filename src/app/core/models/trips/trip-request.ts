@@ -1,7 +1,8 @@
+/** Body for create/update trip; dates as yyyy-MM-dd for API DateOnly. */
 export class TripRequest {
     constructor(
         public name: string,
-        public startDate: Date,
-        public endDate: Date,
-    ){}
+        public startDate: string,
+        public endDate: string,
+    ) {}
 }

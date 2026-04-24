@@ -1,0 +1,31 @@
+.cp-loader-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  z-index: 10001;
+  overflow: hidden;
+  background: transparent;
+
+  &__fill {
+    position: absolute;
+    height: 100%;
+    width: 45%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--cp-primary-light),
+      var(--cp-primary),
+      var(--cp-primary-light),
+      transparent
+    );
+    border-radius: 2px;
+    animation: cp-loader-slide 1.4s ease-in-out infinite;
+  }
+}
+
+@keyframes cp-loader-slide {
+  0%   { left: -45%; }
+  100% { left: 110%; }
+}

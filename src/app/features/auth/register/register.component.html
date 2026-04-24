@@ -121,20 +121,6 @@
             }
           </div>
 
-          <!-- Success message -->
-          @if (successMessage()) {
-            <div class="cp-alert-success mb-3">
-              <i class="fas fa-check-circle mr-2"></i>{{ successMessage() }}
-            </div>
-          }
-
-          <!-- Error message -->
-          @if (errorMessage()) {
-            <div class="cp-alert-danger mb-3">
-              <i class="fas fa-exclamation-circle mr-2"></i>{{ errorMessage() }}
-            </div>
-          }
-
           <!-- Submit -->
           <button
             type="submit"

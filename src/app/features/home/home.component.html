@@ -59,11 +59,13 @@
     </div>
 
     @if (loading()) {
-      <div class="text-center py-5">
-        <div class="spinner-border text-primary" role="status">
-          <span class="sr-only">Cargando...</span>
-        </div>
-        <p class="mt-3 text-muted">Buscando campings disponibles...</p>
+      <div class="row">
+        <div class="col-md-6 col-lg-4 mb-4"><div class="cp-skeleton-card"></div></div>
+        <div class="col-md-6 col-lg-4 mb-4"><div class="cp-skeleton-card"></div></div>
+        <div class="col-md-6 col-lg-4 mb-4"><div class="cp-skeleton-card"></div></div>
+        <div class="col-md-6 col-lg-4 mb-4"><div class="cp-skeleton-card"></div></div>
+        <div class="col-md-6 col-lg-4 mb-4"><div class="cp-skeleton-card"></div></div>
+        <div class="col-md-6 col-lg-4 mb-4"><div class="cp-skeleton-card"></div></div>
       </div>
     }
 
@@ -76,37 +78,42 @@
 
     @if (!loading()) {
       <div class="row">
-        @for (campite of campites(); track campite.id) {
+        @for (campsite of campites(); track campsite.id) {
           <div class="col-md-6 col-lg-4 mb-4">
             <div class="card camping-card h-100">
 
               <div class="card-img-wrapper">
-                <!-- @if (campite.images && campite.images.length > 0) {
-                  <img [src]="camping.images[0]"
-                       [alt]="camping.name"
+                @if (favoriteCampsiteIds().has(campsite.id)) {
+                  <span class="card-fav-heart" title="En tus favoritos">
+                    <i class="fas fa-heart" aria-hidden="true"></i>
+                    <span class="sr-only">En tus favoritos</span>
+                  </span>
+                }
+                @if (campsite.images && campsite.images.length > 0) {
+                  <img [src]="getImageFromBase64(campsite.images[0].imageBase64)"
                        class="card-img-top"
                        loading="lazy">
                 } @else {
                   <div class="card-img-placeholder">
                     <i class="fas fa-campground"></i>
                   </div>
-                } -->
+                }
                 <span class="card-badge">
-                  {{ campite.latitude }}, {{ campite.longitude }}
+                  {{ getProvinciaName(campsite.idProvincia) }}
                 </span>
               </div>
 
               <div class="card-body d-flex flex-column">
-                <h5 class="card-title">{{ campite.name }}</h5>
+                <h5 class="card-title">{{ campsite.name }}</h5>
 
                 <p class="card-location text-muted mb-2">
                   <i class="fas fa-map-pin mr-1"></i>
-                  {{ campite.latitude }}, {{ campite.longitude }}
+                  {{ getCantonName(campsite.idCanton) }}, {{ getDistritoName(campsite.idDistrito) }}
                 </p>
 
-                @if (campite.description) {
+                @if (campsite.description) {
                   <p class="card-text card-description text-muted small mb-3">
-                    {{ campite.description | slice:0:90 }}{{ campite.description.length > 90 ? '...' : '' }}
+                    {{ campsite.description | slice:0:90 }}{{ campsite.description.length > 90 ? '...' : '' }}
                   </p>
                 }
 
@@ -124,11 +131,11 @@
                 <div class="mt-auto pt-3 d-flex justify-content-between align-items-center card-footer-row">
                   <div class="card-price">
                     <span class="price-amount">
-                      {{ campite.pricePerNight | currency:'CRC':'symbol-narrow':'1.0-0' }}
+                      {{ campsite.pricePerNight | currency:'CRC':'symbol-narrow':'1.0-0' }}
                     </span>
                     <span class="price-label text-muted"> / noche</span>
                   </div>
-                  <a [routerLink]="['/campings', campite.id]" class="btn btn-primary btn-sm">
+                  <a [routerLink]="['/campings', campsite.id]" class="btn btn-primary btn-sm">
                     Ver detalle
                   </a>
                 </div>

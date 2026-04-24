@@ -1,3 +1,5 @@
+import { CampsiteImageResponse } from "./campsite-image-response";
+
 export interface CampsiteResponse {
     id: number;
     name: string;
@@ -10,8 +12,9 @@ export interface CampsiteResponse {
     createdByUserId: number;
     createdAt: Date;
     rating: number;
-    idProvince: number;
+    idProvincia: number;
     idCanton: number;
     idDistrito: number;
     direccionExacta: string;
+    images: CampsiteImageResponse[];
 }

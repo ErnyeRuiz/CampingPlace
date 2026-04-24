@@ -3,7 +3,7 @@ import { Injectable, inject, signal } from "@angular/core";
 import { Observable, take, map, finalize } from "rxjs";
 import { environment } from "../../../../environments/environment";
 import { ApiResponse } from "../../models/api/api-response";
-import { FavoriteResponse } from "../../models/favorites/favotire-response";
+import { FavoriteResponse } from "../../models/favorites/favorite-response";
 
 @Injectable({ providedIn: 'root' })
 export class FavoritesService {
@@ -22,7 +22,7 @@ export class FavoritesService {
     return this.http.get<ApiResponse<FavoriteResponse[]>>(
         `${this.baseUrl}`
     ).pipe(
-        take(1), 
+        take(1),
         map(response => response.data ?? []),
         finalize(() => this.loading.set(false))
     );
@@ -39,7 +39,7 @@ export class FavoritesService {
         `${this.baseUrl}/${campsiteId}`,
         null,
     ).pipe(
-        take(1), 
+        take(1),
         map(response => response.success),
         finalize(() => this.loading.set(false))
     );
@@ -55,7 +55,7 @@ export class FavoritesService {
     return this.http.delete<ApiResponse<void>>(
         `${this.baseUrl}/${campsiteId}`
     ).pipe(
-        take(1), 
+        take(1),
         map(response => response.success),
         finalize(() => this.loading.set(false))
     );

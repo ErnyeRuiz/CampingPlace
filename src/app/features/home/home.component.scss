@@ -1,3 +1,9 @@
+// ─── Anchor offset (compensa el navbar fijo) ──────────────────────────────────
+
+#explorar {
+  scroll-margin-top: 80px;
+}
+
 // ─── Hero Section ─────────────────────────────────────────────────────────────
 
 .camping-hero {
@@ -138,6 +144,24 @@
     font-size: 3rem;
     opacity: 0.6;
   }
+}
+
+.card-fav-heart {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.94);
+  color: #e91e63;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  font-size: 0.95rem;
+  pointer-events: none;
 }
 
 .card-badge {

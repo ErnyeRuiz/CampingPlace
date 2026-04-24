@@ -23,7 +23,7 @@ export class TripsService {
     return this.http.get<ApiResponse<TripResponse[]>>(
         `${this.baseUrl}`
     ).pipe(
-        take(1), 
+        take(1),
         map(response => response.data ?? []),
         finalize(() => this.loading.set(false))
     );
@@ -39,25 +39,28 @@ export class TripsService {
     return this.http.get<ApiResponse<TripResponse>>(
         `${this.baseUrl}/${id}`
     ).pipe(
-        take(1), 
+        take(1),
         map(response => response.data),
         finalize(() => this.loading.set(false))
     );
   }
 
   /**
-   * Create a trip
-   * @param request - The request body
-   * @returns An observable of boolean
+   * @returns The new trip id, or null if creation failed.
    */
-  public create(request: TripRequest): Observable<boolean> {
+  public create(request: TripRequest): Observable<number | null> {
     this.loading.set(true);
-    return this.http.post<ApiResponse<{id: number}>>(
+    return this.http.post<ApiResponse<{ id: number }>>(
         `${this.baseUrl}`,
         request
     ).pipe(
-        take(1), 
-        map(response => response.success),
+        take(1),
+        map((response) => {
+          if (!response.success || response.data == null) {
+            return null;
+          }
+          return response.data.id;
+        }),
         finalize(() => this.loading.set(false))
     );
   }
@@ -74,7 +77,7 @@ export class TripsService {
         `${this.baseUrl}/${id}`,
         request
     ).pipe(
-        take(1), 
+        take(1),
         map(response => response.success),
         finalize(() => this.loading.set(false))
     );
@@ -90,7 +93,7 @@ export class TripsService {
     return this.http.delete<ApiResponse<void>>(
         `${this.baseUrl}/${id}`
     ).pipe(
-        take(1), 
+        take(1),
         map(response => response.success),
         finalize(() => this.loading.set(false))
     );
@@ -108,7 +111,7 @@ export class TripsService {
         `${this.baseUrl}/${id}/campsites/${campsiteId}`,
         null
     ).pipe(
-        take(1), 
+        take(1),
         map(response => response.success),
         finalize(() => this.loading.set(false))
     );
@@ -125,7 +128,7 @@ export class TripsService {
     return this.http.delete<ApiResponse<void>>(
         `${this.baseUrl}/${id}/campsites/${campsiteId}`
     ).pipe(
-        take(1), 
+        take(1),
         map(response => response.success),
         finalize(() => this.loading.set(false))
     );

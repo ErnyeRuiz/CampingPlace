@@ -1,4 +1,6 @@
 // ─── Navbar ───────────────────────────────────────────────────────────────────
+// Las clases .navbar-transparent y .navbar-solid son excluyentes; las activa `transparentAtTop()`
+// desde el componente TS. No mezclar ambas: la plantilla pone una u otra según el computed.
 
 .navbar {
   height: 70px;
@@ -6,6 +8,7 @@
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
   padding: 0 1rem;
 
+  // Modo “hero”: sin fondo, texto e iconos claros para contrastar con imagen/video oscuro detrás.
   &.navbar-transparent {
     background-color: transparent;
 
@@ -54,6 +57,7 @@
     }
   }
 
+  // Modo “barra normal”: fondo de tarjeta del tema y colores CSS variables (legible en claro/oscuro).
   &.navbar-solid {
     background-color: var(--cp-bg-card);
     box-shadow: 0 2px 12px rgba(0, 0, 0, .10);
@@ -198,6 +202,12 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.9;
+  }
 }
 
 // ─── Theme toggle ─────────────────────────────────────────────────────────────
@@ -215,6 +225,7 @@
 }
 
 // ─── Mobile dropdown ──────────────────────────────────────────────────────────
+// Panel del menú colapsable: fondo tarjeta y enlaces con --cp-* (menuOpen() además fuerza barra sólida en TS).
 
 @media (max-width: 991.98px) {
   .navbar-collapse.show {

@@ -1,18 +1,186 @@
-<!-- @if (loading()) {
-  <div class="detail__loading">Cargando...</div>
-} -->
+<section class="camping-detail">
+  <div class="container py-3">
+    <nav class="camping-detail__crumb" aria-label="Migas de pan">
+      <a routerLink="/campings" class="camping-detail__crumb-link">Inicio</a>
+      <span class="camping-detail__crumb-sep" aria-hidden="true">/</span>
+      <span class="text-muted">Detalle</span>
+    </nav>
+  </div>
 
-@if (campsite(); as c) {
-  <article class="detail">
-    <header class="detail__header">
-      <h1>{{ c.name }}</h1>
-      <p class="detail__location">{{ c.latitude }}, {{ c.longitude }}</p>
-    </header>
-    <section class="detail__body">
-      <p>{{ c.description }}</p>
-      <p><strong>Precio:</strong> {{ c.pricePerNight | currency:'CRC' }} / noche</p>
-      <p><strong>Agua:</strong> {{ c.hasWater ? 'Si' : 'No' }}</p>
-      <p><strong>Electricidad:</strong> {{ c.hasElectricity ? 'Si' : 'No' }}</p>
-    </section>
-  </article>
-}
+  @if (detailLoading()) {
+    <div class="container py-4">
+      <div class="cp-skeleton-card mb-4" style="height: 340px;"></div>
+      <div class="row">
+        <div class="col-lg-8">
+          <div class="cp-skeleton-row mb-3" style="height: 1.5rem; width: 60%;"></div>
+          <div class="cp-skeleton-row mb-2"></div>
+          <div class="cp-skeleton-row mb-2"></div>
+          <div class="cp-skeleton-row" style="width: 75%;"></div>
+        </div>
+        <div class="col-lg-4">
+          <div class="cp-skeleton-card" style="height: 180px;"></div>
+        </div>
+      </div>
+    </div>
+  } @else if (campsite(); as c) {
+    <div class="camping-detail__hero">
+      @if (heroImage(); as imgSrc) {
+        <img class="camping-detail__hero-pic" [src]="imgSrc" alt="" />
+      } @else {
+        <div class="camping-detail__hero-img camping-detail__hero-img--empty" aria-hidden="true">
+          <i class="fas fa-campground"></i>
+        </div>
+      }
+      <div class="camping-detail__hero-overlay">
+        <div class="container">
+          <h1 class="camping-detail__title">{{ c.name }}</h1>
+          <p class="camping-detail__hero-meta">
+            <i class="fas fa-map-marker-alt mr-1" aria-hidden="true"></i>
+            {{ formatLocation(c) }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="container camping-detail__body">
+      <div class="row">
+        <div class="col-lg-8 order-2 order-lg-1">
+          @if (c.images.length > 1) {
+            <div class="camping-detail__thumbs">
+              @for (img of c.images; track img.id) {
+                <button
+                  type="button"
+                  class="camping-detail__thumb"
+                  [class.camping-detail__thumb--active]="$index === activeImageIdx()"
+                  (click)="selectThumb($index)">
+                  <img [src]="imageSrc(img.imageBase64)" [alt]="'Vista ' + ($index + 1)" />
+                </button>
+              }
+            </div>
+          }
+
+          <div class="camping-detail__prose">
+            <h2 class="camping-detail__h2">Descripción</h2>
+            <p class="camping-detail__text">{{ c.description }}</p>
+          </div>
+
+          @if (c.direccionExacta) {
+            <div class="camping-detail__prose">
+              <h2 class="camping-detail__h2">Dirección</h2>
+              <p class="camping-detail__text mb-0">
+                <i class="fas fa-home mr-1 text-muted" aria-hidden="true"></i>{{ c.direccionExacta }}
+              </p>
+            </div>
+          }
+        </div>
+
+        <div class="col-lg-4 order-1 order-lg-2 mb-4 mb-lg-0">
+          <div class="camping-detail__sidebar card shadow-sm">
+            <div class="card-body">
+              <div class="camping-detail__price mb-3">
+                <span class="camping-detail__amount">{{ c.pricePerNight | currency: 'CRC':'symbol-narrow':'1.0-0' }}</span>
+                <span class="camping-detail__per text-muted"> / noche</span>
+              </div>
+
+              <div class="camping-detail__rating mb-3" aria-label="Valoración aproximada">
+                @for (star of [1,2,3,4,5]; track star) {
+                  <i class="fas fa-star camping-detail__star"
+                     [class.camping-detail__star--on]="c.rating >= star - 0.5"></i>
+                }
+                <span class="camping-detail__rating-num text-muted ml-1">({{ c.rating | number: '1.0-1' }})</span>
+              </div>
+
+              <div class="camping-detail__chips mb-3">
+                <span class="badge camping-detail__chip" [class.camping-detail__chip--on]="c.hasWater">
+                  <i class="fas fa-tint mr-1" aria-hidden="true"></i> Agua: {{ c.hasWater ? 'Sí' : 'No' }}
+                </span>
+                <span class="badge camping-detail__chip" [class.camping-detail__chip--on]="c.hasElectricity">
+                  <i class="fas fa-bolt mr-1" aria-hidden="true"></i> Luz: {{ c.hasElectricity ? 'Sí' : 'No' }}
+                </span>
+              </div>
+
+              <a [href]="mapsUrl()" class="btn btn-outline-primary btn-block mb-3" target="_blank" rel="noopener noreferrer">
+                <i class="fas fa-map-marked-alt mr-1" aria-hidden="true"></i> Abrir en Google Maps
+              </a>
+
+              <p class="small text-muted mb-2">Coordenadas: {{ c.latitude | number: '1.4-4' }}, {{ c.longitude | number: '1.4-4' }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="camping-detail__actions-wrap">
+      <div class="container">
+        <div class="camping-detail__actions card shadow">
+          <div class="camping-detail__actions-inner">
+            <button
+              type="button"
+              class="btn"
+              [class.btn-primary]="!isFavorite()"
+              [class.btn-outline-danger]="isFavorite()"
+              [disabled]="favoriteBusy()"
+              (click)="onFavoriteClick()">
+              @if (isFavorite()) {
+                <i class="fas fa-heart-broken mr-1" aria-hidden="true"></i> Quitar de favoritos
+              } @else {
+                <i class="fas fa-heart mr-1" aria-hidden="true"></i> Guardar en favoritos
+              }
+            </button>
+            @if (!auth.isLoggedIn()) {
+              <span class="camping-detail__actions-hint text-muted small ml-md-2 mt-2 mt-md-0 d-block d-md-inline">Inicia sesión para guardar o planificar</span>
+            }
+            <button
+              type="button"
+              class="btn btn-primary"
+              (click)="openAddToTrip()">
+              <i class="fas fa-suitcase-rolling mr-1" aria-hidden="true"></i> Añadir a un viaje
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    @if (addToTripOpen()) {
+      <div class="container pb-4">
+        <div class="card add-trip-panel shadow-sm">
+          <div class="card-body">
+            <h3 class="h5">Añadir a un viaje</h3>
+            @if (availableTrips().length) {
+              <div class="form-group mb-0">
+                <label for="trip-pick" class="mb-1">Viaje</label>
+                <select
+                  id="trip-pick"
+                  class="form-control"
+                  [value]="selectedTripId() ?? ''"
+                  (change)="onSelectTrip($event)">
+                  <option value="">— Elegir viaje —</option>
+                  @for (t of availableTrips(); track t.id) {
+                    <option [value]="t.id">
+                      {{ t.name }} ({{ t.startDate | date: 'dd/MM/yy' }} – {{ t.endDate | date: 'dd/MM/yy' }})
+                    </option>
+                  }
+                </select>
+                <p class="text-muted small mt-2 mb-0">Solo se listan viajes en los que aún no está este camping.</p>
+              </div>
+              <div class="d-flex flex-wrap align-items-center mt-3">
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  (click)="addCampsiteToSelectedTrip()"
+                  [disabled]="addToTripBusy()">
+                  Añadir
+                </button>
+                <button type="button" class="btn btn-link" (click)="closeAddToTrip()">Cerrar</button>
+              </div>
+            } @else {
+              <p class="text-muted mb-2">No quedan viajes disponibles para añadir este camping, o aún no tienes viajes.</p>
+              <a routerLink="/trips" class="btn btn-sm btn-primary mr-2">Gestionar viajes</a>
+              <button type="button" class="btn btn-sm btn-link" (click)="closeAddToTrip()">Cerrar</button>
+            }
+          </div>
+        </div>
+      </div>
+    }
+  }
+</section>

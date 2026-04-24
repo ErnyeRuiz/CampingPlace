@@ -1,6 +1,10 @@
 // Google Fonts
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
 
+html {
+  scroll-behavior: smooth;
+}
+
 // Bootstrap 4 is loaded via angular.json styles array (pre-compiled CSS)
 
 // ─── Color System: Pastel Blues (Light Theme) ────────────────────────────────
@@ -35,6 +39,24 @@
   --cp-success:         #52C47A;
   --cp-danger:          #E85D5D;
   --cp-warning:         #F5A623;
+
+  // Toast colors
+  --cp-toast-success-bg:     #e6f8ed;
+  --cp-toast-success-border: #52C47A;
+  --cp-toast-success-text:   #1f7044;
+  --cp-toast-success-icon:   #3daa68;
+  --cp-toast-info-bg:        #e8f2fb;
+  --cp-toast-info-border:    #4A8FD9;
+  --cp-toast-info-text:      #1b5698;
+  --cp-toast-info-icon:      #4A8FD9;
+  --cp-toast-warning-bg:     #fef4e0;
+  --cp-toast-warning-border: #F5A623;
+  --cp-toast-warning-text:   #7a4f00;
+  --cp-toast-warning-icon:   #d4921a;
+  --cp-toast-danger-bg:      #fdeaea;
+  --cp-toast-danger-border:  #E85D5D;
+  --cp-toast-danger-text:    #9b1c1c;
+  --cp-toast-danger-icon:    #E85D5D;
 
   // Legacy Paper Kit compat (keeps existing components working)
   --pk-primary:         #4A8FD9;
@@ -73,6 +95,24 @@
   --cp-danger:          #E85D5D;
   --cp-warning:         #D4921A;
 
+  // Toast colors (dark theme)
+  --cp-toast-success-bg:     #0e2d1c;
+  --cp-toast-success-border: #3DA868;
+  --cp-toast-success-text:   #7dd9a5;
+  --cp-toast-success-icon:   #3DA868;
+  --cp-toast-info-bg:        #0e2035;
+  --cp-toast-info-border:    #6BAED6;
+  --cp-toast-info-text:      #9ecae1;
+  --cp-toast-info-icon:      #6BAED6;
+  --cp-toast-warning-bg:     #2e1f08;
+  --cp-toast-warning-border: #D4921A;
+  --cp-toast-warning-text:   #f0c060;
+  --cp-toast-warning-icon:   #D4921A;
+  --cp-toast-danger-bg:      #2e0e0e;
+  --cp-toast-danger-border:  #E85D5D;
+  --cp-toast-danger-text:    #f09090;
+  --cp-toast-danger-icon:    #E85D5D;
+
   --pk-primary:         #6BAED6;
   --pk-text-dark:       #D4E9F7;
   --pk-text-muted:      #8AB3CF;
@@ -103,6 +143,26 @@ h1, h2, h3, h4, h5, h6 {
   font-family: 'Montserrat', sans-serif;
   font-weight: 700;
   letter-spacing: -0.01em;
+}
+
+// ─── Breadcrumb ───────────────────────────────────────────────────────────────
+
+.cp-breadcrumb {
+  font-size: 0.9rem;
+  padding-top: 0.5rem;
+  margin-bottom: 0;
+}
+
+.cp-breadcrumb__link {
+  color: var(--cp-primary, #4a8fd9);
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.cp-breadcrumb__sep {
+  margin: 0 0.35rem;
+  color: var(--cp-text-muted, #6b8eb5);
 }
 
 // ─── Buttons ──────────────────────────────────────────────────────────────────
@@ -178,6 +238,12 @@ h1, h2, h3, h4, h5, h6 {
 
 .wrapper {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
   display: flex;
   flex-direction: column;
 }
@@ -323,4 +389,38 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 8px;
   font-size: 0.875rem;
   padding: 0.65rem 1rem;
+}
+
+// ─── Skeleton Loader ──────────────────────────────────────────────────────────
+
+@keyframes cp-skeleton-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+%cp-skeleton-base {
+  background: linear-gradient(
+    90deg,
+    var(--cp-surface) 25%,
+    var(--cp-surface-2) 50%,
+    var(--cp-surface) 75%
+  );
+  background-size: 200% 100%;
+  animation: cp-skeleton-shimmer 1.6s ease-in-out infinite;
+  border-radius: 8px;
+}
+
+.cp-skeleton-row {
+  @extend %cp-skeleton-base;
+  height: 2.4rem;
+  margin-bottom: 0.75rem;
+  width: 100%;
+  display: block;
+}
+
+.cp-skeleton-card {
+  @extend %cp-skeleton-base;
+  height: 200px;
+  width: 100%;
+  display: block;
 }

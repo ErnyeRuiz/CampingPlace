@@ -1,0 +1,173 @@
+<section class="profile-page">
+  <div class="container">
+    <nav class="cp-breadcrumb mb-3" aria-label="Migas de pan">
+      <span class="text-muted">Perfil</span>
+    </nav>
+
+    <h1 class="profile-page__title">Mi perfil</h1>
+
+    @if (profile(); as p) {
+        <div class="row">
+          <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm h-100">
+              <div class="card-body">
+                <h2 class="h5 card-title">Datos de cuenta</h2>
+                <p class="text-muted small mb-3">
+                  Miembro desde {{ p.createdAt | date: 'dd/MM/yyyy' }}
+                </p>
+                <form [formGroup]="profileForm" (ngSubmit)="submitProfile()">
+                  <div class="form-group">
+                    <label for="profile-email">Correo</label>
+                    <input
+                      id="profile-email"
+                      type="email"
+                      class="form-control"
+                      [value]="p.email"
+                      readonly
+                      tabindex="-1" />
+                  </div>
+                  <div class="form-group">
+                    <label for="profile-name">Nombre</label>
+                    <input
+                      id="profile-name"
+                      type="text"
+                      class="form-control"
+                      formControlName="name"
+                      [class.is-invalid]="
+                        profileForm.get('name')?.touched &&
+                        profileForm.get('name')?.invalid
+                      " />
+                    @if (
+                      profileForm.get('name')?.touched &&
+                      profileForm.get('name')?.hasError('required')
+                    ) {
+                      <div class="invalid-feedback d-block">El nombre es obligatorio.</div>
+                    }
+                  </div>
+                  <button
+                    type="submit"
+                    class="btn btn-primary"
+                    [disabled]="loadingUser()">
+                    <i class="fas fa-save mr-1"></i> Guardar nombre
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm h-100">
+              <div class="card-body">
+                <div class="d-flex flex-wrap align-items-center justify-content-between mb-3">
+                  <h2 class="h5 card-title mb-0">Mis viajes</h2>
+                  <a routerLink="/trips" class="btn btn-sm btn-outline-primary">
+                    Ver todos
+                  </a>
+                </div>
+                @if (loadingTrips() && !tripsList().length) {
+                  <div class="cp-skeleton-row"></div>
+                  <div class="cp-skeleton-row"></div>
+                } @else if (!tripsList().length) {
+                  <p class="text-muted mb-0">
+                    Aún no tienes viajes.
+                    <a routerLink="/trips">Crea uno</a>.
+                  </p>
+                } @else {
+                  <ul class="list-group list-group-flush profile-trip-preview">
+                    @for (t of tripsPreview(); track t.id) {
+                      <li
+                        class="list-group-item d-flex flex-wrap align-items-center justify-content-between px-0">
+                        <div class="pr-2">
+                          <a [routerLink]="['/trips', t.id]" class="font-weight-bold">{{
+                            t.name
+                          }}</a>
+                          <div class="small text-muted">
+                            {{ t.startDate | date: 'dd/MM/yyyy' }} –
+                            {{ t.endDate | date: 'dd/MM/yyyy' }}
+                            ·
+                            <span class="badge badge-pill badge-secondary">{{
+                              t.campSiteSummaries.length
+                            }}</span>
+                            camping(s)
+                          </div>
+                        </div>
+                        <a [routerLink]="['/trips', t.id]" class="btn btn-sm btn-outline-primary"
+                          >Ver</a
+                        >
+                      </li>
+                    }
+                  </ul>
+                  @if (tripsList().length > tripsPreview().length) {
+                    <p class="small text-muted mt-2 mb-0">
+                      Mostrando {{ tripsPreview().length }} de {{ tripsList().length }}.
+                      <a routerLink="/trips">Ver lista completa</a>
+                    </p>
+                  }
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+          <div class="card-body">
+            <h2 class="h5 card-title mb-3">Favoritos</h2>
+            @if (loadingFavorites() && !favoritesList().length) {
+              <div class="row">
+                <div class="col-md-6 col-lg-4 mb-3"><div class="cp-skeleton-card"></div></div>
+                <div class="col-md-6 col-lg-4 mb-3"><div class="cp-skeleton-card"></div></div>
+                <div class="col-md-6 col-lg-4 mb-3"><div class="cp-skeleton-card"></div></div>
+              </div>
+            } @else if (!favoritesList().length) {
+              <p class="text-muted mb-0">
+                No tienes campings favoritos. Explora el
+                <a routerLink="/campings">catálogo</a>.
+              </p>
+            } @else {
+              <div class="row">
+                @for (f of favoritesList(); track f.id) {
+                  <div class="col-md-6 col-lg-4 mb-4">
+                    @if (f.campSiteSummary; as c) {
+                      <article class="card profile-fav-card h-100 shadow-sm">
+                        <div class="profile-fav-card__image-wrap">
+                          <img
+                            class="card-img-top profile-fav-card__image"
+                            [src]="campsiteImageSrc(c.image) || imgFallback"
+                            [alt]="'Imagen: ' + c.name"
+                            (error)="onCampsiteImgError($event)" />
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                          <h3 class="h6 card-title">{{ c.name }}</h3>
+                          <p class="card-text text-muted small flex-grow-1">
+                            {{ shortDescription(c.description) }}
+                          </p>
+                          <p class="small mb-1">
+                            <strong>{{ c.pricePerNight | currency: 'CRC' }}</strong> / noche
+                          </p>
+                          <p class="small text-muted mb-3">{{ locationLine(c) }}</p>
+                          <a
+                            [routerLink]="['/campings', c.id]"
+                            class="btn btn-sm btn-outline-primary mt-auto"
+                            >Ver camping</a
+                          >
+                        </div>
+                      </article>
+                    } @else {
+                      <div
+                        class="card border-warning h-100 shadow-sm"
+                        role="status">
+                        <div class="card-body">
+                          <p class="small text-muted mb-1">Camping ya no disponible</p>
+                          <p class="small mb-0">Referencia favorito #{{ f.campSiteId }}</p>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+  </div>
+</section>

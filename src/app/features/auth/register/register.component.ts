@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -10,6 +10,7 @@ import {
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/http/auth.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { RegisterRequest } from '../../../core/models/auth/register-request';
 
 function passwordMatchValidator(): ValidatorFn {
@@ -31,11 +32,10 @@ export class RegisterComponent {
 
   private readonly fb     = inject(FormBuilder);
   private readonly auth   = inject(AuthService);
+  private readonly toast  = inject(ToastService);
   private readonly router = inject(Router);
 
-  readonly loading        = this.auth.loading;
-  readonly errorMessage   = signal<string | null>(null);
-  readonly successMessage = signal<string | null>(null);
+  readonly loading = this.auth.loading;
 
   showPassword        = false;
   showConfirmPassword = false;
@@ -60,8 +60,6 @@ export class RegisterComponent {
       this.registerForm.markAllAsTouched();
       return;
     }
-    this.errorMessage.set(null);
-
     const request = new RegisterRequest(
       this.f['name'].value,
       this.f['email'].value,
@@ -71,14 +69,14 @@ export class RegisterComponent {
     this.auth.register(request).subscribe({
       next: (success) => {
         if (success) {
-          this.successMessage.set('¡Cuenta creada exitosamente! Redirigiendo al inicio de sesión…');
+          this.toast.success('¡Cuenta creada exitosamente! Redirigiendo al inicio de sesión…');
           setTimeout(() => this.router.navigate(['/auth/login']), 2200);
         } else {
-          this.errorMessage.set('No se pudo crear la cuenta. Intenta de nuevo.');
+          this.toast.danger('No se pudo crear la cuenta. Intenta de nuevo.');
         }
       },
       error: () => {
-        this.errorMessage.set('Error al registrarse. El correo puede estar en uso.');
+        this.toast.danger('Error al registrarse. El correo puede estar en uso.');
       },
     });
   }

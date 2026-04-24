@@ -1,6 +1,7 @@
+<!-- transparentAtTop(): ver comentario en navbar.component.ts (lógica ruta + tema + scroll). -->
 <nav class="navbar navbar-expand-lg fixed-top"
-     [class.navbar-transparent]="!scrolled() && !menuOpen()"
-     [class.navbar-solid]="scrolled() || menuOpen()">
+     [class.navbar-transparent]="transparentAtTop()"
+     [class.navbar-solid]="!transparentAtTop()">
   <div class="container">
 
     <!-- Brand -->
@@ -25,14 +26,26 @@
 
       <!-- Main nav links -->
       <ul class="navbar-nav">
-        @for (item of items; track item.routerLink) {
+        @for (item of items; track item.label) {
           <li class="nav-item">
             <a class="nav-link"
                [routerLink]="item.routerLink"
+               [fragment]="item.fragment"
                [routerLinkActive]="item.routerLinkActive"
                [routerLinkActiveOptions]="item.routerLinkActiveOptions"
                (click)="closeMenu()">
               <i [class]="item.class"></i>{{ item.label }}
+            </a>
+          </li>
+        }
+        @if (authService.isLoggedIn()) {
+          <li class="nav-item">
+            <a class="nav-link"
+               routerLink="/trips"
+               routerLinkActive="active"
+               [routerLinkActiveOptions]="{ exact: false }"
+               (click)="closeMenu()">
+              <i class="fas fa-suitcase-rolling mr-1"></i>Viajes
             </a>
           </li>
         }
@@ -50,10 +63,13 @@
 
         <!-- Logged in: user name + logout -->
         @if (authService.isLoggedIn()) {
-          <span class="navbar-username">
+          <a class="navbar-username"
+             routerLink="/profile"
+             (click)="closeMenu()"
+             title="Mi perfil">
             <i class="fas fa-user-circle mr-1"></i>
             {{ authService.currentUser()?.name }}
-          </span>
+          </a>
           <button class="btn btn-nav-logout" (click)="logout()">
             <i class="fas fa-sign-out-alt mr-1"></i>
             Cerrar Sesión

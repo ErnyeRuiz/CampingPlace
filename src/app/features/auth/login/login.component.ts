@@ -1,8 +1,10 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/http/auth.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { LoginRequest } from '../../../core/models/auth/login-request';
+import { isAppInternalPath } from '../../../core/utils/return-url';
 
 @Component({
   selector: 'cp-login',
@@ -13,12 +15,13 @@ import { LoginRequest } from '../../../core/models/auth/login-request';
 })
 export class LoginComponent {
 
-  private readonly fb       = inject(FormBuilder);
-  private readonly auth     = inject(AuthService);
-  private readonly router   = inject(Router);
+  private readonly fb     = inject(FormBuilder);
+  private readonly auth   = inject(AuthService);
+  private readonly toast  = inject(ToastService);
+  private readonly router = inject(Router);
+  private readonly route  = inject(ActivatedRoute);
 
-  readonly loading      = this.auth.loading;
-  readonly errorMessage = signal<string | null>(null);
+  readonly loading = this.auth.loading;
 
   showPassword = false;
 
@@ -38,7 +41,6 @@ export class LoginComponent {
       this.loginForm.markAllAsTouched();
       return;
     }
-    this.errorMessage.set(null);
 
     const request = new LoginRequest(
       this.f['email'].value,
@@ -48,13 +50,18 @@ export class LoginComponent {
     this.auth.login(request).subscribe({
       next: (response) => {
         if (response) {
-          this.router.navigate(['/campings']);
+          const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+          if (returnUrl && isAppInternalPath(returnUrl)) {
+            this.router.navigateByUrl(returnUrl);
+          } else {
+            this.router.navigate(['/campings']);
+          }
         } else {
-          this.errorMessage.set('Credenciales incorrectas. Verifica tu correo y contraseña.');
+          this.toast.danger('Credenciales incorrectas. Verifica tu correo y contraseña.');
         }
       },
       error: () => {
-        this.errorMessage.set('Error al iniciar sesión. Intenta de nuevo más tarde.');
+        this.toast.danger('Error al iniciar sesión. Intenta de nuevo más tarde.');
       },
     });
   }

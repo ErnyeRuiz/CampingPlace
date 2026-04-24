@@ -6,14 +6,13 @@ import { LoginRequest } from "../../models/auth/login-request";
 import { ApiResponse } from "../../models/api/api-response";
 import { RegisterRequest } from "../../models/auth/register-request";
 import { LoginResponse } from "../../models/auth/login-response";
-
-const TOKEN_KEY = 'cp_token';
-const USER_KEY  = 'cp_user';
+import { LocalStorageService } from "../local-storage.service";
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
     
   private readonly http = inject(HttpClient);
+  private readonly storage = inject(LocalStorageService);
   private readonly baseUrl = `${environment.apiUrl}/auth`;
 
   readonly loading = signal(false);
@@ -57,8 +56,7 @@ export class AuthService {
         map(response => response.data),
         tap(data => {
           if (data?.token) {
-            localStorage.setItem(TOKEN_KEY, data.token);
-            localStorage.setItem(USER_KEY, JSON.stringify(data));
+            this.storage.saveAuthSession(data);
             this._currentUser.set(data);
           }
         }),
@@ -70,9 +68,22 @@ export class AuthService {
    * Logout a user, remove the JWT token and the current user signal
    */
   public logout(): void {
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(USER_KEY);
+    this.storage.clearAuthSession();
     this._currentUser.set(null);
+  }
+
+  /**
+   * Merge profile fields into the persisted session (e.g. after PUT /users/me).
+   * Keeps the existing JWT and updates localStorage + in-memory user.
+   */
+  public updateStoredProfile(updates: Partial<Pick<LoginResponse, 'name' | 'email'>>): void {
+    const cur = this._currentUser();
+    if (!cur?.token) {
+      return;
+    }
+    const next: LoginResponse = { ...cur, ...updates };
+    this.storage.saveAuthSession(next);
+    this._currentUser.set(next);
   }
 
   /**
@@ -80,11 +91,6 @@ export class AuthService {
    * @returns The stored user or null
    */
   private loadStoredUser(): LoginResponse | null {
-    try {
-      const raw = localStorage.getItem(USER_KEY);
-      return raw ? (JSON.parse(raw) as LoginResponse) : null;
-    } catch {
-      return null;
-    }
+    return this.storage.getStoredAuthUser();
   }
 }
