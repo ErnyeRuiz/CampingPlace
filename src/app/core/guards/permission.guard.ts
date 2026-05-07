@@ -5,8 +5,8 @@ import { AuthorizationService } from '../services/authorization.service';
 import { AuthService } from '../services/http/auth.service';
 
 /**
- * - `route.data['permissions']`: al menos uno requerido (salvo `adminRoleOnly`).
- * - `route.data['adminRoleOnly']`: solo rol administrador (JWT/sesión).
+ * - `route.data['permissions']`: al menos uno requerido (salvo `superUserOnly`).
+ * - `route.data['superUserOnly']`: solo rol SuperUser (JWT/sesión).
  * Sin acceso: redirección a {@link APP_HOME_PATH}.
  */
 export const permissionGuard: CanActivateFn = (route): boolean | UrlTree => {
@@ -20,9 +20,9 @@ export const permissionGuard: CanActivateFn = (route): boolean | UrlTree => {
     });
   }
 
-  const adminRoleOnly = route.data['adminRoleOnly'] === true;
-  if (adminRoleOnly) {
-    return authz.isAdminRole() ? true : router.createUrlTree([APP_HOME_PATH]);
+  const superUserOnly = route.data['superUserOnly'] === true;
+  if (superUserOnly) {
+    return authz.isSuperUser() ? true : router.createUrlTree([APP_HOME_PATH]);
   }
 
   const required = route.data['permissions'] as string[] | undefined;

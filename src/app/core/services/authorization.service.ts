@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { ADMIN_NAV_ITEMS } from '../config/admin-nav.config';
 import { ADMIN_SECTION_PERMISSIONS } from '../constants/permissions';
-import { isAdminRoleName } from '../constants/roles';
+import { isAdminRoleName, isSuperUserRoleName } from '../constants/roles';
 import { decodeJwtPayload, permissionsFromPayload, rolesFromPayload } from '../utils/jwt.util';
 import { LocalStorageService } from './local-storage.service';
 
@@ -18,7 +18,7 @@ export class AuthorizationService {
     return permissionsFromPayload(decodeJwtPayload(token));
   }
 
-  /** Roles presentes en el JWT (p. ej. claim de Microsoft). */
+  /** Roles presentes en el JWT */
   rolesFromToken(): string[] {
     const token = this.storage.getAuthToken();
     if (!token) {
@@ -32,10 +32,16 @@ export class AuthorizationService {
   }
 
   hasPermission(permission: string): boolean {
+    if (this.isSuperUser()) {
+      return true;
+    }
     return this.permissionSet().has(permission);
   }
 
   hasAnyPermission(permissions: readonly string[]): boolean {
+    if (this.isSuperUser()) {
+      return true;
+    }
     if (permissions.length === 0) {
       return false;
     }
@@ -53,9 +59,16 @@ export class AuthorizationService {
     return null;
   }
 
+  /** Rol SuperUser en sesión o JWT: bypass de comprobaciones de permiso en UI. */
+  isSuperUser(): boolean {
+    if (isSuperUserRoleName(this.storedRoleName())) {
+      return true;
+    }
+    return this.rolesFromToken().some((r) => isSuperUserRoleName(r));
+  }
+
   /**
-   * True si el usuario es administrador del panel por nombre de rol
-   * (sesión o JWT), sin depender de permisos granulares.
+   * True si el usuario es administrador de negocio por nombre de rol (sesión o JWT).
    */
   isAdminRole(): boolean {
     if (isAdminRoleName(this.storedRoleName())) {
@@ -65,23 +78,25 @@ export class AuthorizationService {
   }
 
   /**
-   * Acceso al shell /admin: rol administrador o al menos un permiso de sección.
+   * Acceso al shell /admin: SuperUser o al menos un permiso de sección en el JWT.
    */
   hasAdminSectionAccess(): boolean {
-    if (this.isAdminRole()) {
+    if (this.isSuperUser()) {
       return true;
     }
     return this.hasAnyPermission(ADMIN_SECTION_PERMISSIONS);
   }
 
   /**
-   * Ítems del menú según permisos del JWT. El nombre de rol “admin” no amplía secciones:
-   * solo abre el shell vía {@link hasAdminSectionAccess} y la entrada `adminOnly` (Usuarios).
+   * Ítems del menú según permisos del JWT; «Usuarios» solo con rol SuperUser.
    */
   visibleAdminNavItems(): typeof ADMIN_NAV_ITEMS {
+    if (this.isSuperUser()) {
+      return [...ADMIN_NAV_ITEMS];
+    }
     return ADMIN_NAV_ITEMS.filter((item) => {
-      if (item.adminOnly) {
-        return this.isAdminRole();
+      if (item.superUserOnly) {
+        return false;
       }
       return this.hasAnyPermission(item.permissions ?? []);
     });

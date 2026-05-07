@@ -5,3 +5,8 @@ export interface UserResponse {
     createdAt: Date;
     roleName?: string | null;
 }
+
+
+export interface UserSystemResponse extends UserResponse {
+    rolId: number;
+}

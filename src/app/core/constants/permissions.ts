@@ -4,20 +4,22 @@
 export const APP_HOME_PATH = '/campings';
 
 export const PERMISSIONS = {
-  CampsiteCreate: 'create.campsite',
-  CampsiteUpdate: 'update.campsite',
-  RoleCreate: 'create.role',
-  RoleUpdate: 'update.role',
-  PermissionCreate: 'create.permission',
-  PermissionUpdate: 'update.permission',
+  CampsiteCreate: 'campsite.create',
+  CampsiteUpdate: 'campsite.update',
+  CampsiteDelete: 'campsite.delete',
+  RoleCreate: 'role.create',
+  RoleUpdate: 'role.update',
+  PermissionCreate: 'permission.create',
+  PermissionUpdate: 'permission.update',
 } as const;
 
 export type PermissionKey = (typeof PERMISSIONS)[keyof typeof PERMISSIONS];
 
-/** Cualquiera de estos permite entrar al área /admin (junto con el rol administrador). */
+/** Cualquiera de estos permite entrar al área /admin (el rol SuperUser entra sin permisos en JWT). */
 export const ADMIN_SECTION_PERMISSIONS: readonly PermissionKey[] = [
   PERMISSIONS.CampsiteCreate,
   PERMISSIONS.CampsiteUpdate,
+  PERMISSIONS.CampsiteDelete,
   PERMISSIONS.RoleCreate,
   PERMISSIONS.RoleUpdate,
   PERMISSIONS.PermissionCreate,

@@ -85,6 +85,23 @@ export class CampsitesService {
     );
   }
 
+   /**
+   * Campings que el API expone para el usuario autenticado (p. ej. solo los propios para Admin; SuperUser según contrato del backend).
+   * @returns An observable of CampsiteResponse[]
+   */
+   public getManaged(): Observable<CampsiteResponse[]> {
+    this.loading.set(true);
+    return this.http.get<ApiResponse<CampsiteResponse[]>>(
+        `${this.baseUrl}/managed`
+    ).pipe(
+        take(1),
+        map(response => response.data ?? []),
+        finalize(() => {
+        setTimeout(() => this.loading.set(false), 0);
+      })
+    );
+  }
+
   /**
    * Get a campsite by id
    * @param id - The id of the campsite
@@ -104,7 +121,7 @@ export class CampsitesService {
   }
 
   /**
-   * Delete a campsite
+   * Delete a campsite (el API valida permisos; la UI muestra eliminar junto a editar según `update.campsite`).
    * @param id - The id of the campsite
    * @returns An observable of boolean
    */

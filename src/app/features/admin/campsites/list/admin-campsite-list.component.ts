@@ -42,7 +42,7 @@ export class AdminCampsiteListComponent implements OnInit {
   }
 
   reload(): void {
-    this.api.getAll().subscribe({
+    this.api.getManaged().subscribe({
       next: (list) => this.rows.set(list),
       error: () => this.toast.danger('No se pudieron cargar los campings.'),
     });

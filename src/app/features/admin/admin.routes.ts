@@ -91,8 +91,15 @@ export const ADMIN_ROUTES: Routes = [
   {
     path: 'users',
     canActivate: [permissionGuard],
-    data: { adminRoleOnly: true },
+    data: { superUserOnly: true },
     loadComponent: () =>
       import('./users/list/admin-users.component').then((m) => m.AdminUsersComponent),
+  },
+  {
+    path: 'users/:id',
+    canActivate: [permissionGuard],
+    data: { superUserOnly: true },
+    loadComponent: () =>
+      import('./users/manage/admin-user-form.component').then((m) => m.AdminUserFormComponent),
   },
 ];

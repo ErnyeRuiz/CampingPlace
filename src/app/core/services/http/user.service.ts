@@ -5,6 +5,8 @@ import { environment } from "../../../../environments/environment";
 import { ApiResponse } from "../../models/api/api-response";
 import { UserResponse } from "../../models/user/user-response";
 import { UserRequest } from "../../models/user/user-request";
+import { UserSystemResponse } from "../../models/user/user-system-response";
+import { UserUpdateRequest } from "../../models/user/user-update-request";
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
@@ -38,6 +40,55 @@ export class UserService {
     this.loading.set(true);
     return this.http.put<ApiResponse<void>>(
         `${this.baseUrl}/me`,
+        request
+    ).pipe(
+        take(1), 
+        map(response => response.success),
+        finalize(() => this.loading.set(false))
+    );
+  }
+
+  /**
+   * Get all users, only super user can access this endpoint.
+   * @returns An observable of UserSystemResponse[]
+   */
+  public getAll(): Observable<UserSystemResponse[]> {
+    this.loading.set(true);
+    return this.http.get<ApiResponse<UserSystemResponse[]>>(
+        `${this.baseUrl}`
+    ).pipe(
+        take(1),
+        map(response => response.data ?? []),
+        finalize(() => this.loading.set(false))
+    );
+  }
+
+  /**
+   * Get user by id
+   * @param id - The id of the user
+   * @returns An observable of UserResponse | null
+   */
+  public getById(id: number): Observable<UserSystemResponse | null> {
+    this.loading.set(true);
+    return this.http.get<ApiResponse<UserSystemResponse>>(
+        `${this.baseUrl}/${id}`
+    ).pipe(
+        take(1), 
+        map(response => response.data),
+        finalize(() => this.loading.set(false))
+    );
+  }
+
+  /**
+   * Update user by id
+   * @param id - The id of the user
+   * @param request - The request body
+   * @returns An observable of boolean
+   */
+  public updateById(id: number, request: UserUpdateRequest): Observable<boolean> {
+    this.loading.set(true);
+    return this.http.put<ApiResponse<void>>(
+        `${this.baseUrl}/${id}`,
         request
     ).pipe(
         take(1), 
