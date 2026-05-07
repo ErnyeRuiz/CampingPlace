@@ -1,11 +1,13 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router, UrlTree } from '@angular/router';
+import { APP_HOME_PATH } from '../constants/permissions';
 import { AuthorizationService } from '../services/authorization.service';
 import { AuthService } from '../services/http/auth.service';
 
 /**
- * Comprueba `route.data['permissions']` (array de strings).
- * Los roles administrador (`Admin`, `Administrator`, etc.) pueden todo dentro del panel.
+ * - `route.data['permissions']`: al menos uno requerido (salvo `adminRoleOnly`).
+ * - `route.data['adminRoleOnly']`: solo rol administrador (JWT/sesión).
+ * Sin acceso: redirección a {@link APP_HOME_PATH}.
  */
 export const permissionGuard: CanActivateFn = (route): boolean | UrlTree => {
   const auth = inject(AuthService);
@@ -18,15 +20,19 @@ export const permissionGuard: CanActivateFn = (route): boolean | UrlTree => {
     });
   }
 
+  const adminRoleOnly = route.data['adminRoleOnly'] === true;
+  if (adminRoleOnly) {
+    return authz.isAdminRole() ? true : router.createUrlTree([APP_HOME_PATH]);
+  }
+
   const required = route.data['permissions'] as string[] | undefined;
   if (!required?.length) {
     return true;
   }
 
-  if (authz.isAdminRole() || authz.hasAnyPermission(required)) {
+  if (authz.hasAnyPermission(required)) {
     return true;
   }
 
-  const fallback = authz.firstAccessibleAdminPath();
-  return fallback ? router.parseUrl(fallback) : router.createUrlTree(['/campings']);
+  return router.createUrlTree([APP_HOME_PATH]);
 };

@@ -1,9 +1,11 @@
 <div class="d-flex flex-wrap align-items-center justify-content-between mb-3">
   <h1 class="h3 mb-0">Campings</h1>
-  <button type="button" class="btn btn-primary btn-sm" (click)="create()">
-    <i class="fas fa-plus mr-1"></i>
-    Nuevo camping
-  </button>
+  @if (canCreate) {
+    <button type="button" class="btn btn-primary btn-sm" (click)="create()">
+      <i class="fas fa-plus mr-1"></i>
+      Nuevo camping
+    </button>
+  }
 </div>
 
 <p class="text-muted small">
@@ -42,12 +44,17 @@
               }
             </td>
             <td class="text-right text-nowrap">
-              <button type="button" class="btn btn-sm btn-outline-primary mr-1" (click)="edit(r.id)">
-                Editar
-              </button>
-              <button type="button" class="btn btn-sm btn-outline-danger" (click)="remove(r)">
-                Eliminar
-              </button>
+              @if (canUpdate) {
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-primary mr-1"
+                  (click)="edit(r.id)">
+                  Editar
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-danger" (click)="remove(r)">
+                  Eliminar
+                </button>
+              }
             </td>
           </tr>
         }

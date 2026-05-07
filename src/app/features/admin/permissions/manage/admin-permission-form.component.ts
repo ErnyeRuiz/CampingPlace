@@ -6,6 +6,8 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { APP_HOME_PATH, PERMISSIONS } from '../../../../core/constants/permissions';
+import { AuthorizationService } from '../../../../core/services/authorization.service';
 import { PermissionsService } from '../../../../core/services/http/permissions.service';
 import { RolesService } from '../../../../core/services/http/roles.service';
 import { ToastService } from '../../../../core/services/toast.service';
@@ -26,6 +28,7 @@ export class AdminPermissionFormComponent implements OnInit {
   private readonly rolesApi = inject(RolesService);
   private readonly toast = inject(ToastService);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly authz = inject(AuthorizationService);
 
   readonly form = this.fb.group({
     name: this.fb.nonNullable.control('', [
@@ -39,6 +42,17 @@ export class AdminPermissionFormComponent implements OnInit {
   permissionId: number | null = null;
   roles: RoleResponse[] = [];
 
+  get canAssignToRole(): boolean {
+    return this.authz.hasPermission(PERMISSIONS.RoleUpdate);
+  }
+
+  get canSubmit(): boolean {
+    if (this.permissionId === null) {
+      return this.authz.hasPermission(PERMISSIONS.PermissionCreate);
+    }
+    return this.authz.hasPermission(PERMISSIONS.PermissionUpdate);
+  }
+
   ngOnInit(): void {
     this.rolesApi.getAll().subscribe({
       next: (list) => {
@@ -50,7 +64,16 @@ export class AdminPermissionFormComponent implements OnInit {
 
     const idParam = this.route.snapshot.paramMap.get('id');
     if (idParam === null) {
+      if (!this.authz.hasPermission(PERMISSIONS.PermissionCreate)) {
+        void this.router.navigate([APP_HOME_PATH]);
+        return;
+      }
       this.permissionId = null;
+      return;
+    }
+
+    if (!this.authz.hasPermission(PERMISSIONS.PermissionUpdate)) {
+      void this.router.navigate([APP_HOME_PATH]);
       return;
     }
 
@@ -81,6 +104,10 @@ export class AdminPermissionFormComponent implements OnInit {
   }
 
   submit(): void {
+    if (!this.canSubmit) {
+      void this.router.navigate([APP_HOME_PATH]);
+      return;
+    }
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
@@ -90,7 +117,7 @@ export class AdminPermissionFormComponent implements OnInit {
       name: raw.name.trim(),
       description: raw.description.trim() ? raw.description.trim() : null,
     };
-    const assignRoleId = raw.assignToRoleId;
+    const assignRoleId = this.canAssignToRole ? raw.assignToRoleId : null;
 
     if (this.permissionId === null) {
       this.permissionsApi.create(body).subscribe({

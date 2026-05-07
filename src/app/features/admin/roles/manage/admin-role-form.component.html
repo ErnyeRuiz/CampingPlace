@@ -19,7 +19,7 @@
           <label for="role-desc">Descripción</label>
           <textarea id="role-desc" class="form-control" rows="3" formControlName="description"></textarea>
         </div>
-        <button type="submit" class="btn btn-primary">
+        <button type="submit" class="btn btn-primary" [disabled]="!canSubmit">
           Guardar
         </button>
       </div>
@@ -42,6 +42,7 @@
                     class="custom-control-input"
                     [id]="'perm-' + p.id"
                     [checked]="isChecked(p.id)"
+                    [disabled]="!canMutatePermissions"
                     (change)="togglePermission(p.id)" />
                   <label class="custom-control-label" [attr.for]="'perm-' + p.id">
                     <strong>{{ p.name }}</strong>

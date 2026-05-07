@@ -17,20 +17,22 @@
       <label for="perm-desc">Descripción</label>
       <textarea id="perm-desc" class="form-control" rows="3" formControlName="description"></textarea>
     </div>
-    <div class="form-group">
-      <label for="perm-role">Asignar también a un rol (opcional)</label>
-      <select id="perm-role" class="form-control" formControlName="assignToRoleId">
-        <option [ngValue]="null">— No asignar automáticamente —</option>
-        @for (r of roles; track r.id) {
-          <option [ngValue]="r.id">{{ r.name }}</option>
-        }
-      </select>
-      <small class="form-text text-muted">
-        Si eliges un rol, se añade este permiso a los que ya tenga (sin quitar los demás). Requiere que el API
-        devuelva los permisos actuales en GET /roles/:id.
-      </small>
-    </div>
-    <button type="submit" class="btn btn-primary">
+    @if (canAssignToRole) {
+      <div class="form-group">
+        <label for="perm-role">Asignar también a un rol (opcional)</label>
+        <select id="perm-role" class="form-control" formControlName="assignToRoleId">
+          <option [ngValue]="null">— No asignar automáticamente —</option>
+          @for (r of roles; track r.id) {
+            <option [ngValue]="r.id">{{ r.name }}</option>
+          }
+        </select>
+        <small class="form-text text-muted">
+          Si eliges un rol, se añade este permiso a los que ya tenga (sin quitar los demás). Requiere que el API
+          devuelva los permisos actuales en GET /roles/:id.
+        </small>
+      </div>
+    }
+    <button type="submit" class="btn btn-primary" [disabled]="!canSubmit">
       Guardar
     </button>
   </div>

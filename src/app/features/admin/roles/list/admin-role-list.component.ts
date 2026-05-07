@@ -7,6 +7,8 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { PERMISSIONS } from '../../../../core/constants/permissions';
+import { AuthorizationService } from '../../../../core/services/authorization.service';
 import { RolesService } from '../../../../core/services/http/roles.service';
 import { RoleResponse } from '../../../../core/models/roles/role-response';
 import { ToastService } from '../../../../core/services/toast.service';
@@ -23,8 +25,17 @@ export class AdminRoleListComponent implements OnInit {
   private readonly rolesApi = inject(RolesService);
   private readonly router = inject(Router);
   private readonly toast = inject(ToastService);
+  private readonly authz = inject(AuthorizationService);
 
   readonly rows = signal<RoleResponse[]>([]);
+
+  get canCreate(): boolean {
+    return this.authz.hasPermission(PERMISSIONS.RoleCreate);
+  }
+
+  get canUpdate(): boolean {
+    return this.authz.hasPermission(PERMISSIONS.RoleUpdate);
+  }
 
   ngOnInit(): void {
     this.reload();

@@ -7,6 +7,8 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { PERMISSIONS } from '../../../../core/constants/permissions';
+import { AuthorizationService } from '../../../../core/services/authorization.service';
 import { CampsitesService } from '../../../../core/services/http/campsites.service';
 import { CampsiteResponse } from '../../../../core/models/campsites/campsite-response';
 import { ToastService } from '../../../../core/services/toast.service';
@@ -23,8 +25,17 @@ export class AdminCampsiteListComponent implements OnInit {
   private readonly api = inject(CampsitesService);
   private readonly router = inject(Router);
   private readonly toast = inject(ToastService);
+  private readonly authz = inject(AuthorizationService);
 
   readonly rows = signal<CampsiteResponse[]>([]);
+
+  get canCreate(): boolean {
+    return this.authz.hasPermission(PERMISSIONS.CampsiteCreate);
+  }
+
+  get canUpdate(): boolean {
+    return this.authz.hasPermission(PERMISSIONS.CampsiteUpdate);
+  }
 
   ngOnInit(): void {
     this.reload();

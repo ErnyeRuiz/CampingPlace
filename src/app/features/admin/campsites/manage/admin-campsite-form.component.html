@@ -107,15 +107,42 @@
         </div>
       }
 
-      <div class="form-group">
-        <label for="cs-new-imgs">Imágenes nuevas</label>
+      <div class="form-group position-relative">
+        <span class="d-block font-weight-bold mb-1" id="cs-new-imgs-label">Imágenes nuevas</span>
         <input
+          #newImageInput
           id="cs-new-imgs"
           type="file"
-          class="form-control-file"
+          class="sr-only"
           accept="image/*"
           multiple
+          aria-labelledby="cs-new-imgs-label"
           (change)="onNewImagesSelected($event)" />
+        <div
+          class="cs-dropzone"
+          [class.cs-dropzone--active]="dropZoneActive"
+          tabindex="0"
+          role="button"
+          aria-labelledby="cs-new-imgs-label"
+          (dragover)="onDropZoneDragOver($event)"
+          (dragenter)="onDropZoneDragEnter($event)"
+          (dragleave)="onDropZoneDragLeave($event)"
+          (drop)="onDropZoneDrop($event)"
+          (click)="triggerNewImageFileInput(newImageInput)"
+          (keydown)="onDropZoneKeydown($event, newImageInput)">
+          <div class="cs-dropzone__inner">
+            <span class="cs-dropzone__icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="17 8 12 3 7 8" />
+                <line x1="12" y1="3" x2="12" y2="15" />
+              </svg>
+            </span>
+            <p class="cs-dropzone__title mb-1">Arrastra imágenes aquí</p>
+            <p class="cs-dropzone__hint mb-2">o haz clic para elegir archivos</p>
+            <p class="cs-dropzone__meta small text-muted mb-0">PNG, JPG, WebP… · Varios archivos</p>
+          </div>
+        </div>
         @if (newImagePreviewUrls.length) {
           <div class="cs-image-grid mt-2">
             @for (url of newImagePreviewUrls; track $index) {
@@ -133,7 +160,7 @@
         }
       </div>
 
-      <button type="submit" class="btn btn-primary">
+      <button type="submit" class="btn btn-primary" [disabled]="!canSubmit">
         Guardar
       </button>
     </div>

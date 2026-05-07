@@ -1,6 +1,6 @@
 /**
- * Nombres de rol que en el API cuentan como administrador del panel
- * (fallback si el JWT no trae claims de permiso con los nombres esperados).
+ * Nombres de rol que permiten el shell /admin sin permisos JWT (solo sección Usuarios u otras `adminOnly`).
+ * No sustituyen a los permisos granulares en roles/permisos/campings.
  */
 export const ADMIN_ROLE_NAMES = ['Admin', 'Administrator'] as const;
 

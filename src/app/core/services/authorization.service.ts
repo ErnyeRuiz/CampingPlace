@@ -37,7 +37,7 @@ export class AuthorizationService {
 
   hasAnyPermission(permissions: readonly string[]): boolean {
     if (permissions.length === 0) {
-      return true;
+      return false;
     }
     const set = this.permissionSet();
     return permissions.some((p) => set.has(p));
@@ -74,11 +74,17 @@ export class AuthorizationService {
     return this.hasAnyPermission(ADMIN_SECTION_PERMISSIONS);
   }
 
+  /**
+   * Ítems del menú según permisos del JWT. El nombre de rol “admin” no amplía secciones:
+   * solo abre el shell vía {@link hasAdminSectionAccess} y la entrada `adminOnly` (Usuarios).
+   */
   visibleAdminNavItems(): typeof ADMIN_NAV_ITEMS {
-    if (this.isAdminRole()) {
-      return [...ADMIN_NAV_ITEMS];
-    }
-    return ADMIN_NAV_ITEMS.filter((item) => this.hasAnyPermission(item.permissions));
+    return ADMIN_NAV_ITEMS.filter((item) => {
+      if (item.adminOnly) {
+        return this.isAdminRole();
+      }
+      return this.hasAnyPermission(item.permissions ?? []);
+    });
   }
 
   /**

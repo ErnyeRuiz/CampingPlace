@@ -1,5 +1,6 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router, UrlTree } from '@angular/router';
+import { APP_HOME_PATH } from '../constants/permissions';
 import { AuthorizationService } from '../services/authorization.service';
 import { AuthService } from '../services/http/auth.service';
 
@@ -15,7 +16,7 @@ export const adminSectionGuard: CanActivateFn = (): boolean | UrlTree => {
     });
   }
   if (!authz.hasAdminSectionAccess()) {
-    return router.createUrlTree(['/campings']);
+    return router.createUrlTree([APP_HOME_PATH]);
   }
   return true;
 };

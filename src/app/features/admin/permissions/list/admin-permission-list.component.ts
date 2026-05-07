@@ -7,6 +7,8 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { PERMISSIONS } from '../../../../core/constants/permissions';
+import { AuthorizationService } from '../../../../core/services/authorization.service';
 import { PermissionsService } from '../../../../core/services/http/permissions.service';
 import { PermissionResponse } from '../../../../core/models/permissions/permission-response';
 import { ToastService } from '../../../../core/services/toast.service';
@@ -23,8 +25,17 @@ export class AdminPermissionListComponent implements OnInit {
   private readonly api = inject(PermissionsService);
   private readonly router = inject(Router);
   private readonly toast = inject(ToastService);
+  private readonly authz = inject(AuthorizationService);
 
   readonly rows = signal<PermissionResponse[]>([]);
+
+  get canCreate(): boolean {
+    return this.authz.hasPermission(PERMISSIONS.PermissionCreate);
+  }
+
+  get canUpdate(): boolean {
+    return this.authz.hasPermission(PERMISSIONS.PermissionUpdate);
+  }
 
   ngOnInit(): void {
     this.reload();

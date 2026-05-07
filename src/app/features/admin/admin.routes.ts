@@ -2,33 +2,42 @@ import { Routes } from '@angular/router';
 import { PERMISSIONS } from '../../core/constants/permissions';
 import { permissionGuard } from '../../core/guards/permission.guard';
 
+const roleListPerms = [PERMISSIONS.RoleCreate, PERMISSIONS.RoleUpdate];
+const permListPerms = [PERMISSIONS.PermissionCreate, PERMISSIONS.PermissionUpdate];
+const campsiteListPerms = [PERMISSIONS.CampsiteCreate, PERMISSIONS.CampsiteUpdate];
+
 export const ADMIN_ROUTES: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: 'roles' },
+  {
+    path: '',
+    pathMatch: 'full',
+    loadComponent: () =>
+      import('./admin-entry-redirect.component').then((m) => m.AdminEntryRedirectComponent),
+  },
   {
     path: 'roles',
     canActivate: [permissionGuard],
-    data: { permissions: [PERMISSIONS.RolesManage] },
+    data: { permissions: roleListPerms },
     loadComponent: () =>
       import('./roles/list/admin-role-list.component').then((m) => m.AdminRoleListComponent),
   },
   {
     path: 'roles/new',
     canActivate: [permissionGuard],
-    data: { permissions: [PERMISSIONS.RolesManage] },
+    data: { permissions: [PERMISSIONS.RoleCreate] },
     loadComponent: () =>
       import('./roles/manage/admin-role-form.component').then((m) => m.AdminRoleFormComponent),
   },
   {
     path: 'roles/:id',
     canActivate: [permissionGuard],
-    data: { permissions: [PERMISSIONS.RolesManage] },
+    data: { permissions: [PERMISSIONS.RoleUpdate] },
     loadComponent: () =>
       import('./roles/manage/admin-role-form.component').then((m) => m.AdminRoleFormComponent),
   },
   {
     path: 'permissions',
     canActivate: [permissionGuard],
-    data: { permissions: [PERMISSIONS.PermissionsManage] },
+    data: { permissions: permListPerms },
     loadComponent: () =>
       import('./permissions/list/admin-permission-list.component').then(
         (m) => m.AdminPermissionListComponent,
@@ -37,7 +46,7 @@ export const ADMIN_ROUTES: Routes = [
   {
     path: 'permissions/new',
     canActivate: [permissionGuard],
-    data: { permissions: [PERMISSIONS.PermissionsManage] },
+    data: { permissions: [PERMISSIONS.PermissionCreate] },
     loadComponent: () =>
       import('./permissions/manage/admin-permission-form.component').then(
         (m) => m.AdminPermissionFormComponent,
@@ -46,7 +55,7 @@ export const ADMIN_ROUTES: Routes = [
   {
     path: 'permissions/:id',
     canActivate: [permissionGuard],
-    data: { permissions: [PERMISSIONS.PermissionsManage] },
+    data: { permissions: [PERMISSIONS.PermissionUpdate] },
     loadComponent: () =>
       import('./permissions/manage/admin-permission-form.component').then(
         (m) => m.AdminPermissionFormComponent,
@@ -55,7 +64,7 @@ export const ADMIN_ROUTES: Routes = [
   {
     path: 'campsites',
     canActivate: [permissionGuard],
-    data: { permissions: [PERMISSIONS.CampsitesManage] },
+    data: { permissions: campsiteListPerms },
     loadComponent: () =>
       import('./campsites/list/admin-campsite-list.component').then(
         (m) => m.AdminCampsiteListComponent,
@@ -64,7 +73,7 @@ export const ADMIN_ROUTES: Routes = [
   {
     path: 'campsites/new',
     canActivate: [permissionGuard],
-    data: { permissions: [PERMISSIONS.CampsitesManage] },
+    data: { permissions: [PERMISSIONS.CampsiteCreate] },
     loadComponent: () =>
       import('./campsites/manage/admin-campsite-form.component').then(
         (m) => m.AdminCampsiteFormComponent,
@@ -73,7 +82,7 @@ export const ADMIN_ROUTES: Routes = [
   {
     path: 'campsites/:id',
     canActivate: [permissionGuard],
-    data: { permissions: [PERMISSIONS.CampsitesManage] },
+    data: { permissions: [PERMISSIONS.CampsiteUpdate] },
     loadComponent: () =>
       import('./campsites/manage/admin-campsite-form.component').then(
         (m) => m.AdminCampsiteFormComponent,
@@ -82,7 +91,7 @@ export const ADMIN_ROUTES: Routes = [
   {
     path: 'users',
     canActivate: [permissionGuard],
-    data: { permissions: [PERMISSIONS.UsersRead] },
+    data: { adminRoleOnly: true },
     loadComponent: () =>
       import('./users/list/admin-users.component').then((m) => m.AdminUsersComponent),
   },

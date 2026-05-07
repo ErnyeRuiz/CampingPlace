@@ -7,6 +7,8 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { APP_HOME_PATH, PERMISSIONS } from '../../../../core/constants/permissions';
+import { AuthorizationService } from '../../../../core/services/authorization.service';
 import { CampsitesService } from '../../../../core/services/http/campsites.service';
 import { LocationService } from '../../../../core/services/http/location.service';
 import { CampsiteFormFields } from '../../../../core/models/campsites/campsite-request';
@@ -29,9 +31,17 @@ export class AdminCampsiteFormComponent implements OnInit, OnDestroy {
   private readonly locationApi = inject(LocationService);
   private readonly toast = inject(ToastService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly authz = inject(AuthorizationService);
 
   catalog: UbicacionCatalog | null = null;
   campsiteId: number | null = null;
+
+  get canSubmit(): boolean {
+    if (this.campsiteId === null) {
+      return this.authz.hasPermission(PERMISSIONS.CampsiteCreate);
+    }
+    return this.authz.hasPermission(PERMISSIONS.CampsiteUpdate);
+  }
 
   existingImages: CampsiteImageResponse[] = [];
   /** Image ids the user chose to keep (subset of existing); empty set = remove all current images on save. */
@@ -106,17 +116,73 @@ export class AdminCampsiteFormComponent implements OnInit, OnDestroy {
     }
   }
 
+  /** Visual feedback while files are dragged over the drop zone. */
+  dropZoneActive = false;
+
   onNewImagesSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     const list = input.files;
     if (!list?.length) {
       return;
     }
-    for (const file of Array.from(list)) {
+    this.addNewImageFiles(list);
+    input.value = '';
+  }
+
+  /** Accepts images from file input or drag-and-drop. */
+  addNewImageFiles(files: FileList | File[]): void {
+    const imageFiles = Array.from(files).filter((f) => f.type.startsWith('image/'));
+    for (const file of imageFiles) {
       this.newImageFiles.push(file);
       this.newImagePreviewUrls.push(URL.createObjectURL(file));
     }
-    input.value = '';
+  }
+
+  onDropZoneDragOver(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = 'copy';
+    }
+  }
+
+  onDropZoneDragEnter(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.dropZoneActive = true;
+  }
+
+  onDropZoneDragLeave(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    const zone = event.currentTarget as HTMLElement;
+    const next = event.relatedTarget as Node | null;
+    if (next && zone.contains(next)) {
+      return;
+    }
+    this.dropZoneActive = false;
+  }
+
+  onDropZoneDrop(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.dropZoneActive = false;
+    const list = event.dataTransfer?.files;
+    if (!list?.length) {
+      return;
+    }
+    this.addNewImageFiles(list);
+  }
+
+  triggerNewImageFileInput(input: HTMLInputElement): void {
+    input.click();
+  }
+
+  onDropZoneKeydown(event: KeyboardEvent, input: HTMLInputElement): void {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      input.click();
+    }
   }
 
   removeNewImageAt(index: number): void {
@@ -129,14 +195,26 @@ export class AdminCampsiteFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    const idParam = this.route.snapshot.paramMap.get('id');
+    if (idParam === null) {
+      if (!this.authz.hasPermission(PERMISSIONS.CampsiteCreate)) {
+        void this.router.navigate([APP_HOME_PATH]);
+        return;
+      }
+      this.campsiteId = null;
+    } else {
+      if (!this.authz.hasPermission(PERMISSIONS.CampsiteUpdate)) {
+        void this.router.navigate([APP_HOME_PATH]);
+        return;
+      }
+    }
+
     this.locationApi.loadUbicacionCatalog().subscribe({
       next: (cat) => (this.catalog = cat),
       error: () => this.toast.danger('No se pudo cargar el catálogo de ubicación.'),
     });
 
-    const idParam = this.route.snapshot.paramMap.get('id');
     if (idParam === null) {
-      this.campsiteId = null;
       return;
     }
 
@@ -181,6 +259,10 @@ export class AdminCampsiteFormComponent implements OnInit, OnDestroy {
   }
 
   submit(): void {
+    if (!this.canSubmit) {
+      void this.router.navigate([APP_HOME_PATH]);
+      return;
+    }
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
