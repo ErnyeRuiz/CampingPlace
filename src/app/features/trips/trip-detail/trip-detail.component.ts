@@ -56,8 +56,6 @@ export class TripDetailComponent implements OnInit {
       '<svg xmlns="http://www.w3.org/2000/svg" width="320" height="200" viewBox="0 0 320 200"><rect fill="#e9ecef" width="100%" height="100%"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#6c757d" font-size="14" font-family="sans-serif">Camping</text></svg>',
     );
 
-  readonly loading = this.trips.loading;
-
   ngOnInit(): void {
     this.location.loadUbicacionCatalog().subscribe({
       next: (c) => this.catalog.set(c),

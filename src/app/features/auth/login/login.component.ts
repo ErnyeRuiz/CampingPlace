@@ -21,8 +21,6 @@ export class LoginComponent {
   private readonly router = inject(Router);
   private readonly route  = inject(ActivatedRoute);
 
-  readonly loading = this.auth.loading;
-
   showPassword = false;
 
   readonly loginForm: FormGroup = this.fb.group({

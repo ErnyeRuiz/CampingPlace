@@ -76,7 +76,9 @@ export class AuthService {
    * Merge profile fields into the persisted session (e.g. after PUT /users/me).
    * Keeps the existing JWT and updates localStorage + in-memory user.
    */
-  public updateStoredProfile(updates: Partial<Pick<LoginResponse, 'name' | 'email'>>): void {
+  public updateStoredProfile(
+    updates: Partial<Pick<LoginResponse, 'name' | 'email' | 'roleName'>>,
+  ): void {
     const cur = this._currentUser();
     if (!cur?.token) {
       return;

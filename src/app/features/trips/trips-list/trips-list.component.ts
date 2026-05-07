@@ -36,8 +36,6 @@ export class TripsListComponent implements OnInit {
 
   get f() { return this.form.controls; }
 
-  readonly loading = this.trips.loading;
-
   ngOnInit(): void {
     this.refresh();
   }

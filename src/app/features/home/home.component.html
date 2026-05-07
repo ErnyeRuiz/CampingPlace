@@ -58,17 +58,6 @@
       </div>
     </div>
 
-    @if (loading()) {
-      <div class="row">
-        <div class="col-md-6 col-lg-4 mb-4"><div class="cp-skeleton-card"></div></div>
-        <div class="col-md-6 col-lg-4 mb-4"><div class="cp-skeleton-card"></div></div>
-        <div class="col-md-6 col-lg-4 mb-4"><div class="cp-skeleton-card"></div></div>
-        <div class="col-md-6 col-lg-4 mb-4"><div class="cp-skeleton-card"></div></div>
-        <div class="col-md-6 col-lg-4 mb-4"><div class="cp-skeleton-card"></div></div>
-        <div class="col-md-6 col-lg-4 mb-4"><div class="cp-skeleton-card"></div></div>
-      </div>
-    }
-
     @if (isEmpty()) {
       <div class="text-center py-5">
         <i class="fas fa-campground fa-3x text-muted mb-3"></i>
@@ -76,7 +65,7 @@
       </div>
     }
 
-    @if (!loading()) {
+    @if (campites().length > 0) {
       <div class="row">
         @for (campsite of campites(); track campsite.id) {
           <div class="col-md-6 col-lg-4 mb-4">

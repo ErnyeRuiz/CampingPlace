@@ -6,6 +6,14 @@ export class LoadingService {
 
   readonly isLoading = computed(() => this._count() > 0);
 
-  increment(): void { this._count.update(n => n + 1); }
-  decrement(): void { this._count.update(n => Math.max(0, n - 1)); }
+  /**
+   * Macrotarea: sale del turno de CD y del “verify” en modo desarrollo (NG0100 con microtareas).
+   */
+  increment(): void {
+    setTimeout(() => this._count.update((n) => n + 1), 0);
+  }
+
+  decrement(): void {
+    setTimeout(() => this._count.update((n) => Math.max(0, n - 1)), 0);
+  }
 }

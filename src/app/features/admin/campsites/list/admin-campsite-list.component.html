@@ -1,0 +1,57 @@
+<div class="d-flex flex-wrap align-items-center justify-content-between mb-3">
+  <h1 class="h3 mb-0">Campings</h1>
+  <button type="button" class="btn btn-primary btn-sm" (click)="create()">
+    <i class="fas fa-plus mr-1"></i>
+    Nuevo camping
+  </button>
+</div>
+
+<p class="text-muted small">
+  Vista administrativa simplificada. La gestión de imágenes quedará definida cuando el API lo exponga.
+</p>
+
+@if (!rows().length) {
+  <p class="text-muted">No hay campings registrados.</p>
+} @else {
+  <div class="table-responsive shadow-sm bg-white rounded">
+    <table class="table table-sm table-striped table-hover mb-0">
+      <thead class="thead-light">
+        <tr>
+          <th>Nombre</th>
+          <th>Precio / noche</th>
+          <th>Ubicación (ids)</th>
+          <th>Agua / Luz</th>
+          <th class="text-right">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (r of rows(); track r.id) {
+          <tr>
+            <td>{{ r.name }}</td>
+            <td>{{ r.pricePerNight | number: '1.2-2' }}</td>
+            <td><code>{{ locationSummary(r) }}</code></td>
+            <td>
+              @if (r.hasWater) {
+                <i class="fas fa-tint text-info" title="Agua"></i>
+              }
+              @if (r.hasElectricity) {
+                <i class="fas fa-bolt text-warning ml-1" title="Electricidad"></i>
+              }
+              @if (!r.hasWater && !r.hasElectricity) {
+                —
+              }
+            </td>
+            <td class="text-right text-nowrap">
+              <button type="button" class="btn btn-sm btn-outline-primary mr-1" (click)="edit(r.id)">
+                Editar
+              </button>
+              <button type="button" class="btn btn-sm btn-outline-danger" (click)="remove(r)">
+                Eliminar
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

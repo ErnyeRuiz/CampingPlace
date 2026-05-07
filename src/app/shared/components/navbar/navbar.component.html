@@ -38,6 +38,17 @@
             </a>
           </li>
         }
+        @if (authService.isLoggedIn() && authz.hasAdminSectionAccess()) {
+          <li class="nav-item">
+            <a class="nav-link"
+               routerLink="/admin"
+               routerLinkActive="active"
+               [routerLinkActiveOptions]="{ exact: false }"
+               (click)="closeMenu()">
+              <i class="fas fa-tools mr-1"></i>Administración
+            </a>
+          </li>
+        }
         @if (authService.isLoggedIn()) {
           <li class="nav-item">
             <a class="nav-link"

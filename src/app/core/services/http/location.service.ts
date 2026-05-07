@@ -35,7 +35,9 @@ export class LocationService {
       distritos: this.fetchDistritos(),
     }).pipe(
       tap((catalog) => this.persistUbicacionCatalog(catalog)),
-      finalize(() => this.loading.set(false))
+      finalize(() => {
+        setTimeout(() => this.loading.set(false), 0);
+      })
     );
   }
 
@@ -114,7 +116,9 @@ export class LocationService {
     ).pipe(
         take(1), 
         map(response => response.data ?? []),
-        finalize(() => this.loading.set(false))
+        finalize(() => {
+        setTimeout(() => this.loading.set(false), 0);
+      })
     );
   }
 
@@ -130,7 +134,9 @@ export class LocationService {
     ).pipe(
         take(1), 
         map(response => response.data ?? []),
-        finalize(() => this.loading.set(false))
+        finalize(() => {
+        setTimeout(() => this.loading.set(false), 0);
+      })
     );
   }
 }

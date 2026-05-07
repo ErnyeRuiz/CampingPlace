@@ -39,14 +39,17 @@ export class HomeComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
 
   readonly campites = signal<CampsiteResponse[]>([]);
-  readonly loading = signal(false);
+  /** Evita mostrar “vacío” antes de que termine la primera carga (sin UI de loading local). */
+  readonly initialLoadDone = signal(false);
   readonly totalCount = signal(0);
   /** Campsite ids marked as favorite (session). */
   readonly favoriteCampsiteIds = signal<ReadonlySet<number>>(new Set());
 
   readonly filter = signal<CampingFilter>({ page: 1, pageSize: 12 });
 
-  readonly isEmpty = computed(() => !this.loading() && this.campites().length === 0);
+  readonly isEmpty = computed(
+    () => this.initialLoadDone() && this.campites().length === 0,
+  );
 
   readonly provincias = signal<ProvinciaResponse[]>([]);
   readonly cantones = signal<CantonResponse[]>([]);
@@ -98,9 +101,7 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  private loadData():void{
-    this.loading.set(true);
-
+  private loadData(): void {
     forkJoin({
       ubicacion: this.locationService.loadUbicacionCatalog(),
       campsites: this.campsiteService.getAll(),
@@ -117,9 +118,9 @@ export class HomeComponent implements OnInit {
         this.favoriteCampsiteIds.set(
           new Set((favs ?? []).map((f) => f.campSiteId)),
         );
-        this.loading.set(false);
+        this.initialLoadDone.set(true);
       },
-      error: () => this.loading.set(false)
+      error: () => this.initialLoadDone.set(true),
     });
   }
 

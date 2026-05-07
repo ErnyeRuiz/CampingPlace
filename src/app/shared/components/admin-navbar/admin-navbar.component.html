@@ -1,0 +1,38 @@
+<nav class="admin-navbar navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container flex-wrap">
+    <div class="d-flex align-items-center flex-wrap w-100">
+      <span class="navbar-brand mb-0 mr-auto">
+        <i class="fas fa-tools mr-2"></i>
+        Administración
+      </span>
+      <ul class="navbar-nav flex-row flex-wrap admin-navbar__links">
+        @for (item of visibleItems(); track item.routerLink) {
+          <li class="nav-item mr-2">
+            <a
+              class="nav-link px-2"
+              [routerLink]="item.routerLink"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }">
+              <i [class]="item.iconClass + ' mr-1'"></i>
+              {{ item.label }}
+            </a>
+          </li>
+        }
+      </ul>
+      <div class="d-flex align-items-center ml-lg-auto mt-2 mt-lg-0">
+        <button type="button" class="btn btn-sm btn-outline-light mr-2" (click)="goPublic()">
+          <i class="fas fa-globe mr-1"></i>
+          Ir al sitio
+        </button>
+        @if (auth.isLoggedIn()) {
+          <span class="text-white-50 small mr-3 d-none d-md-inline">
+            {{ auth.currentUser()?.name }}
+          </span>
+          <button type="button" class="btn btn-sm btn-outline-secondary" (click)="logout()">
+            Salir
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+</nav>

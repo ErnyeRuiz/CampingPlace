@@ -55,10 +55,6 @@ export class ProfileComponent implements OnInit {
     name: ['', [Validators.required, Validators.maxLength(200)]],
   });
 
-  readonly loadingUser = this.user.loading;
-  readonly loadingTrips = this.trips.loading;
-  readonly loadingFavorites = this.favorites.loading;
-
   ngOnInit(): void {
     this.loadAll();
   }
@@ -85,6 +81,9 @@ export class ProfileComponent implements OnInit {
           createdAt: this.coerceDate(me.createdAt as Date & string),
         });
         this.profileForm.patchValue({ name: me.name });
+        this.auth.updateStoredProfile({
+          roleName: me.roleName ?? null,
+        });
 
         const tripRows = (trips ?? []).map((t) => ({
           ...t,

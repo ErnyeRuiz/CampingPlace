@@ -1,0 +1,60 @@
+<nav aria-label="Migas" class="mb-2">
+  <a routerLink="/admin/roles" class="small">← Volver a roles</a>
+</nav>
+
+<h1 class="h3 mb-3">{{ roleId === null ? 'Nuevo rol' : 'Editar rol' }}</h1>
+
+<div class="row">
+  <div class="col-lg-6">
+    <form [formGroup]="form" (ngSubmit)="submit()" class="card shadow-sm">
+      <div class="card-body">
+        <div class="form-group">
+          <label for="role-name">Nombre</label>
+          <input id="role-name" class="form-control" formControlName="name" />
+          @if (form.get('name')?.touched && form.get('name')?.invalid) {
+            <div class="invalid-feedback d-block">Nombre obligatorio.</div>
+          }
+        </div>
+        <div class="form-group">
+          <label for="role-desc">Descripción</label>
+          <textarea id="role-desc" class="form-control" rows="3" formControlName="description"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">
+          Guardar
+        </button>
+      </div>
+    </form>
+  </div>
+  @if (roleId !== null) {
+    <div class="col-lg-6 mt-4 mt-lg-0">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h2 class="h6">Permisos del rol</h2>
+          <p class="small text-muted">
+            Marca los permisos y guarda el formulario. Se reemplaza la lista completa en el servidor.
+          </p>
+          <ul class="list-group list-group-flush admin-perm-list">
+            @for (p of allPermissions; track p.id) {
+              <li class="list-group-item d-flex align-items-start">
+                <div class="custom-control custom-checkbox">
+                  <input
+                    type="checkbox"
+                    class="custom-control-input"
+                    [id]="'perm-' + p.id"
+                    [checked]="isChecked(p.id)"
+                    (change)="togglePermission(p.id)" />
+                  <label class="custom-control-label" [attr.for]="'perm-' + p.id">
+                    <strong>{{ p.name }}</strong>
+                    @if (p.description) {
+                      <span class="text-muted d-block small">{{ p.description }}</span>
+                    }
+                  </label>
+                </div>
+              </li>
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+  }
+</div>

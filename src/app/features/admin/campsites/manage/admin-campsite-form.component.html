@@ -1,0 +1,141 @@
+<nav aria-label="Migas" class="mb-2">
+  <a routerLink="/admin/campsites" class="small">← Volver a campings</a>
+</nav>
+
+<h1 class="h3 mb-3">{{ campsiteId === null ? 'Nuevo camping' : 'Editar camping' }}</h1>
+
+@if (catalog) {
+  <form [formGroup]="form" (ngSubmit)="submit()" class="card shadow-sm">
+    <div class="card-body">
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="cs-name">Nombre</label>
+          <input id="cs-name" class="form-control" formControlName="name" />
+        </div>
+        <div class="form-group col-md-6">
+          <label for="cs-price">Precio por noche</label>
+          <input
+            id="cs-price"
+            type="number"
+            step="0.01"
+            class="form-control"
+            formControlName="pricePerNight" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="cs-desc">Descripción</label>
+        <textarea id="cs-desc" class="form-control" rows="3" formControlName="description"></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="cs-lat">Latitud</label>
+          <input id="cs-lat" type="number" step="0.000001" class="form-control" formControlName="latitude" />
+        </div>
+        <div class="form-group col-md-6">
+          <label for="cs-lng">Longitud</label>
+          <input id="cs-lng" type="number" step="0.000001" class="form-control" formControlName="longitude" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-4">
+          <label for="cs-p">Provincia</label>
+          <select id="cs-p" class="form-control" formControlName="idProvincia">
+            <option [ngValue]="0">Seleccione…</option>
+            @for (p of catalog.provincias; track p.idProvincia) {
+              <option [ngValue]="p.idProvincia">{{ p.descripcion }}</option>
+            }
+          </select>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="cs-c">Cantón</label>
+          <select id="cs-c" class="form-control" formControlName="idCanton">
+            <option [ngValue]="0">Seleccione…</option>
+            @for (c of cantonesForSelected(); track c.idCanton) {
+              <option [ngValue]="c.idCanton">{{ c.descripcion }}</option>
+            }
+          </select>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="cs-d">Distrito</label>
+          <select id="cs-d" class="form-control" formControlName="idDistrito">
+            <option [ngValue]="0">Seleccione…</option>
+            @for (d of distritosForSelected(); track d.idDistrito) {
+              <option [ngValue]="d.idDistrito">{{ d.descripcion }}</option>
+            }
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="cs-dir">Dirección exacta</label>
+        <input id="cs-dir" class="form-control" formControlName="direccionExacta" />
+      </div>
+      <div class="form-group">
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input" id="cs-water" formControlName="hasWater" />
+          <label class="custom-control-label" for="cs-water">Agua</label>
+        </div>
+        <div class="custom-control custom-checkbox">
+          <input
+            type="checkbox"
+            class="custom-control-input"
+            id="cs-electric"
+            formControlName="hasElectricity" />
+          <label class="custom-control-label" for="cs-electric">Electricidad</label>
+        </div>
+      </div>
+
+      @if (campsiteId !== null && existingImages.length) {
+        <div class="form-group">
+          <label class="d-block">Imágenes actuales</label>
+          <p class="text-muted small mb-2">Desmarca las que quieras eliminar al guardar.</p>
+          <div class="cs-image-grid">
+            @for (img of existingImages; track img.id) {
+              <div class="cs-image-tile">
+                <img [src]="imageDataUrl(img)" alt="" class="cs-thumb" />
+                <div class="cs-keep-label custom-control custom-checkbox mt-1">
+                  <input
+                    type="checkbox"
+                    class="custom-control-input"
+                    [id]="'keep-' + img.id"
+                    [checked]="isImageKept(img.id)"
+                    (change)="onKeepExistingImageChange(img.id, $any($event.target).checked)" />
+                  <label class="custom-control-label small" [attr.for]="'keep-' + img.id">Conservar</label>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <div class="form-group">
+        <label for="cs-new-imgs">Imágenes nuevas</label>
+        <input
+          id="cs-new-imgs"
+          type="file"
+          class="form-control-file"
+          accept="image/*"
+          multiple
+          (change)="onNewImagesSelected($event)" />
+        @if (newImagePreviewUrls.length) {
+          <div class="cs-image-grid mt-2">
+            @for (url of newImagePreviewUrls; track $index) {
+              <div class="cs-image-tile">
+                <img [src]="url" alt="" class="cs-thumb" />
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-danger mt-1"
+                  (click)="removeNewImageAt($index)">
+                  Quitar
+                </button>
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      <button type="submit" class="btn btn-primary">
+        Guardar
+      </button>
+    </div>
+  </form>
+}

@@ -3,6 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { AuthService } from '../../../core/services/http/auth.service';
+import { AuthorizationService } from '../../../core/services/authorization.service';
 import { ThemeService } from '../../../core/services/theme.service';
 
 interface NavItem {
@@ -24,6 +25,7 @@ interface NavItem {
 export class NavbarComponent {
 
   protected readonly authService  = inject(AuthService);
+  protected readonly authz        = inject(AuthorizationService);
   protected readonly themeService = inject(ThemeService);
   private  readonly router        = inject(Router);
 

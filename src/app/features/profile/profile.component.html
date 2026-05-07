@@ -14,6 +14,9 @@
                 <h2 class="h5 card-title">Datos de cuenta</h2>
                 <p class="text-muted small mb-3">
                   Miembro desde {{ p.createdAt | date: 'dd/MM/yyyy' }}
+                  @if (p.roleName) {
+                    <span class="d-block mt-1">Rol: {{ p.roleName }}</span>
+                  }
                 </p>
                 <form [formGroup]="profileForm" (ngSubmit)="submitProfile()">
                   <div class="form-group">
@@ -44,10 +47,7 @@
                       <div class="invalid-feedback d-block">El nombre es obligatorio.</div>
                     }
                   </div>
-                  <button
-                    type="submit"
-                    class="btn btn-primary"
-                    [disabled]="loadingUser()">
+                  <button type="submit" class="btn btn-primary">
                     <i class="fas fa-save mr-1"></i> Guardar nombre
                   </button>
                 </form>
@@ -64,10 +64,7 @@
                     Ver todos
                   </a>
                 </div>
-                @if (loadingTrips() && !tripsList().length) {
-                  <div class="cp-skeleton-row"></div>
-                  <div class="cp-skeleton-row"></div>
-                } @else if (!tripsList().length) {
+                @if (!tripsList().length) {
                   <p class="text-muted mb-0">
                     Aún no tienes viajes.
                     <a routerLink="/trips">Crea uno</a>.
@@ -112,13 +109,7 @@
         <div class="card shadow-sm mb-4">
           <div class="card-body">
             <h2 class="h5 card-title mb-3">Favoritos</h2>
-            @if (loadingFavorites() && !favoritesList().length) {
-              <div class="row">
-                <div class="col-md-6 col-lg-4 mb-3"><div class="cp-skeleton-card"></div></div>
-                <div class="col-md-6 col-lg-4 mb-3"><div class="cp-skeleton-card"></div></div>
-                <div class="col-md-6 col-lg-4 mb-3"><div class="cp-skeleton-card"></div></div>
-              </div>
-            } @else if (!favoritesList().length) {
+            @if (!favoritesList().length) {
               <p class="text-muted mb-0">
                 No tienes campings favoritos. Explora el
                 <a routerLink="/campings">catálogo</a>.

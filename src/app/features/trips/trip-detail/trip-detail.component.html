@@ -48,7 +48,7 @@
                   type="button"
                   class="btn btn-primary btn-block"
                   (click)="addSelected()"
-                  [disabled]="loading() || !availableCampsites().length">
+                  [disabled]="!availableCampsites().length">
                   Añadir
                 </button>
                 <button type="button" class="btn btn-link" (click)="cancelAdd()">Cancelar</button>
@@ -61,13 +61,7 @@
         </div>
       }
 
-      @if (loading() && !t.campSiteSummaries.length) {
-        <div class="row">
-          <div class="col-md-6 col-lg-4 mb-4"><div class="cp-skeleton-card"></div></div>
-          <div class="col-md-6 col-lg-4 mb-4"><div class="cp-skeleton-card"></div></div>
-          <div class="col-md-6 col-lg-4 mb-4"><div class="cp-skeleton-card"></div></div>
-        </div>
-      } @else if (!t.campSiteSummaries.length) {
+      @if (!t.campSiteSummaries.length) {
         <p class="text-muted">Aún no has agregado campings a este viaje.</p>
       } @else {
         <div class="row">
@@ -101,14 +95,6 @@
           }
         </div>
       }
-    } @else if (loading()) {
-      <div class="cp-skeleton-row mb-2" style="width: 40%; height: 2rem;"></div>
-      <div class="cp-skeleton-row mb-4" style="width: 25%;"></div>
-      <div class="row">
-        <div class="col-md-6 col-lg-4 mb-4"><div class="cp-skeleton-card"></div></div>
-        <div class="col-md-6 col-lg-4 mb-4"><div class="cp-skeleton-card"></div></div>
-        <div class="col-md-6 col-lg-4 mb-4"><div class="cp-skeleton-card"></div></div>
-      </div>
     }
   </div>
 </section>

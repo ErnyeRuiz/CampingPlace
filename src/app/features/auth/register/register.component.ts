@@ -35,8 +35,6 @@ export class RegisterComponent {
   private readonly toast  = inject(ToastService);
   private readonly router = inject(Router);
 
-  readonly loading = this.auth.loading;
-
   showPassword        = false;
   showConfirmPassword = false;
 
