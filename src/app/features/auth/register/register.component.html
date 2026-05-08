@@ -8,10 +8,7 @@
           <div class="register-image-content">
             <i class="fas fa-campground"></i>
             <h2>Nos complace que te unas a nuestra comunidad</h2>
-            <p>
-              Animate a iniciar una nueva aventura en compañia de 
-              otros amantes de la naturaleza.
-            </p>
+            <p>{{ registerHeroParagraph }}</p>
           </div>
         </div>
       </div>
@@ -32,6 +29,38 @@
 
         <!-- Form -->
         <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
+
+          <!-- Role -->
+          <div class="form-group mb-3">
+            <span class="cp-form-label d-block mb-2">Tipo de cuenta</span>
+            <div class="register-role-grid" role="radiogroup" aria-label="Tipo de cuenta">
+              <label
+                class="register-role-card"
+                [class.register-role-card--active]="f['role'].value === 'customer'">
+                <input
+                  type="radio"
+                  formControlName="role"
+                  value="customer"
+                  class="register-role-input">
+                <span class="register-role-title">Cliente</span>
+                <span class="register-role-desc">Explorá y reservá campings</span>
+              </label>
+              <label
+                class="register-role-card"
+                [class.register-role-card--active]="f['role'].value === 'admin'">
+                <input
+                  type="radio"
+                  formControlName="role"
+                  value="admin"
+                  class="register-role-input">
+                <span class="register-role-title">Administrador</span>
+                <span class="register-role-desc">Gestioná tus propios campings</span>
+              </label>
+            </div>
+            @if (f['role'].invalid && f['role'].touched) {
+              <small class="text-danger mt-1 d-block">Elegí un tipo de cuenta.</small>
+            }
+          </div>
 
           <!-- Name -->
           <div class="form-group mb-3">

@@ -30,6 +30,23 @@
         <h2 class="login-title">Iniciar Sesión</h2>
         <p class="login-subtitle">Ingresa tus credenciales para continuar</p>
 
+        @if (!!adminCooldownSeconds && !adminCooldownDone) {
+          <div class="alert alert-info" role="status">
+            Tu cuenta de administrador aún está en período de espera.<br>
+            Tiempo restante: {{ adminCooldownLabel }}
+          </div>
+        }
+
+        @if (adminCooldownDone) {
+          <div class="alert alert-success" role="status">
+            Tu cuenta ya está disponible. Podés iniciar sesión.
+          </div>
+        }
+
+        @if (adminFallbackMessage) {
+          <div class="alert alert-info" role="status">{{ adminFallbackMessage }}</div>
+        }
+
         <!-- Form -->
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
 
@@ -93,8 +110,14 @@
 
         <!-- Footer links -->
         <div class="login-footer">
-          <span>¿No tienes cuenta?</span>
-          <a routerLink="/auth/register">Regístrate aquí</a>
+          <div class="mb-2">
+            <span>¿Olvidaste tu contraseña?</span>
+            <a routerLink="/forgot-password">Recupérala aquí</a>
+          </div>
+          <div>
+            <span>¿No tienes cuenta?</span>
+            <a routerLink="/auth/register">Regístrate aquí</a>
+          </div>
         </div>
 
       </div>

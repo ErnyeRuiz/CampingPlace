@@ -10,6 +10,21 @@ function isMutation(req: HttpRequest<unknown>): boolean {
   return ['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method);
 }
 
+/** Login errors handled in {@link LoginComponent} (UI + redirect); skip duplicate danger toast. */
+function shouldSuppressLoginErrorToast(
+  req: HttpRequest<unknown>,
+  error: HttpErrorResponse,
+): boolean {
+  if (req.method !== 'POST' || !req.url.includes('/auth/login')) {
+    return false;
+  }
+  const errorCode = (error.error as { errorCode?: string } | null)?.errorCode;
+  return (
+    errorCode === 'User.EmailNotVerified' ||
+    errorCode === 'User.AdminAccountNotReady'
+  );
+}
+
 export const httpFeedbackInterceptor: HttpInterceptorFn = (req, next) => {
   const loading = inject(LoadingService);
   const toast   = inject(ToastService);
@@ -30,8 +45,10 @@ export const httpFeedbackInterceptor: HttpInterceptorFn = (req, next) => {
       }
     }),
     catchError((error: HttpErrorResponse) => {
-      const apiMsg = (error.error as ApiResponse<unknown> | null)?.message;
-      toast.danger(apiMsg ?? 'Error de conexión. Intenta de nuevo.');
+      if (!shouldSuppressLoginErrorToast(req, error)) {
+        const apiMsg = (error.error as ApiResponse<unknown> | null)?.message;
+        toast.danger(apiMsg ?? 'Error de conexión. Intenta de nuevo.');
+      }
       return throwError(() => error);
     }),
     finalize(() => loading.decrement())

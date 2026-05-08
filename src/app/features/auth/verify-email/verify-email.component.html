@@ -1,0 +1,109 @@
+<div class="login-page">
+  <div class="row no-gutters login-row">
+
+    <div class="col-12 col-md-6 d-none d-md-flex">
+      <div class="login-image-panel">
+        <div class="login-image-overlay">
+          <div class="login-image-content">
+            <i class="fas fa-envelope-circle-check"></i>
+            <h2>Verificá tu correo</h2>
+            <p>
+              Ingresá el código de 6 dígitos que te enviamos por email para activar tu cuenta
+              en CampingPlace.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-6">
+      <div class="login-form-panel">
+
+        <a class="login-brand" routerLink="/campings">
+          <i class="fas fa-campground"></i>
+          <span>CampingPlace</span>
+        </a>
+
+        <h2 class="login-title">Verificar email</h2>
+        <p class="login-subtitle">
+          Te enviamos un código a tu correo. Ingresalo aquí para continuar.
+        </p>
+
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+
+          <div class="form-group mb-3">
+            <label class="cp-form-label" for="verify-email">Correo electrónico</label>
+            <div class="cp-input-group">
+              <i class="fas fa-envelope cp-input-icon"></i>
+              <input
+                id="verify-email"
+                type="email"
+                class="form-control"
+                [class.is-invalid]="f['email'].invalid && f['email'].touched"
+                formControlName="email"
+                placeholder="tu@correo.com"
+                autocomplete="email">
+            </div>
+            @if (f['email'].invalid && f['email'].touched) {
+              <small class="text-danger mt-1 d-block">
+                @if (f['email'].errors?.['required']) { El correo es requerido. }
+                @else { Ingresá un correo válido. }
+              </small>
+            }
+          </div>
+
+          <div class="form-group mb-3">
+            <label class="cp-form-label" for="verify-code">Código de verificación</label>
+            <div class="cp-input-group">
+              <i class="fas fa-key cp-input-icon"></i>
+              <input
+                id="verify-code"
+                type="text"
+                inputmode="numeric"
+                autocomplete="one-time-code"
+                maxlength="6"
+                class="form-control"
+                [class.is-invalid]="f['code'].invalid && f['code'].touched"
+                formControlName="code"
+                placeholder="000000">
+            </div>
+            @if (f['code'].invalid && f['code'].touched) {
+              <small class="text-danger mt-1 d-block">
+                @if (f['code'].errors?.['required']) { El código es requerido. }
+                @else { Ingresá los 6 dígitos del correo. }
+              </small>
+            }
+          </div>
+
+          <button type="button" class="btn btn-outline-secondary w-100 mb-3"
+            [disabled]="resendDisabled"
+            (click)="onResend()">
+            @if (resendLoading) {
+              Enviando…
+            } @else {
+              Reenviar código
+            }
+          </button>
+
+          @if (resendCooldownSec > 0) {
+            <p class="small text-muted text-center mb-3">
+              Podés reenviar en {{ resendCooldownSec }}s
+            </p>
+          }
+
+          <button type="submit" class="btn btn-login-submit w-100">
+            Verificar email
+          </button>
+        </form>
+
+        <div class="login-footer">
+          <a routerLink="/auth/login">Volver al inicio de sesión</a>
+          <span class="mx-1">·</span>
+          <a routerLink="/auth/register">Crear otra cuenta</a>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
