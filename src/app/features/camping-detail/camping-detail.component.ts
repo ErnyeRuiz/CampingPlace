@@ -9,22 +9,33 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
+import {
+  FormBuilder,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { ToastService } from '../../core/services/toast.service';
-import { forkJoin, of } from 'rxjs';
+import { AuthorizationService } from '../../core/services/authorization.service';
+import { PERMISSIONS } from '../../core/constants/permissions';
+import { catchError, forkJoin, of } from 'rxjs';
 import { CampsitesService } from '../../core/services/http/campsites.service';
 import { LocationService } from '../../core/services/http/location.service';
 import { AuthService } from '../../core/services/http/auth.service';
 import { FavoritesService } from '../../core/services/http/favorites.services';
 import { TripsService } from '../../core/services/http/trips.service';
 import { CampsiteResponse } from '../../core/models/campsites/campsite-response';
+import { CampsiteReviewRequest } from '../../core/models/campsites/campsite-review-request';
+import { CampsiteReviewResponse } from '../../core/models/campsites/campsite-review-response';
 import { FavoriteResponse } from '../../core/models/favorites/favorite-response';
 import { TripResponse } from '../../core/models/trips/trip-response';
 import { UbicacionCatalog } from '../../core/models/location/ubicacion-catalog';
 
+const REVIEW_COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000;
+
 @Component({
   selector: 'cp-camping-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule],
   templateUrl: './camping-detail.component.html',
   styleUrl: './camping-detail.component.scss',
 })
@@ -32,10 +43,12 @@ export class CampingDetailComponent implements OnInit {
   private readonly campsiteService = inject(CampsitesService);
   private readonly locationService  = inject(LocationService);
   readonly auth = inject(AuthService);
+  readonly authz = inject(AuthorizationService);
   private readonly favorites       = inject(FavoritesService);
   private readonly trips           = inject(TripsService);
   private readonly router          = inject(Router);
   private readonly toast           = inject(ToastService);
+  private readonly fb              = inject(FormBuilder);
 
   readonly id = input.required({ transform: numberAttribute });
 
@@ -50,6 +63,54 @@ export class CampingDetailComponent implements OnInit {
   readonly tripChoices     = signal<TripResponse[]>([]);
   readonly selectedTripId  = signal<number | null>(null);
   readonly addToTripBusy   = signal(false);
+
+  readonly reviews             = signal<CampsiteReviewResponse[]>([]);
+  readonly reviewSubmitBusy    = signal(false);
+  /** Panel «añadir opinión» cerrado por defecto para no saturar la vista. */
+  readonly reviewComposerOpen = signal(false);
+  readonly reviewStarHover    = signal<number | null>(null);
+  readonly editingReviewId    = signal<number | null>(null);
+  readonly editReviewStarHover = signal<number | null>(null);
+  readonly reviewRowBusyId    = signal<number | null>(null);
+
+  readonly reviewForm = this.fb.nonNullable.group({
+    rating: [
+      5,
+      [Validators.required, Validators.min(1), Validators.max(5)],
+    ],
+    comment: ['', [Validators.required, Validators.minLength(10)]],
+  });
+
+  readonly editReviewForm = this.fb.nonNullable.group({
+    rating: [
+      5,
+      [Validators.required, Validators.min(1), Validators.max(5)],
+    ],
+    comment: ['', [Validators.required, Validators.minLength(10)]],
+  });
+
+  /**
+   * Si el usuario está en espera entre opiniones en este camping, fecha en la que podrá opinar de nuevo.
+   */
+  readonly nextReviewEligibleAt = computed(() => {
+    const uid = this.auth.currentUser()?.userId;
+    if (uid == null) {
+      return null;
+    }
+    const mine = this.reviews().filter((r) => r.userId === uid);
+    if (!mine.length) {
+      return null;
+    }
+    const latest = mine.reduce((best, r) =>
+      this.reviewCreatedAt(r).getTime() > this.reviewCreatedAt(best).getTime()
+        ? r
+        : best,
+    );
+    const eligible = new Date(
+      this.reviewCreatedAt(latest).getTime() + REVIEW_COOLDOWN_MS,
+    );
+    return Date.now() >= eligible.getTime() ? null : eligible;
+  });
 
   readonly mapsUrl = computed(() => {
     const c = this.campsite();
@@ -87,13 +148,19 @@ export class CampingDetailComponent implements OnInit {
       ? this.favorites.getAll()
       : of<FavoriteResponse[]>([]);
 
+    const reviewRows$ = this.campsiteService.getReviewsById(campsiteId).pipe(
+      catchError(() => of<CampsiteReviewResponse[]>([])),
+    );
+
     forkJoin({
       site: this.campsiteService.getbyId(campsiteId),
       cat: this.locationService.loadUbicacionCatalog(),
       favs: favs$,
+      reviewRows: reviewRows$,
     }).subscribe({
-      next: ({ site, cat, favs }) => {
+      next: ({ site, cat, favs, reviewRows }) => {
         this.catalog.set(cat);
+        this.reviews.set(this.sortReviewsDesc(reviewRows));
         if (!site) {
           this.campsite.set(null);
           this.toast.warning('No se encontró este camping o ya no está disponible.');
@@ -107,9 +174,232 @@ export class CampingDetailComponent implements OnInit {
       },
       error: () => {
         this.campsite.set(null);
+        this.reviews.set([]);
         this.detailLoading.set(false);
       },
     });
+  }
+
+  reviewCreatedAt(r: CampsiteReviewResponse): Date {
+    const d = r.createdAt;
+    return d instanceof Date ? d : new Date(d);
+  }
+
+  toggleReviewComposer(): void {
+    this.reviewComposerOpen.update((open) => !open);
+    if (!this.reviewComposerOpen()) {
+      this.reviewStarHover.set(null);
+    }
+  }
+
+  /** Valor mostrado en el selector de estrellas (hover preview o valor del formulario). */
+  reviewPickerRating(): number {
+    const hover = this.reviewStarHover();
+    if (hover != null) {
+      return hover;
+    }
+    return this.reviewForm.controls.rating.value;
+  }
+
+  setReviewRating(star: number): void {
+    this.reviewForm.patchValue({ rating: star });
+    this.reviewStarHover.set(null);
+  }
+
+  reviewRatingLabel(stars: number): string {
+    switch (stars) {
+      case 5:
+        return 'Excelente';
+      case 4:
+        return 'Muy bueno';
+      case 3:
+        return 'Bueno';
+      case 2:
+        return 'Regular';
+      default:
+        return 'Necesita mejorar';
+    }
+  }
+
+  reviewAuthorDisplay(r: CampsiteReviewResponse): string {
+    const name = r.userName?.trim();
+    return name?.length ? name : 'Usuario';
+  }
+
+  canEditReview(r: CampsiteReviewResponse): boolean {
+    const uid = this.auth.currentUser()?.userId;
+    return uid != null && r.userId === uid;
+  }
+
+  canDeleteReview(r: CampsiteReviewResponse): boolean {
+    const uid = this.auth.currentUser()?.userId;
+    if (uid != null && r.userId === uid) {
+      return true;
+    }
+    return this.authz.hasPermission(PERMISSIONS.ReviewDelete);
+  }
+
+  reviewRowActionsDisabled(): boolean {
+    return this.reviewRowBusyId() !== null;
+  }
+
+  editReviewPickerRating(): number {
+    const hover = this.editReviewStarHover();
+    if (hover != null) {
+      return hover;
+    }
+    return this.editReviewForm.controls.rating.value;
+  }
+
+  setEditReviewRating(star: number): void {
+    this.editReviewForm.patchValue({ rating: star });
+    this.editReviewStarHover.set(null);
+  }
+
+  startEditReview(r: CampsiteReviewResponse): void {
+    if (!this.canEditReview(r) || this.reviewRowActionsDisabled()) {
+      return;
+    }
+    this.editingReviewId.set(r.id);
+    this.editReviewForm.patchValue({
+      rating: r.rating,
+      comment: r.comment,
+    });
+    this.editReviewStarHover.set(null);
+  }
+
+  cancelEditReview(): void {
+    this.editingReviewId.set(null);
+    this.editReviewStarHover.set(null);
+  }
+
+  submitEditReview(): void {
+    const reviewId = this.editingReviewId();
+    if (reviewId == null || !this.auth.isLoggedIn()) {
+      return;
+    }
+    if (this.editReviewForm.invalid) {
+      this.editReviewForm.markAllAsTouched();
+      return;
+    }
+    const raw = this.editReviewForm.getRawValue();
+    const rating = Math.round(Number(raw.rating));
+    if (!Number.isFinite(rating) || rating < 1 || rating > 5) {
+      this.editReviewForm.markAllAsTouched();
+      return;
+    }
+    const comment = raw.comment.trim();
+    this.reviewRowBusyId.set(reviewId);
+    this.campsiteService
+      .updateReview(reviewId, new CampsiteReviewRequest(rating, comment))
+      .subscribe({
+        next: (ok) => {
+          this.reviewRowBusyId.set(null);
+          if (!ok) {
+            return;
+          }
+          this.cancelEditReview();
+          this.refreshReviewsAndSite();
+        },
+        error: () => this.reviewRowBusyId.set(null),
+      });
+  }
+
+  confirmDeleteReview(r: CampsiteReviewResponse): void {
+    if (!this.canDeleteReview(r) || this.reviewRowActionsDisabled()) {
+      return;
+    }
+    const msg =
+      '¿Eliminar esta opinión? Esta acción no se puede deshacer.';
+    if (!confirm(msg)) {
+      return;
+    }
+    this.reviewRowBusyId.set(r.id);
+    this.campsiteService.deleteReviewById(r.id).subscribe({
+      next: (ok) => {
+        this.reviewRowBusyId.set(null);
+        if (!ok) {
+          return;
+        }
+        if (this.editingReviewId() === r.id) {
+          this.cancelEditReview();
+        }
+        this.refreshReviewsAndSite();
+      },
+      error: () => this.reviewRowBusyId.set(null),
+    });
+  }
+
+  private refreshReviewsAndSite(done?: () => void): void {
+    const campsiteId = this.id();
+    forkJoin({
+      reviewRows: this.campsiteService.getReviewsById(campsiteId).pipe(
+        catchError(() => of<CampsiteReviewResponse[]>([])),
+      ),
+      site: this.campsiteService.getbyId(campsiteId),
+    }).subscribe({
+      next: ({ reviewRows, site }) => {
+        this.reviews.set(this.sortReviewsDesc(reviewRows));
+        if (site) {
+          this.campsite.set({ ...site, images: site.images ?? [] });
+        }
+        done?.();
+      },
+      error: () => done?.(),
+    });
+  }
+
+  private sortReviewsDesc(rows: CampsiteReviewResponse[]): CampsiteReviewResponse[] {
+    return [...rows].sort(
+      (a, b) =>
+        this.reviewCreatedAt(b).getTime() - this.reviewCreatedAt(a).getTime(),
+    );
+  }
+
+  submitReview(): void {
+    if (!this.auth.isLoggedIn()) {
+      this.goLogin();
+      return;
+    }
+    if (this.nextReviewEligibleAt() != null || this.reviewSubmitBusy()) {
+      return;
+    }
+    if (this.reviewForm.invalid) {
+      this.reviewForm.markAllAsTouched();
+      return;
+    }
+    const raw = this.reviewForm.getRawValue();
+    const rating = Math.round(Number(raw.rating));
+    if (!Number.isFinite(rating) || rating < 1 || rating > 5) {
+      this.reviewForm.markAllAsTouched();
+      return;
+    }
+    const comment = raw.comment.trim();
+    this.reviewSubmitBusy.set(true);
+    const campsiteId = this.id();
+    this.campsiteService
+      .createReview(
+        campsiteId,
+        new CampsiteReviewRequest(rating, comment),
+      )
+      .subscribe({
+        next: (ok) => {
+          if (!ok) {
+            this.reviewSubmitBusy.set(false);
+            return;
+          }
+          this.refreshReviewsAndSite(() => {
+            this.reviewForm.reset({
+              rating: 5,
+              comment: '',
+            });
+            this.reviewComposerOpen.set(false);
+            this.reviewStarHover.set(null);
+            this.reviewSubmitBusy.set(false);
+          });
+        },
+        error: () => this.reviewSubmitBusy.set(false),
+      });
   }
 
   imageSrc(base64: string): string {

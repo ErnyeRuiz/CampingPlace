@@ -188,6 +188,200 @@
   }
 }
 
+.camping-detail__reviews {
+  padding-top: 0;
+}
+
+.camping-detail__reviews-panel {
+  margin-bottom: 0;
+}
+
+.camping-detail__reviews-empty {
+  margin-bottom: 0;
+}
+
+.camping-detail__review-list {
+  margin-bottom: 1.25rem;
+}
+
+.camping-detail__review-item {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--cp-border, #c5dcf2);
+
+  &:first-child {
+    padding-top: 0;
+  }
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}
+
+.camping-detail__review-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.camping-detail__review-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  margin-bottom: 0;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.camping-detail__review-author {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--cp-text, #1a2f4b);
+}
+
+.camping-detail__review-time {
+  white-space: nowrap;
+}
+
+.camping-detail__review-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.15rem 0.35rem;
+}
+
+.camping-detail__review-action-btn {
+  padding-left: 0.4rem !important;
+  padding-right: 0.4rem !important;
+  white-space: nowrap;
+}
+
+.camping-detail__review-edit-form {
+  padding-top: 0.25rem;
+}
+
+.camping-detail__rating--inline {
+  margin-bottom: 0;
+}
+
+.camping-detail__review-comment {
+  line-height: 1.6;
+  color: var(--cp-text, #1a2f4b);
+}
+
+.camping-detail__reviews-form-title {
+  margin-top: 1.25rem;
+  font-weight: 600;
+  color: var(--cp-text, #1a2f4b);
+}
+
+.camping-detail__reviews-composer-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--cp-border, #c5dcf2);
+
+  .camping-detail__reviews-form-title {
+    margin-top: 0;
+  }
+}
+
+.camping-detail__reviews-toggle {
+  border-color: var(--cp-border, #c5dcf2);
+  color: var(--cp-text, #1a2f4b);
+  background: var(--cp-bg-card, #fff);
+  font-weight: 500;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+
+  &:hover {
+    border-color: var(--cp-primary, #4a8fd9);
+    color: var(--cp-primary, #4a8fd9);
+    background: var(--cp-primary-pale, #ebf4ff);
+  }
+
+  &--open {
+    border-color: var(--cp-primary, #4a8fd9);
+    color: var(--cp-primary, #4a8fd9);
+  }
+}
+
+.camping-detail__reviews-composer-panel {
+  margin-top: 1rem;
+  padding-top: 0.25rem;
+}
+
+.camping-detail__star-picker-heading {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--cp-text, #1a2f4b);
+}
+
+.camping-detail__star-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.35rem 0.5rem 0.45rem;
+  border-radius: 0.5rem;
+  background: var(--cp-bg, #f4f9ff);
+  border: 1px solid var(--cp-border, #c5dcf2);
+}
+
+.camping-detail__star-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.2rem 0.28rem;
+  margin: 0;
+  border: none;
+  border-radius: 0.35rem;
+  background: transparent;
+  color: #cfd8e6;
+  font-size: 1.55rem;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    color 0.12s ease,
+    transform 0.12s ease;
+
+  i {
+    filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.08));
+  }
+
+  &:hover,
+  &:focus-visible {
+    color: #f0c14d;
+    transform: scale(1.08);
+    outline: none;
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 2px var(--cp-primary, #4a8fd9);
+  }
+
+  &--on {
+    color: #f5a623;
+  }
+}
+
+.camping-detail__star-picker-caption {
+  font-weight: 500;
+}
+
+.camping-detail__review-form .form-group:last-of-type {
+  margin-bottom: 1rem;
+}
+
 .camping-detail__actions-wrap {
   position: sticky;
   bottom: 0;
@@ -243,6 +437,54 @@
   .camping-detail__chips {
     .camping-detail__chip--on {
       color: #e8f1fb;
+    }
+  }
+  .camping-detail__review-item {
+    border-bottom-color: var(--cp-border, #3a5a7c);
+  }
+  .camping-detail__review-comment,
+  .camping-detail__reviews-form-title {
+    color: var(--cp-text, #e8f1fb);
+  }
+  .camping-detail__review-author {
+    color: var(--cp-text, #e8f1fb);
+  }
+  .camping-detail__reviews-composer-head {
+    border-top-color: var(--cp-border, #3a5a7c);
+  }
+  .camping-detail__reviews-toggle {
+    background: var(--cp-surface-2, #2a4a6e);
+    border-color: var(--cp-border, #3a5a7c);
+    color: var(--cp-text, #e8f1fb);
+
+    &:hover {
+      background: rgba(74, 143, 217, 0.2);
+      border-color: var(--cp-primary, #4a8fd9);
+      color: #9ec5f2;
+    }
+
+    &--open {
+      border-color: var(--cp-primary, #4a8fd9);
+      color: #9ec5f2;
+    }
+  }
+  .camping-detail__star-picker-heading {
+    color: var(--cp-text, #e8f1fb);
+  }
+  .camping-detail__star-picker {
+    background: rgba(0, 0, 0, 0.15);
+    border-color: var(--cp-border, #3a5a7c);
+  }
+  .camping-detail__star-btn {
+    color: #5a7090;
+
+    &:hover,
+    &:focus-visible {
+      color: #f0c14d;
+    }
+
+    &--on {
+      color: #f5a623;
     }
   }
 }

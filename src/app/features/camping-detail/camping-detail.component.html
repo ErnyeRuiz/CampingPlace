@@ -110,6 +110,220 @@
       </div>
     </div>
 
+    <div class="container camping-detail__reviews pb-4">
+      <div class="camping-detail__prose camping-detail__reviews-panel">
+        <h2 class="camping-detail__h2">Opiniones</h2>
+
+        @if (!reviews().length) {
+          <p class="text-muted mb-0 camping-detail__reviews-empty">Aún no hay opiniones para este camping.</p>
+        } @else {
+          <ul class="list-unstyled camping-detail__review-list mb-0">
+            @for (r of reviews(); track r.id) {
+              <li class="camping-detail__review-item">
+                <div class="camping-detail__review-top">
+                  <div class="camping-detail__review-meta">
+                    <span class="camping-detail__review-author">{{ reviewAuthorDisplay(r) }}</span>
+                    <div
+                      class="camping-detail__rating camping-detail__rating--inline"
+                      [attr.aria-label]="'Valoración ' + r.rating + ' de 5'">
+                      @for (star of [1,2,3,4,5]; track star) {
+                        <i
+                          class="fas fa-star camping-detail__star"
+                          [class.camping-detail__star--on]="r.rating >= star - 0.5"></i>
+                      }
+                    </div>
+                    <time class="text-muted small camping-detail__review-time" [attr.datetime]="reviewCreatedAt(r).toISOString()">
+                      {{ reviewCreatedAt(r) | date: 'dd/MM/yyyy, HH:mm' }}
+                    </time>
+                  </div>
+                  @if ((canEditReview(r) || canDeleteReview(r)) && auth.isLoggedIn()) {
+                    <div class="camping-detail__review-actions">
+                      @if (canEditReview(r)) {
+                        <button
+                          type="button"
+                          class="btn btn-link btn-sm camping-detail__review-action-btn"
+                          [disabled]="reviewRowActionsDisabled()"
+                          (click)="startEditReview(r)">
+                          <i class="fas fa-pen mr-1" aria-hidden="true"></i>
+                          Editar
+                        </button>
+                      }
+                      @if (canDeleteReview(r)) {
+                        <button
+                          type="button"
+                          class="btn btn-link btn-sm text-danger camping-detail__review-action-btn"
+                          [disabled]="reviewRowActionsDisabled()"
+                          (click)="confirmDeleteReview(r)">
+                          <i class="fas fa-trash-alt mr-1" aria-hidden="true"></i>
+                          Eliminar
+                        </button>
+                      }
+                    </div>
+                  }
+                </div>
+                @if (editingReviewId() === r.id) {
+                  <form
+                    [formGroup]="editReviewForm"
+                    (ngSubmit)="submitEditReview()"
+                    class="camping-detail__review-form camping-detail__review-edit-form mt-2">
+                    <div class="form-group mb-3">
+                      <span [id]="'edit-review-rating-label-' + r.id" class="d-block mb-2 camping-detail__star-picker-heading">
+                        Valoración
+                      </span>
+                      <div
+                        class="camping-detail__star-picker"
+                        role="radiogroup"
+                        [attr.aria-labelledby]="'edit-review-rating-label-' + r.id">
+                        @for (star of [1, 2, 3, 4, 5]; track star) {
+                          <button
+                            type="button"
+                            class="camping-detail__star-btn"
+                            [class.camping-detail__star-btn--on]="editReviewPickerRating() >= star - 0.5"
+                            role="radio"
+                            [attr.aria-checked]="editReviewForm.controls.rating.value === star"
+                            [attr.aria-label]="star + ' de 5 estrellas'"
+                            (mouseenter)="editReviewStarHover.set(star)"
+                            (mouseleave)="editReviewStarHover.set(null)"
+                            (click)="setEditReviewRating(star)">
+                            <i class="fas fa-star" aria-hidden="true"></i>
+                          </button>
+                        }
+                      </div>
+                      <p class="camping-detail__star-picker-caption small text-muted mb-0 mt-2">
+                        {{ reviewRatingLabel(editReviewPickerRating()) }}
+                      </p>
+                    </div>
+                    <div class="form-group">
+                      <label [attr.for]="'edit-review-comment-' + r.id" class="mb-1">Comentario</label>
+                      <textarea
+                        [id]="'edit-review-comment-' + r.id"
+                        class="form-control"
+                        rows="4"
+                        formControlName="comment"
+                        placeholder="Cuéntanos tu experiencia (mínimo 10 caracteres)"></textarea>
+                      @if (editReviewForm.controls.comment.touched && editReviewForm.controls.comment.errors?.['required']) {
+                        <small class="text-danger d-block mt-1">El comentario es obligatorio.</small>
+                      }
+                      @if (editReviewForm.controls.comment.touched && editReviewForm.controls.comment.errors?.['minlength']) {
+                        <small class="text-danger d-block mt-1">Escribe al menos 10 caracteres.</small>
+                      }
+                    </div>
+                    <div class="d-flex flex-wrap align-items-center gap-2">
+                      <button
+                        type="submit"
+                        class="btn btn-primary btn-sm"
+                        [disabled]="editReviewForm.invalid || reviewRowBusyId() === r.id">
+                        Guardar cambios
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-outline-secondary btn-sm"
+                        [disabled]="reviewRowBusyId() === r.id"
+                        (click)="cancelEditReview()">
+                        Cancelar
+                      </button>
+                    </div>
+                  </form>
+                } @else {
+                  <p class="camping-detail__review-comment mb-0">{{ r.comment }}</p>
+                }
+              </li>
+            }
+          </ul>
+        }
+
+        <div class="camping-detail__reviews-composer-head">
+          <h3 class="h6 camping-detail__reviews-form-title mb-0">Tu opinión</h3>
+          <button
+            type="button"
+            class="btn btn-sm camping-detail__reviews-toggle"
+            [class.camping-detail__reviews-toggle--open]="reviewComposerOpen()"
+            [attr.aria-expanded]="reviewComposerOpen()"
+            aria-controls="review-composer-panel"
+            id="review-composer-toggle"
+            (click)="toggleReviewComposer()">
+            @if (reviewComposerOpen()) {
+              <i class="fas fa-chevron-up mr-1" aria-hidden="true"></i>
+              Ocultar
+            } @else {
+              <i class="fas fa-chevron-down mr-1" aria-hidden="true"></i>
+              Añadir mi opinión
+            }
+          </button>
+        </div>
+
+        @if (reviewComposerOpen()) {
+          <div id="review-composer-panel" class="camping-detail__reviews-composer-panel" role="region">
+            @if (!auth.isLoggedIn()) {
+              <p class="text-muted small mb-2">Inicia sesión para dejar tu opinión sobre este camping.</p>
+              <button type="button" class="btn btn-outline-primary btn-sm" (click)="goLogin()">
+                Iniciar sesión
+              </button>
+            } @else if (nextReviewEligibleAt(); as eligible) {
+              <div class="alert alert-info mb-0 camping-detail__review-cooldown" role="status">
+                <p class="mb-2">
+                  <strong>Solo puedes publicar una opinión cada 7 días</strong> por el mismo camping.
+                </p>
+                <p class="mb-0 small">
+                  Podrás añadir otra opinión a partir del
+                  <strong>{{ eligible | date: 'dd/MM/yyyy, HH:mm' }}</strong>.
+                </p>
+              </div>
+            } @else {
+              <form [formGroup]="reviewForm" (ngSubmit)="submitReview()" class="camping-detail__review-form">
+                <div class="form-group mb-3">
+                  <span id="review-rating-label" class="d-block mb-2 camping-detail__star-picker-heading">Valoración</span>
+                  <div
+                    class="camping-detail__star-picker"
+                    role="radiogroup"
+                    aria-labelledby="review-rating-label">
+                    @for (star of [1, 2, 3, 4, 5]; track star) {
+                      <button
+                        type="button"
+                        class="camping-detail__star-btn"
+                        [class.camping-detail__star-btn--on]="reviewPickerRating() >= star - 0.5"
+                        role="radio"
+                        [attr.aria-checked]="reviewForm.controls.rating.value === star"
+                        [attr.aria-label]="star + ' de 5 estrellas'"
+                        (mouseenter)="reviewStarHover.set(star)"
+                        (mouseleave)="reviewStarHover.set(null)"
+                        (click)="setReviewRating(star)">
+                        <i class="fas fa-star" aria-hidden="true"></i>
+                      </button>
+                    }
+                  </div>
+                  <p class="camping-detail__star-picker-caption small text-muted mb-0 mt-2">
+                    {{ reviewRatingLabel(reviewPickerRating()) }}
+                  </p>
+                </div>
+                <div class="form-group">
+                  <label for="review-comment" class="mb-1">Comentario</label>
+                  <textarea
+                    id="review-comment"
+                    class="form-control"
+                    rows="4"
+                    formControlName="comment"
+                    placeholder="Cuéntanos tu experiencia (mínimo 10 caracteres)"></textarea>
+                  @if (reviewForm.controls.comment.touched && reviewForm.controls.comment.errors?.['required']) {
+                    <small class="text-danger d-block mt-1">El comentario es obligatorio.</small>
+                  }
+                  @if (reviewForm.controls.comment.touched && reviewForm.controls.comment.errors?.['minlength']) {
+                    <small class="text-danger d-block mt-1">Escribe al menos 10 caracteres.</small>
+                  }
+                </div>
+                <button
+                  type="submit"
+                  class="btn btn-primary"
+                  [disabled]="reviewForm.invalid || reviewSubmitBusy()">
+                  Publicar opinión
+                </button>
+              </form>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
     <div class="camping-detail__actions-wrap">
       <div class="container">
         <div class="camping-detail__actions card shadow">

@@ -7,6 +7,7 @@ export const PERMISSIONS = {
   CampsiteCreate: 'campsite.create',
   CampsiteUpdate: 'campsite.update',
   CampsiteDelete: 'campsite.delete',
+  ReviewDelete: 'review.delete',
   RoleCreate: 'role.create',
   RoleUpdate: 'role.update',
   PermissionCreate: 'permission.create',

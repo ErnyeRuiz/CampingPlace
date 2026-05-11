@@ -1,5 +1,12 @@
 @if (loading.isLoading()) {
-  <div class="cp-loader-bar" role="progressbar" aria-label="Cargando...">
-    <div class="cp-loader-bar__fill"></div>
+  <div
+    class="cp-loader"
+    role="status"
+    aria-live="polite"
+    aria-label="Cargando">
+    <div class="cp-loader__backdrop" aria-hidden="true"></div>
+    <div class="cp-loader__content">
+      <div class="cp-loader__ring" aria-hidden="true"></div>
+    </div>
   </div>
 }

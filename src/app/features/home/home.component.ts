@@ -18,10 +18,11 @@ import { LocationService } from '../../core/services/http/location.service';
 import { ProvinciaResponse } from '../../core/models/location/provincia-response';
 import { CantonResponse } from '../../core/models/location/canton-response';
 import { DistritoResponse } from '../../core/models/location/distrito-response';
-import { forkJoin, of } from 'rxjs';
+import { catchError, forkJoin, of } from 'rxjs';
 import { AuthService } from '../../core/services/http/auth.service';
 import { FavoritesService } from '../../core/services/http/favorites.services';
 import { FavoriteResponse } from '../../core/models/favorites/favorite-response';
+import { DashboardService } from '../../core/services/http/dashboard.service';
 
 @Component({
   selector: 'cp-home',
@@ -32,6 +33,7 @@ import { FavoriteResponse } from '../../core/models/favorites/favorite-response'
 })
 export class HomeComponent implements OnInit {
   private readonly campsiteService = inject(CampsitesService);
+  private readonly dashboardService = inject(DashboardService);
   private readonly locationService = inject(LocationService);
   private readonly auth = inject(AuthService);
   private readonly favorites = inject(FavoritesService);
@@ -42,6 +44,8 @@ export class HomeComponent implements OnInit {
   /** Evita mostrar “vacío” antes de que termine la primera carga (sin UI de loading local). */
   readonly initialLoadDone = signal(false);
   readonly totalCount = signal(0);
+  /** Promedio global desde el API (getStats). */
+  readonly averageRating = signal<number | null>(null);
   /** Campsite ids marked as favorite (session). */
   readonly favoriteCampsiteIds = signal<ReadonlySet<number>>(new Set());
 
@@ -105,16 +109,20 @@ export class HomeComponent implements OnInit {
     forkJoin({
       ubicacion: this.locationService.loadUbicacionCatalog(),
       campsites: this.campsiteService.getAll(),
+      stats: this.dashboardService.getStats().pipe(
+        catchError(() => of(null)),
+      ),
       favs: this.auth.isLoggedIn()
         ? this.favorites.getAll()
         : of<FavoriteResponse[]>([]),
     }).subscribe({
-      next: ({ ubicacion, campsites, favs }) => {
+      next: ({ ubicacion, campsites, stats, favs }) => {
         this.provincias.set(ubicacion.provincias);
         this.cantones.set(ubicacion.cantones);
         this.distritos.set(ubicacion.distritos);
         this.campites.set(campsites);
-        this.totalCount.set(campsites.length);
+        this.totalCount.set(stats?.totalCount ?? campsites.length);
+        this.averageRating.set(stats?.averageRating ?? null);
         this.favoriteCampsiteIds.set(
           new Set((favs ?? []).map((f) => f.campSiteId)),
         );

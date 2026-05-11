@@ -24,20 +24,21 @@
 <!-- ─── Stats Bar ──────────────────────────────────────────────────────────── -->
 <div class="stats-bar">
   <div class="container">
-    <div class="row text-center">
-      <div class="col-4">
+    <div class="row text-center justify-content-center">
+      <div class="col-6 col-md-5">
         <i class="fas fa-campground stats-icon"></i>
-        <div class="stats-number">{{ totalCount() }}+</div>
+        <div class="stats-number">{{ totalCount() }}</div>
         <div class="stats-label">Campings</div>
       </div>
-      <div class="col-4">
-        <i class="fas fa-map-marked-alt stats-icon"></i>
-        <div class="stats-number">7</div>
-        <div class="stats-label">Provincias</div>
-      </div>
-      <div class="col-4">
+      <div class="col-6 col-md-5">
         <i class="fas fa-star stats-icon"></i>
-        <div class="stats-number">4.8</div>
+        <div class="stats-number">
+          @if (averageRating() != null) {
+            {{ averageRating()! | number:'1.1-2' }}
+          } @else {
+            —
+          }
+        </div>
         <div class="stats-label">Rating promedio</div>
       </div>
     </div>

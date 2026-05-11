@@ -1,31 +1,66 @@
-.cp-loader-bar {
+.cp-loader {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 3px;
+  inset: 0;
   z-index: 10001;
-  overflow: hidden;
-  background: transparent;
+  pointer-events: auto;
+  cursor: wait;
+  touch-action: none;
+}
 
-  &__fill {
-    position: absolute;
-    height: 100%;
-    width: 45%;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      var(--cp-primary-light),
-      var(--cp-primary),
-      var(--cp-primary-light),
-      transparent
-    );
-    border-radius: 2px;
-    animation: cp-loader-slide 1.4s ease-in-out infinite;
+.cp-loader__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.09);
+  backdrop-filter: blur(2px);
+}
+
+.cp-loader__content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cp-loader__ring {
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    var(--cp-primary-pale),
+    var(--cp-primary-light),
+    var(--cp-primary),
+    color-mix(in srgb, var(--cp-primary-light) 65%, #ffffff),
+    var(--cp-primary-light),
+    var(--cp-primary-pale)
+  );
+  -webkit-mask: radial-gradient(circle farthest-side, transparent 64%, #000 65%);
+  mask: radial-gradient(circle farthest-side, transparent 64%, #000 65%);
+  animation: cp-loader-spin 0.9s linear infinite;
+}
+
+@keyframes cp-loader-spin {
+  to {
+    transform: rotate(360deg);
   }
 }
 
-@keyframes cp-loader-slide {
-  0%   { left: -45%; }
-  100% { left: 110%; }
+@keyframes cp-loader-pulse {
+  0%,
+  100% {
+    opacity: 0.72;
+    transform: scale(0.96);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cp-loader__ring {
+    animation: cp-loader-pulse 1.4s ease-in-out infinite;
+  }
 }
