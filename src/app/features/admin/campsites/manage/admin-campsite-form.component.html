@@ -1,11 +1,21 @@
-<nav aria-label="Migas" class="mb-2">
-  <a routerLink="/admin/campsites" class="small">← Volver a campings</a>
-</nav>
+<section class="admin-form-page">
+  <nav class="cp-breadcrumb mb-3" aria-label="Migas de pan">
+    <a routerLink="/admin/campsites" class="cp-breadcrumb__link">Campings</a>
+    <span class="cp-breadcrumb__sep" aria-hidden="true">/</span>
+    <span class="text-muted">{{ campsiteId === null ? 'Nuevo' : 'Editar' }}</span>
+  </nav>
 
-<h1 class="h3 mb-3">{{ campsiteId === null ? 'Nuevo camping' : 'Editar camping' }}</h1>
+  <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-md-between mb-3 mb-md-4">
+    <h1 class="cp-page-title mb-0">{{ campsiteId === null ? 'Nuevo camping' : 'Editar camping' }}</h1>
+    <a routerLink="/admin/campsites" class="btn btn-outline-secondary btn-sm mt-2 mt-md-0">« Volver a la lista</a>
+  </div>
 
-@if (catalog) {
-  <form [formGroup]="form" (ngSubmit)="submit()" class="card shadow-sm">
+  @if (!catalog) {
+    <p class="text-muted mb-0">Cargando formulario…</p>
+  }
+
+  @if (catalog) {
+  <form [formGroup]="form" (ngSubmit)="submit()" class="card shadow-sm admin-form-card">
     <div class="card-body">
       <div class="form-row">
         <div class="form-group col-md-6">
@@ -160,9 +170,11 @@
         }
       </div>
 
-      <button type="submit" class="btn btn-primary" [disabled]="!canSubmit">
+      <button type="submit" class="btn btn-primary mt-2" [disabled]="!canSubmit">
+        <i class="fas fa-check mr-1" aria-hidden="true"></i>
         Guardar
       </button>
     </div>
   </form>
-}
+  }
+</section>

@@ -1,39 +1,51 @@
-<nav aria-label="Migas" class="mb-2">
-  <a routerLink="/admin/permissions" class="small">← Volver a permisos</a>
-</nav>
+<section class="admin-form-page">
+  <nav class="cp-breadcrumb mb-3" aria-label="Migas de pan">
+    <a routerLink="/admin/permissions" class="cp-breadcrumb__link">Permisos</a>
+    <span class="cp-breadcrumb__sep" aria-hidden="true">/</span>
+    <span class="text-muted">{{ permissionId === null ? 'Nuevo' : 'Editar' }}</span>
+  </nav>
 
-<h1 class="h3 mb-3">{{ permissionId === null ? 'Nuevo permiso' : 'Editar permiso' }}</h1>
-
-<form [formGroup]="form" (ngSubmit)="submit()" class="card shadow-sm col-lg-8 px-0">
-  <div class="card-body">
-    <div class="form-group">
-      <label for="perm-name">Nombre</label>
-      <input id="perm-name" class="form-control" formControlName="name" />
-      @if (form.get('name')?.touched && form.get('name')?.invalid) {
-        <div class="invalid-feedback d-block">Nombre obligatorio.</div>
-      }
-    </div>
-    <div class="form-group">
-      <label for="perm-desc">Descripción</label>
-      <textarea id="perm-desc" class="form-control" rows="3" formControlName="description"></textarea>
-    </div>
-    @if (canAssignToRole) {
-      <div class="form-group">
-        <label for="perm-role">Asignar también a un rol (opcional)</label>
-        <select id="perm-role" class="form-control" formControlName="assignToRoleId">
-          <option [ngValue]="null">— No asignar automáticamente —</option>
-          @for (r of roles; track r.id) {
-            <option [ngValue]="r.id">{{ r.name }}</option>
-          }
-        </select>
-        <small class="form-text text-muted">
-          Si eliges un rol, se añade este permiso a los que ya tenga (sin quitar los demás). Requiere que el API
-          devuelva los permisos actuales en GET /roles/:id.
-        </small>
-      </div>
-    }
-    <button type="submit" class="btn btn-primary" [disabled]="!canSubmit">
-      Guardar
-    </button>
+  <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-md-between mb-3 mb-md-4">
+    <h1 class="cp-page-title mb-0">{{ permissionId === null ? 'Nuevo permiso' : 'Editar permiso' }}</h1>
+    <a routerLink="/admin/permissions" class="btn btn-outline-secondary btn-sm mt-2 mt-md-0">« Volver a la lista</a>
   </div>
-</form>
+
+  <div class="row">
+    <div class="col-lg-8">
+      <form [formGroup]="form" (ngSubmit)="submit()" class="card shadow-sm mb-4 admin-form-card">
+        <div class="card-body">
+          <div class="form-group">
+            <label for="perm-name">Nombre</label>
+            <input id="perm-name" class="form-control" formControlName="name" />
+            @if (form.get('name')?.touched && form.get('name')?.invalid) {
+              <div class="invalid-feedback d-block">Nombre obligatorio.</div>
+            }
+          </div>
+          <div class="form-group">
+            <label for="perm-desc">Descripción</label>
+            <textarea id="perm-desc" class="form-control" rows="3" formControlName="description"></textarea>
+          </div>
+          @if (canAssignToRole) {
+            <div class="form-group">
+              <label for="perm-role">Asignar también a un rol (opcional)</label>
+              <select id="perm-role" class="form-control" formControlName="assignToRoleId">
+                <option [ngValue]="null">— No asignar automáticamente —</option>
+                @for (r of roles; track r.id) {
+                  <option [ngValue]="r.id">{{ r.name }}</option>
+                }
+              </select>
+              <small class="form-text text-muted">
+                Si eliges un rol, se añade este permiso a los que ya tenga (sin quitar los demás). Requiere que el API devuelva
+                los permisos actuales en GET /roles/:id.
+              </small>
+            </div>
+          }
+          <button type="submit" class="btn btn-primary mt-2" [disabled]="!canSubmit">
+            <i class="fas fa-check mr-1" aria-hidden="true"></i>
+            Guardar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

@@ -1,18 +1,26 @@
-<nav aria-label="Migas" class="mb-2">
-  <a routerLink="/admin/users" class="small">← Volver a usuarios</a>
-</nav>
-
 @if (pageLoading()) {
   <p class="text-muted">Cargando…</p>
 } @else {
-  <h1 class="h3 mb-1">Editar usuario</h1>
-  @if (userId() !== null) {
-    <p class="text-muted small mb-3">ID {{ userId() }}</p>
-  }
+  <section class="admin-form-page">
+    <nav class="cp-breadcrumb mb-3" aria-label="Migas de pan">
+      <a routerLink="/admin/users" class="cp-breadcrumb__link">Usuarios</a>
+      <span class="cp-breadcrumb__sep" aria-hidden="true">/</span>
+      <span class="text-muted">Editar</span>
+    </nav>
+
+    <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-md-between mb-3 mb-md-4">
+      <div>
+        <h1 class="cp-page-title mb-1">Editar usuario</h1>
+        @if (userId() !== null) {
+          <p class="text-muted small mb-0">ID {{ userId() }}</p>
+        }
+      </div>
+      <a routerLink="/admin/users" class="btn btn-outline-secondary btn-sm mt-2 mt-md-0">« Volver a la lista</a>
+    </div>
 
   <div class="row">
     <div class="col-lg-8">
-      <form [formGroup]="form" (ngSubmit)="submit()" class="card shadow-sm">
+      <form [formGroup]="form" (ngSubmit)="submit()" class="card shadow-sm admin-form-card">
         <div class="card-body">
           <div class="form-group">
             <label for="user-name">Nombre</label>
@@ -99,9 +107,13 @@
             <div class="alert alert-warning py-2 small mb-3">Las contraseñas no coinciden.</div>
           }
 
-          <button type="submit" class="btn btn-primary">Guardar</button>
+          <button type="submit" class="btn btn-primary mt-2">
+            <i class="fas fa-check mr-1" aria-hidden="true"></i>
+            Guardar
+          </button>
         </div>
       </form>
     </div>
   </div>
+  </section>
 }

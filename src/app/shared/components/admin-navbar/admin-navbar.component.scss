@@ -1,9 +1,285 @@
 .admin-navbar {
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  min-height: var(--cp-admin-navbar-height);
+  height: var(--cp-admin-navbar-height);
+  z-index: 1030;
+  background-color: var(--cp-bg-card);
+  padding: 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.admin-navbar__links .nav-link.active {
+[data-theme='dark'] .admin-navbar {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+}
+
+.admin-navbar.border-bottom {
+  border-color: var(--cp-border) !important;
+}
+
+.admin-navbar > .container,
+.admin-navbar__inner {
+  height: 100%;
+}
+
+.admin-navbar .navbar-brand {
+  color: var(--cp-primary);
+  letter-spacing: 0.08em;
+  flex-shrink: 0;
+  align-self: center;
+  padding-top: 0;
+  padding-bottom: 0;
+  line-height: 1.2;
+}
+
+// Sin navbar-expand-* de Bootstrap 4, .navbar-nav es columna: fila solo en escritorio.
+
+.admin-navbar__nav.navbar-nav {
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: nowrap;
+
+  .nav-item {
+    margin-bottom: 0;
+  }
+
+  .nav-link {
+    white-space: nowrap;
+    line-height: 1.2;
+    padding-top: 0.28rem !important;
+    padding-bottom: 0.28rem !important;
+    padding-left: 0.45rem !important;
+    padding-right: 0.45rem !important;
+  }
+}
+
+.admin-navbar .nav-link {
   font-weight: 600;
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.12);
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--cp-text-muted) !important;
+  border-radius: 6px;
+
+  &:hover {
+    color: var(--cp-primary) !important;
+    background-color: rgba(var(--cp-primary-rgb), 0.08);
+  }
+
+  &.active {
+    color: var(--cp-primary) !important;
+    background-color: rgba(var(--cp-primary-rgb), 0.12);
+  }
+}
+
+.navbar-toggler-admin {
+  border: none;
+  padding: 0.25rem 0.5rem;
+  margin-left: auto;
+  align-self: center;
+  background: transparent;
+  color: var(--cp-text);
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(var(--cp-primary-rgb), 0.35);
+    border-radius: 6px;
+  }
+}
+
+.navbar-toggler-icon-admin {
+  display: inline-flex;
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.admin-navbar .btn-theme-toggle {
+  color: var(--cp-text-muted);
+
+  &:hover {
+    color: var(--cp-primary);
+    background-color: rgba(var(--cp-primary-rgb), 0.08);
+  }
+}
+
+.admin-navbar__username {
+  color: var(--cp-text);
+  font-weight: 600;
+  opacity: 0.92;
+  max-width: 10rem;
+
+  @media (max-width: 991.98px) {
+    max-width: 100%;
+  }
+}
+
+.admin-navbar__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding-top: 0;
+  padding-bottom: 0;
+  gap: 0;
+
+  > .collapse.navbar-collapse-admin {
+    order: 3;
+    flex: 1 1 auto;
+
+    @media (min-width: 992px) {
+      order: 0;
+    }
+  }
+}
+
+.navbar-collapse-admin {
+  width: 100%;
+}
+
+.admin-navbar__actions.navbar-nav {
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+
+  .btn {
+    flex-shrink: 0;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+  }
+}
+
+// Botón outline secundario: más legible sobre fondo oscuro del tema dark
+[data-theme='dark'] .admin-navbar .btn-outline-secondary {
+  border-color: var(--cp-border);
+  color: var(--cp-text);
+}
+
+[data-theme='dark'] .admin-navbar .btn-outline-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: var(--cp-text-muted);
+  color: var(--cp-text-light, #fff);
+}
+
+@media (max-width: 991.98px) {
+  .admin-navbar {
+    height: auto;
+    min-height: var(--cp-admin-navbar-height);
+  }
+
+  .admin-navbar > .container,
+  .admin-navbar__inner {
+    height: auto;
+  }
+
+  .navbar-collapse-admin:not(.show) {
+    display: none !important;
+  }
+
+  .navbar-collapse-admin.show {
+    display: flex !important;
+    flex-direction: column;
+    align-items: stretch;
+    padding-top: 0.85rem;
+    margin-top: 0.35rem;
+    border-top: 1px solid var(--cp-border);
+    flex-basis: 100%;
+  }
+
+  .admin-navbar .admin-navbar__nav.navbar-nav {
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    align-items: stretch !important;
+    width: 100%;
+
+    .nav-link {
+      white-space: normal;
+    }
+
+    .nav-item {
+      width: 100%;
+    }
+
+    .nav-link {
+      padding-top: 0.55rem !important;
+      padding-bottom: 0.55rem !important;
+    }
+  }
+
+  .admin-navbar__actions {
+    width: 100%;
+    margin-left: 0 !important;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    padding-top: 0.75rem;
+    margin-top: 0.35rem;
+    border-top: 1px solid var(--cp-border);
+    gap: 0.35rem;
+  }
+
+  .admin-navbar .btn-outline-primary,
+  .admin-navbar .btn-outline-secondary {
+    align-self: flex-start;
+  }
+}
+
+@media (min-width: 992px) {
+  // Una sola fila: ningún wrap vertical que ensanche la barra
+  .navbar-collapse-admin,
+  .navbar-collapse-admin.collapse {
+    display: flex !important;
+    flex-direction: row;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+    flex: 1 1 auto !important;
+    min-width: 0;
+    width: auto !important;
+    height: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    border-top: none !important;
+    gap: 0.35rem;
+
+    scrollbar-color: rgba(var(--cp-primary-rgb), 0.35) transparent;
+
+    &::-webkit-scrollbar {
+      height: 3px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(var(--cp-primary-rgb), 0.35);
+      border-radius: 4px;
+    }
+  }
+
+  .admin-navbar .admin-navbar__nav.navbar-nav {
+    flex: 0 1 auto;
+    min-width: 0;
+    margin-bottom: 0 !important;
+  }
+
+  .admin-navbar__inner {
+    flex-wrap: nowrap;
+  }
+
+  .admin-navbar .navbar-brand.mr-auto {
+    margin-right: 0.75rem !important;
+  }
+
+  .admin-navbar__actions {
+    flex-shrink: 0;
+    flex-grow: 0;
+    flex-wrap: nowrap !important;
+    border-top: none !important;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    margin-bottom: 0 !important;
+    gap: 0.35rem;
+
+    .mr-md-3 {
+      margin-right: 0.5rem !important;
+    }
+  }
 }

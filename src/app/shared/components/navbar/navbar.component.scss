@@ -210,20 +210,6 @@
   }
 }
 
-// ─── Theme toggle ─────────────────────────────────────────────────────────────
-
-.btn-theme-toggle {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0.35rem 0.5rem;
-  border-radius: 8px;
-  transition: color 0.2s, background-color 0.2s;
-  font-size: 1rem;
-
-  &:focus { outline: none; }
-}
-
 // ─── Mobile dropdown ──────────────────────────────────────────────────────────
 // Panel del menú colapsable: fondo tarjeta y enlaces con --cp-* (menuOpen() además fuerza barra sólida en TS).
 

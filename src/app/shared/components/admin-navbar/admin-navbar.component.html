@@ -1,37 +1,62 @@
-<nav class="admin-navbar navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container flex-wrap">
-    <div class="d-flex align-items-center flex-wrap w-100">
-      <span class="navbar-brand mb-0 mr-auto">
-        <i class="fas fa-tools mr-2"></i>
+<nav class="admin-navbar navbar fixed-top border-bottom">
+  <div class="container">
+    <div class="admin-navbar__inner">
+      <span class="navbar-brand mb-0 text-uppercase small font-weight-bold mr-auto mr-lg-3">
+        <i class="fas fa-tools mr-2" aria-hidden="true"></i>
         Administración
       </span>
-      <ul class="navbar-nav flex-row flex-wrap admin-navbar__links">
-        @for (item of visibleItems(); track item.routerLink) {
-          <li class="nav-item mr-2">
-            <a
-              class="nav-link px-2"
-              [routerLink]="item.routerLink"
-              routerLinkActive="active"
-              [routerLinkActiveOptions]="{ exact: true }">
-              <i [class]="item.iconClass + ' mr-1'"></i>
-              {{ item.label }}
-            </a>
-          </li>
-        }
-      </ul>
-      <div class="d-flex align-items-center ml-lg-auto mt-2 mt-lg-0">
-        <button type="button" class="btn btn-sm btn-outline-light mr-2" (click)="goPublic()">
-          <i class="fas fa-globe mr-1"></i>
-          Ir al sitio
-        </button>
-        @if (auth.isLoggedIn()) {
-          <span class="text-white-50 small mr-3 d-none d-md-inline">
-            {{ auth.currentUser()?.name }}
-          </span>
-          <button type="button" class="btn btn-sm btn-outline-secondary" (click)="logout()">
-            Salir
+      <button
+        type="button"
+        class="navbar-toggler navbar-toggler-admin d-lg-none"
+        (click)="toggleMenu()"
+        [attr.aria-expanded]="menuOpen()"
+        aria-controls="admin-nav-collapse"
+        aria-label="Abrir o cerrar menú de administración">
+        <span class="navbar-toggler-icon-admin">
+          <i class="fas" [class.fa-bars]="!menuOpen()" [class.fa-times]="menuOpen()" aria-hidden="true"></i>
+        </span>
+      </button>
+
+      <div
+        id="admin-nav-collapse"
+        class="collapse navbar-collapse navbar-collapse-admin"
+        [class.show]="menuOpen()">
+        <ul class="navbar-nav flex-nowrap mr-auto admin-navbar__nav mb-2 mb-lg-0">
+          @for (item of visibleItems(); track item.routerLink) {
+            <li class="nav-item mr-lg-1">
+              <a
+                class="nav-link px-2"
+                [routerLink]="item.routerLink"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                (click)="closeMenu()">
+                <i [class]="item.iconClass + ' mr-1'" aria-hidden="true"></i>
+                {{ item.label }}
+              </a>
+            </li>
+          }
+        </ul>
+
+        <div class="admin-navbar__actions navbar-nav ml-lg-auto flex-row flex-nowrap align-items-center mb-2 mb-lg-0">
+          <button
+            type="button"
+            class="btn-theme-toggle mr-3 mb-2 mb-lg-0"
+            [title]="themeService.isDark() ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'"
+            [attr.aria-label]="themeService.isDark() ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'"
+            (click)="themeService.toggle()">
+            <i class="fas" [class.fa-moon]="!themeService.isDark()" [class.fa-sun]="themeService.isDark()" aria-hidden="true"></i>
           </button>
-        }
+          <button type="button" class="btn btn-sm btn-outline-primary mb-2 mb-lg-0 mr-2" (click)="goPublic()">
+            <i class="fas fa-globe mr-1" aria-hidden="true"></i>
+            Ir al sitio
+          </button>
+          @if (auth.isLoggedIn()) {
+            <span class="small mr-md-3 d-none d-md-inline mb-2 mb-lg-0 admin-navbar__username">{{
+              auth.currentUser()?.name
+            }}</span>
+            <button type="button" class="btn btn-sm btn-outline-secondary mb-2 mb-lg-0" (click)="logout()">Salir</button>
+          }
+        </div>
       </div>
     </div>
   </div>

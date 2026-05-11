@@ -6,10 +6,10 @@
       <span class="text-muted">Mis viajes</span>
     </nav>
 
-    <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
-      <h1 class="trips-page__title mb-0">Mis viajes</h1>
+    <div class="d-flex flex-wrap align-items-start align-items-md-center justify-content-between mb-4">
+      <h1 class="cp-page-title mb-0">Mis viajes</h1>
       @if (formMode() === null) {
-        <button type="button" class="btn btn-primary" (click)="startCreate()">
+        <button type="button" class="btn btn-primary mt-2 mt-md-0" (click)="startCreate()">
           <i class="fas fa-plus mr-1"></i> Nuevo viaje
         </button>
       }

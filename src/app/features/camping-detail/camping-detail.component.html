@@ -9,7 +9,7 @@
 
   @if (detailLoading()) {
     <div class="container py-4">
-      <div class="cp-skeleton-card mb-4" style="height: 340px;"></div>
+      <div class="cp-skeleton-card mb-4 camping-detail__hero-skeleton" aria-hidden="true"></div>
       <div class="row">
         <div class="col-lg-8">
           <div class="cp-skeleton-row mb-3" style="height: 1.5rem; width: 60%;"></div>
@@ -24,13 +24,15 @@
     </div>
   } @else if (campsite(); as c) {
     <div class="camping-detail__hero">
-      @if (heroImage(); as imgSrc) {
-        <img class="camping-detail__hero-pic" [src]="imgSrc" alt="" />
-      } @else {
-        <div class="camping-detail__hero-img camping-detail__hero-img--empty" aria-hidden="true">
-          <i class="fas fa-campground"></i>
-        </div>
-      }
+      <div class="camping-detail__hero-visual">
+        @if (heroImage(); as imgSrc) {
+          <img class="camping-detail__hero-pic" [src]="imgSrc" alt="" />
+        } @else {
+          <div class="camping-detail__hero-img camping-detail__hero-img--empty" aria-hidden="true">
+            <i class="fas fa-campground"></i>
+          </div>
+        }
+      </div>
       <div class="camping-detail__hero-overlay">
         <div class="container">
           <h1 class="camping-detail__title">{{ c.name }}</h1>

@@ -65,6 +65,9 @@ html {
   --pk-bg-light:        #EBF4FF;
   --pk-card-shadow:     0 6px 10px -4px rgba(74, 143, 217, .18);
   --pk-navbar-height:   70px;
+
+  --cp-admin-navbar-height: 56px;
+  --cp-admin-bg:        var(--cp-bg);
 }
 
 // ─── Dark Theme ───────────────────────────────────────────────────────────────
@@ -118,6 +121,8 @@ html {
   --pk-text-muted:      #8AB3CF;
   --pk-bg-light:        #1C2D3F;
   --pk-card-shadow:     0 6px 10px -4px rgba(0, 0, 0, .3);
+
+  --cp-admin-bg:        var(--cp-bg);
 }
 
 // ─── Base ─────────────────────────────────────────────────────────────────────
@@ -423,4 +428,164 @@ h1, h2, h3, h4, h5, h6 {
   height: 200px;
   width: 100%;
   display: block;
+}
+
+// ─── Shared page titles (trips, admin, profile, etc.) ───────────────────────────
+
+.cp-page-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--cp-text);
+  margin-bottom: 1rem;
+}
+
+// ─── Theme toggle (shared public + admin navbar) ───────────────────────────────
+
+.btn-theme-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.35rem 0.5rem;
+  border-radius: 8px;
+  transition: color 0.2s, background-color 0.2s;
+  font-size: 1rem;
+  flex-shrink: 0;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 2px rgba(var(--cp-primary-rgb), 0.45);
+  }
+}
+
+// ─── Admin shell (layout + themed tables/forms) ───────────────────────────────
+
+.admin-shell {
+  min-height: 100vh;
+  background-color: var(--cp-admin-bg);
+}
+
+.admin-shell .card:hover {
+  transform: none;
+  box-shadow: var(--cp-shadow-card);
+}
+
+.admin-form-card {
+  border: 1px solid var(--cp-border);
+  border-radius: 0.5rem;
+  background-color: var(--cp-bg-card);
+}
+
+.admin-table-wrap {
+  overflow-x: auto;
+  border-radius: 0.5rem;
+  border: 1px solid var(--cp-border);
+  background-color: var(--cp-bg-card);
+  box-shadow: var(--cp-shadow-card);
+}
+
+.admin-table-wrap .table {
+  margin-bottom: 0;
+  color: var(--cp-text);
+}
+
+.admin-table-wrap .thead-light th {
+  background-color: var(--cp-surface);
+  color: var(--cp-text);
+  border-color: var(--cp-border);
+}
+
+.admin-table-wrap .table-striped tbody tr:nth-of-type(odd) {
+  background-color: rgba(var(--cp-primary-rgb), 0.04);
+}
+
+[data-theme="dark"] .admin-table-wrap .table-striped tbody tr:nth-of-type(odd) {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.admin-table-wrap tbody tr:hover {
+  background-color: rgba(var(--cp-primary-rgb), 0.08);
+}
+
+[data-theme="dark"] .admin-table-wrap tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+// ─── Dark: generic Bootstrap 4 fields (admin + app screens) ─────────────────────
+
+[data-theme="dark"] {
+  .form-control {
+    background-color: var(--cp-surface-2);
+    border-color: var(--cp-border);
+    color: var(--cp-text);
+
+    &:focus {
+      background-color: var(--cp-surface);
+      border-color: var(--cp-border-focus);
+      color: var(--cp-text);
+    }
+
+    &::placeholder {
+      color: var(--cp-text-muted);
+      opacity: 0.75;
+    }
+
+    &:disabled,
+    &[readonly] {
+      background-color: var(--cp-surface);
+      opacity: 0.85;
+    }
+  }
+
+  .custom-control-label {
+    color: var(--cp-text);
+  }
+
+  .list-group-item {
+    background-color: var(--cp-bg-card);
+    border-color: var(--cp-border);
+    color: var(--cp-text);
+  }
+
+  .text-muted {
+    color: var(--cp-text-muted) !important;
+  }
+
+  .custom-control-input:disabled ~ .custom-control-label {
+    opacity: 0.65;
+  }
+}
+
+// ─── Admin permission checklist (contrast on light + dark) ─────────────────────
+
+.admin-perm-list .list-group-item strong {
+  color: var(--cp-text);
+  font-weight: 600;
+}
+
+.admin-perm-list .list-group-item .text-muted {
+  color: var(--cp-text-muted) !important;
+}
+
+.admin-perm-list {
+  max-height: min(52vh, 440px);
+  overflow: auto;
+  border-radius: 0.375rem;
+  border: 1px solid var(--cp-border);
+}
+
+.admin-table-wrap code {
+  padding: 0.15em 0.4em;
+  font-size: 0.9em;
+  border-radius: 4px;
+  background-color: var(--cp-surface);
+  color: var(--cp-primary-hover);
+}
+
+[data-theme='dark'] .admin-table-wrap code {
+  background-color: rgba(0, 0, 0, 0.35);
+  color: var(--cp-primary-light);
 }
