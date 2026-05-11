@@ -1,0 +1,159 @@
+<section class="profile-page">
+  <div class="container">
+    <nav class="cp-breadcrumb mb-3" [attr.aria-label]="'a11y.breadcrumb' | transloco">
+      <span class="text-muted">{{ 'profile.breadcrumb' | transloco }}</span>
+    </nav>
+
+    <h1 class="profile-page__title">{{ 'profile.title' | transloco }}</h1>
+
+    @if (profile(); as p) {
+        <div class="row">
+          <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm h-100">
+              <div class="card-body">
+                <h2 class="h5 card-title">{{ 'profile.accountCardTitle' | transloco }}</h2>
+                <p class="text-muted small mb-3">
+                  {{ 'profile.memberSince' | transloco: { date: (p.createdAt | date: 'dd/MM/yyyy') } }}
+                  @if (p.roleName) {
+                    <span class="d-block mt-1">{{ 'profile.roleLabel' | transloco: { role: p.roleName } }}</span>
+                  }
+                </p>
+                <form [formGroup]="profileForm" (ngSubmit)="submitProfile()">
+                  <div class="form-group">
+                    <label for="profile-email">{{ 'common.email' | transloco }}</label>
+                    <input
+                      id="profile-email"
+                      type="email"
+                      class="form-control"
+                      [value]="p.email"
+                      readonly
+                      tabindex="-1" />
+                  </div>
+                  <div class="form-group">
+                    <label for="profile-name">{{ 'common.name' | transloco }}</label>
+                    <input
+                      id="profile-name"
+                      type="text"
+                      class="form-control"
+                      formControlName="name"
+                      [class.is-invalid]="
+                        profileForm.get('name')?.touched &&
+                        profileForm.get('name')?.invalid
+                      " />
+                    @if (
+                      profileForm.get('name')?.touched &&
+                      profileForm.get('name')?.hasError('required')
+                    ) {
+                      <div class="invalid-feedback d-block">{{ 'profile.nameRequired' | transloco }}</div>
+                    }
+                  </div>
+                  <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save mr-1"></i> {{ 'profile.saveName' | transloco }}
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm h-100">
+              <div class="card-body">
+                <div class="d-flex flex-wrap align-items-center justify-content-between mb-3">
+                  <h2 class="h5 card-title mb-0">{{ 'profile.tripsCardTitle' | transloco }}</h2>
+                  <a routerLink="/trips" class="btn btn-sm btn-outline-primary">
+                    {{ 'profile.tripsSeeAll' | transloco }}
+                  </a>
+                </div>
+                @if (!tripsList().length) {
+                  <p class="text-muted mb-0">
+                    {{ 'profile.tripsEmpty' | transloco }}
+                    <a routerLink="/trips">{{ 'profile.tripsCreate' | transloco }}</a>.
+                  </p>
+                } @else {
+                  <ul class="list-group list-group-flush profile-trip-preview">
+                    @for (t of tripsPreview(); track t.id) {
+                      <li
+                        class="list-group-item d-flex flex-wrap align-items-center justify-content-between px-0">
+                        <div class="pr-2">
+                          <a [routerLink]="['/trips', t.id]" class="font-weight-bold">{{
+                            t.name
+                          }}</a>
+                          <div class="small text-muted">
+                            {{ 'profile.tripsDateRange' | transloco: { start: (t.startDate | date: 'dd/MM/yyyy'), end: (t.endDate | date: 'dd/MM/yyyy') } }}
+                            ·
+                            {{ t.campSiteSummaries.length }}
+                            {{ (t.campSiteSummaries.length === 1 ? 'profile.campingSingular' : 'profile.campingPlural') | transloco }}
+                          </div>
+                        </div>
+                        <a [routerLink]="['/trips', t.id]" class="btn btn-sm btn-outline-primary"
+                          >{{ 'common.view' | transloco }}</a>
+                      </li>
+                    }
+                  </ul>
+                  @if (tripsList().length > tripsPreview().length) {
+                    <p class="small text-muted mt-2 mb-0">
+                      {{ 'profile.tripsShowing' | transloco: { shown: tripsPreview().length, total: tripsList().length } }}
+                      <a routerLink="/trips">{{ 'profile.tripsFullList' | transloco }}</a>
+                    </p>
+                  }
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+          <div class="card-body">
+            <h2 class="h5 card-title mb-3">{{ 'profile.favoritesTitle' | transloco }}</h2>
+            @if (!favoritesList().length) {
+              <p class="text-muted mb-0">
+                {{ 'profile.favoritesEmpty' | transloco }}
+                <a routerLink="/campings">{{ 'profile.favoritesCatalog' | transloco }}</a>.
+              </p>
+            } @else {
+              <div class="row">
+                @for (f of favoritesList(); track f.id) {
+                  <div class="col-md-6 col-lg-4 mb-4">
+                    @if (f.campSiteSummary; as c) {
+                      <article class="card profile-fav-card h-100 shadow-sm">
+                        <div class="profile-fav-card__image-wrap">
+                          <img
+                            class="card-img-top profile-fav-card__image"
+                            [src]="campsiteImageSrc(c.image) || imgFallback"
+                            [attr.alt]="'profile.favImageAlt' | transloco: { name: c.name }"
+                            (error)="onCampsiteImgError($event)" />
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                          <h3 class="h6 card-title">{{ c.name }}</h3>
+                          <p class="card-text text-muted small flex-grow-1">
+                            {{ shortDescription(c.description) }}
+                          </p>
+                          <p class="small mb-1">
+                            <strong>{{ c.pricePerNight | currency: 'CRC' }}</strong> {{ 'profile.perNight' | transloco }}
+                          </p>
+                          <p class="small text-muted mb-3">{{ locationLine(c) }}</p>
+                          <a
+                            [routerLink]="['/campings', c.id]"
+                            class="btn btn-sm btn-outline-primary mt-auto"
+                            >{{ 'profile.viewCampsite' | transloco }}</a>
+                        </div>
+                      </article>
+                    } @else {
+                      <div
+                        class="card border-warning h-100 shadow-sm"
+                        role="status">
+                        <div class="card-body">
+                          <p class="small text-muted mb-1">{{ 'profile.favUnavailable' | transloco }}</p>
+                          <p class="small mb-0">{{ 'profile.favRef' | transloco: { id: f.campSiteId } }}</p>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+  </div>
+</section>

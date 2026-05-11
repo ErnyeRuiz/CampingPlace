@@ -5,87 +5,61 @@ Aplicación web para encontrar y explorar lugares de camping en Costa Rica. Part
 ## Stack
 
 | Capa | Tecnología |
-|---|---|
-| Frontend | Angular 21 (Standalone Components + Signals) |
-| UI | Angular Material 3 |
-| Mapas | @angular/google-maps |
+|------|------------|
+| Framework | Angular 21 (standalone components + signals) |
+| UI | Angular Material 3, Bootstrap 4 |
+| i18n | Transloco |
 | Estilos | SCSS |
-| API | .NET 8 REST API |
-| Linting | angular-eslint 21 |
+| API | .NET REST (CampingCore) |
 
 ## Arquitectura
 
 ```
 src/app/
 ├── core/
-│   ├── models/          # Interfaces TypeScript (Camping, CampingFilter, etc.)
-│   ├── services/        # CampingService con Signals API
-│   └── interceptors/    # authInterceptor (Bearer token)
+│   ├── guards/           # auth, admin-section
+│   ├── interceptors/     # Bearer token + feedback HTTP
+│   ├── models/           # tipos compartidos
+│   └── services/         # lógica y estado reutilizable
+├── layouts/
+│   ├── public-layout/
+│   └── admin-layout/
 ├── features/
-│   ├── camping-list/    # Listado con filtros — lazy loaded
-│   ├── camping-detail/  # Detalle de lugar — lazy loaded
-│   └── map-view/        # Vista de mapa con pins — lazy loaded
-└── shared/
-    ├── components/      # Componentes reutilizables
-    ├── pipes/
-    └── directives/
+│   ├── admin/            # roles, permisos, usuarios, campsites (lazy)
+│   ├── auth/             # login, registro (lazy)
+│   ├── home/             # listado campings (lazy)
+│   └── camping-detail/, map-view/, trips/, profile/, …
+└── shared/components/    # navbar, footer, toast, loader, …
 ```
 
-## Configuración local
+## Ejecución local
 
-### Requisitos
-
-- Node 22+
-- npm 10+
-
-### Instalar dependencias
+**Requisitos:** Node.js 22+, npm 10+.
 
 ```bash
 npm install
+npm start
 ```
 
-### Configurar API
+Abre `http://localhost:4200/` (redirige a `/campings`).
 
-Edita `src/environments/environment.ts` y actualiza la URL de la API:
+Ajusta la URL de la API en `src/environments/environment.ts`:
 
 ```typescript
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:5000/api',
-  googleMapsApiKey: 'TU_CLAVE_AQUI'
+  apiUrl: 'https://localhost:7061/api'
 };
 ```
 
-La API .NET 8 se encuentra en: [CampingCore API](../../../API/)
-
-### Iniciar servidor de desarrollo
-
-```bash
-npm start
-```
-
-Navega a `http://localhost:4200`.
-
-### Build de producción
-
-```bash
-npm run build
-```
-
-## Rutas
-
-| Ruta | Feature |
-|---|---|
-| `/campings` | Listado de lugares con filtros |
-| `/campings/:id` | Detalle de un lugar |
-| `/map` | Vista de mapa interactivo |
-
-## Patrones Angular modernos usados
+## Patrones Angular
 
 - **Standalone components** sin NgModules
-- **Signals** (`signal()`, `computed()`) para estado reactivo en servicios y componentes
-- **Lazy loading** de rutas por feature
-- **`input.required()`** para pasar parámetros de ruta a componentes
-- **`withComponentInputBinding()`** en el router para binding automático de params
-- **`withViewTransitions()`** para animaciones de navegación
-- **Functional interceptors** (`HttpInterceptorFn`)
+- **Signals** con `signal()` / `computed()` donde aplica
+- **Lazy loading** por feature (`loadChildren`, `loadComponent`)
+- **Interceptors funcionales** (`HttpInterceptorFn`)
+- `withComponentInputBinding()`, `withViewTransitions()`, `withFetch()`
+
+## Licencia
+
+MIT

@@ -1,11 +1,14 @@
-export class CampsiteRequest {
-    constructor(
-        public name: string,
-        public description: string,
-        public latitude: number,
-        public longitude: number,
-        public pricePerNight: number,
-        public hasWater: boolean,
-        public hasElectricity: boolean
-    ){}
+/** Scalar fields for campsite create/update (sent inside multipart/form-data). */
+export interface CampsiteFormFields {
+  name: string;
+  description: string;
+  latitude: number;
+  longitude: number;
+  pricePerNight: number;
+  hasWater: boolean;
+  hasElectricity: boolean;
+  idProvincia: number;
+  idCanton: number;
+  idDistrito: number;
+  direccionExacta: string | null;
 }

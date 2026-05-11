@@ -1,18 +1,401 @@
-@if (loading()) {
-  <div class="detail__loading">Cargando...</div>
-}
+<section class="camping-detail">
+  <div class="container py-3">
+    <nav class="camping-detail__crumb" [attr.aria-label]="'a11y.breadcrumb' | transloco">
+      <a routerLink="/campings" class="camping-detail__crumb-link">{{ 'nav.home' | transloco }}</a>
+      <span class="camping-detail__crumb-sep" aria-hidden="true">/</span>
+      <span class="text-muted">{{ 'campingDetail.breadcrumbDetail' | transloco }}</span>
+    </nav>
+  </div>
 
-@if (camping(); as c) {
-  <article class="detail">
-    <header class="detail__header">
-      <h1>{{ c.name }}</h1>
-      <p class="detail__location">{{ c.province }}, {{ c.country }}</p>
-    </header>
-    <section class="detail__body">
-      <p>{{ c.description }}</p>
-      <p><strong>Precio:</strong> {{ c.pricePerNight | currency:'CRC' }} / noche</p>
-      <p><strong>Capacidad:</strong> {{ c.capacity }} personas</p>
-      <p><strong>Rating:</strong> {{ c.rating }} ({{ c.reviewCount }} reseñas)</p>
-    </section>
-  </article>
-}
+  @if (detailLoading()) {
+    <div class="container py-4">
+      <div class="cp-skeleton-card mb-4 camping-detail__hero-skeleton" aria-hidden="true"></div>
+      <div class="row">
+        <div class="col-lg-8">
+          <div class="cp-skeleton-row mb-3" style="height: 1.5rem; width: 60%;"></div>
+          <div class="cp-skeleton-row mb-2"></div>
+          <div class="cp-skeleton-row mb-2"></div>
+          <div class="cp-skeleton-row" style="width: 75%;"></div>
+        </div>
+        <div class="col-lg-4">
+          <div class="cp-skeleton-card" style="height: 180px;"></div>
+        </div>
+      </div>
+    </div>
+  } @else if (campsite(); as c) {
+    <div class="camping-detail__hero">
+      <div class="camping-detail__hero-visual">
+        @if (heroImage(); as imgSrc) {
+          <img class="camping-detail__hero-pic" [src]="imgSrc" alt="" />
+        } @else {
+          <div class="camping-detail__hero-img camping-detail__hero-img--empty" aria-hidden="true">
+            <img [src]="themedMarkUrl()" alt="" class="camping-detail__hero-placeholder-mark" width="64" height="64" decoding="async">
+          </div>
+        }
+      </div>
+      <div class="camping-detail__hero-overlay">
+        <div class="container">
+          <h1 class="camping-detail__title">{{ c.name }}</h1>
+          <p class="camping-detail__hero-meta">
+            <i class="fas fa-map-marker-alt mr-1" aria-hidden="true"></i>
+            {{ formatLocation(c) }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="container camping-detail__body">
+      <div class="row">
+        <div class="col-lg-8 order-2 order-lg-1">
+          @if (c.images.length > 1) {
+            <div class="camping-detail__thumbs">
+              @for (img of c.images; track img.id) {
+                <button
+                  type="button"
+                  class="camping-detail__thumb"
+                  [class.camping-detail__thumb--active]="$index === activeImageIdx()"
+                  (click)="selectThumb($index)">
+                  <img [src]="imageSrc(img.imageBase64)" [attr.alt]="'campingDetail.thumbAlt' | transloco: { index: $index + 1 }" />
+                </button>
+              }
+            </div>
+          }
+
+          <div class="camping-detail__prose">
+            <h2 class="camping-detail__h2">{{ 'campingDetail.description' | transloco }}</h2>
+            <p class="camping-detail__text">{{ c.description }}</p>
+          </div>
+
+          @if (c.direccionExacta) {
+            <div class="camping-detail__prose">
+              <h2 class="camping-detail__h2">{{ 'campingDetail.address' | transloco }}</h2>
+              <p class="camping-detail__text mb-0">
+                <i class="fas fa-home mr-1 text-muted" aria-hidden="true"></i>{{ c.direccionExacta }}
+              </p>
+            </div>
+          }
+        </div>
+
+        <div class="col-lg-4 order-1 order-lg-2 mb-4 mb-lg-0">
+          <div class="camping-detail__sidebar card shadow-sm">
+            <div class="card-body">
+              <div class="camping-detail__price mb-3">
+                <span class="camping-detail__amount">{{ c.pricePerNight | currency: 'CRC':'symbol-narrow':'1.0-0' }}</span>
+                <span class="camping-detail__per text-muted">{{ 'campingDetail.perNight' | transloco }}</span>
+              </div>
+
+              <div class="camping-detail__rating mb-3" [attr.aria-label]="'campingDetail.ratingApprox' | transloco">
+                @for (star of [1,2,3,4,5]; track star) {
+                  <i class="fas fa-star camping-detail__star"
+                     [class.camping-detail__star--on]="c.rating >= star - 0.5"></i>
+                }
+                <span class="camping-detail__rating-num text-muted ml-1">({{ c.rating | number: '1.0-1' }})</span>
+              </div>
+
+              <div class="camping-detail__chips mb-3">
+                <span class="badge camping-detail__chip" [class.camping-detail__chip--on]="c.hasWater">
+                  <i class="fas fa-tint mr-1" aria-hidden="true"></i> {{ 'campingDetail.water' | transloco }}: {{ (c.hasWater ? 'common.yes' : 'common.no') | transloco }}
+                </span>
+                <span class="badge camping-detail__chip" [class.camping-detail__chip--on]="c.hasElectricity">
+                  <i class="fas fa-bolt mr-1" aria-hidden="true"></i> {{ 'campingDetail.electricity' | transloco }}: {{ (c.hasElectricity ? 'common.yes' : 'common.no') | transloco }}
+                </span>
+              </div>
+
+              <a [href]="mapsUrl()" class="btn btn-outline-primary btn-block mb-3" target="_blank" rel="noopener noreferrer">
+                <i class="fas fa-map-marked-alt mr-1" aria-hidden="true"></i> {{ 'campingDetail.openMaps' | transloco }}
+              </a>
+
+              <p class="small text-muted mb-2">{{ 'campingDetail.coordinates' | transloco: { lat: (c.latitude | number: '1.4-4'), lng: (c.longitude | number: '1.4-4') } }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container camping-detail__reviews pb-4">
+      <div class="camping-detail__prose camping-detail__reviews-panel">
+        <h2 class="camping-detail__h2">{{ 'campingDetail.reviewsTitle' | transloco }}</h2>
+
+        @if (!reviews().length) {
+          <p class="text-muted mb-0 camping-detail__reviews-empty">{{ 'campingDetail.reviewsEmpty' | transloco }}</p>
+        } @else {
+          <ul class="list-unstyled camping-detail__review-list mb-0">
+            @for (r of reviews(); track r.id) {
+              <li class="camping-detail__review-item">
+                <div class="camping-detail__review-top">
+                  <div class="camping-detail__review-meta">
+                    <span class="camping-detail__review-author">{{ reviewAuthorDisplay(r) }}</span>
+                    <div
+                      class="camping-detail__rating camping-detail__rating--inline"
+                      [attr.aria-label]="'campingDetail.reviewRatingAria' | transloco: { rating: r.rating }">
+                      @for (star of [1,2,3,4,5]; track star) {
+                        <i
+                          class="fas fa-star camping-detail__star"
+                          [class.camping-detail__star--on]="r.rating >= star - 0.5"></i>
+                      }
+                    </div>
+                    <time class="text-muted small camping-detail__review-time" [attr.datetime]="reviewCreatedAt(r).toISOString()">
+                      {{ reviewCreatedAt(r) | date: 'dd/MM/yyyy, HH:mm' }}
+                    </time>
+                  </div>
+                  @if ((canEditReview(r) || canDeleteReview(r)) && auth.isLoggedIn()) {
+                    <div class="camping-detail__review-actions">
+                      @if (canEditReview(r)) {
+                        <button
+                          type="button"
+                          class="btn btn-link btn-sm camping-detail__review-action-btn"
+                          [disabled]="reviewRowActionsDisabled()"
+                          (click)="startEditReview(r)">
+                          <i class="fas fa-pen mr-1" aria-hidden="true"></i>
+                          {{ 'campingDetail.reviewEdit' | transloco }}
+                        </button>
+                      }
+                      @if (canDeleteReview(r)) {
+                        <button
+                          type="button"
+                          class="btn btn-link btn-sm text-danger camping-detail__review-action-btn"
+                          [disabled]="reviewRowActionsDisabled()"
+                          (click)="confirmDeleteReview(r)">
+                          <i class="fas fa-trash-alt mr-1" aria-hidden="true"></i>
+                          {{ 'campingDetail.reviewDelete' | transloco }}
+                        </button>
+                      }
+                    </div>
+                  }
+                </div>
+                @if (editingReviewId() === r.id) {
+                  <form
+                    [formGroup]="editReviewForm"
+                    (ngSubmit)="submitEditReview()"
+                    class="camping-detail__review-form camping-detail__review-edit-form mt-2">
+                    <div class="form-group mb-3">
+                      <span [id]="'edit-review-rating-label-' + r.id" class="d-block mb-2 camping-detail__star-picker-heading">
+                        {{ 'campingDetail.ratingLabel' | transloco }}
+                      </span>
+                      <div
+                        class="camping-detail__star-picker"
+                        role="radiogroup"
+                        [attr.aria-labelledby]="'edit-review-rating-label-' + r.id">
+                        @for (star of [1, 2, 3, 4, 5]; track star) {
+                          <button
+                            type="button"
+                            class="camping-detail__star-btn"
+                            [class.camping-detail__star-btn--on]="editReviewPickerRating() >= star - 0.5"
+                            role="radio"
+                            [attr.aria-checked]="editReviewForm.controls.rating.value === star"
+                            [attr.aria-label]="('campingDetail.starAria' | transloco: { star })"
+                            (mouseenter)="editReviewStarHover.set(star)"
+                            (mouseleave)="editReviewStarHover.set(null)"
+                            (click)="setEditReviewRating(star)">
+                            <i class="fas fa-star" aria-hidden="true"></i>
+                          </button>
+                        }
+                      </div>
+                      <p class="camping-detail__star-picker-caption small text-muted mb-0 mt-2">
+                        {{ reviewRatingLabel(editReviewPickerRating()) }}
+                      </p>
+                    </div>
+                    <div class="form-group">
+                      <label [attr.for]="'edit-review-comment-' + r.id" class="mb-1">{{ 'campingDetail.comment' | transloco }}</label>
+                      <textarea
+                        [id]="'edit-review-comment-' + r.id"
+                        class="form-control"
+                        rows="4"
+                        formControlName="comment"
+                        [placeholder]="'campingDetail.commentPlaceholder' | transloco"></textarea>
+                      @if (editReviewForm.controls.comment.touched && editReviewForm.controls.comment.errors?.['required']) {
+                        <small class="text-danger d-block mt-1">{{ 'common.validation.commentRequired' | transloco }}</small>
+                      }
+                      @if (editReviewForm.controls.comment.touched && editReviewForm.controls.comment.errors?.['minlength']) {
+                        <small class="text-danger d-block mt-1">{{ 'common.validation.commentMinLength' | transloco }}</small>
+                      }
+                    </div>
+                    <div class="d-flex flex-wrap align-items-center gap-2">
+                      <button
+                        type="submit"
+                        class="btn btn-primary btn-sm"
+                        [disabled]="editReviewForm.invalid || reviewRowBusyId() === r.id">
+                        {{ 'campingDetail.saveChanges' | transloco }}
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-outline-secondary btn-sm"
+                        [disabled]="reviewRowBusyId() === r.id"
+                        (click)="cancelEditReview()">
+                        {{ 'common.cancel' | transloco }}
+                      </button>
+                    </div>
+                  </form>
+                } @else {
+                  <p class="camping-detail__review-comment mb-0">{{ r.comment }}</p>
+                }
+              </li>
+            }
+          </ul>
+        }
+
+        <div class="camping-detail__reviews-composer-head">
+          <h3 class="h6 camping-detail__reviews-form-title mb-0">{{ 'campingDetail.yourReview' | transloco }}</h3>
+          <button
+            type="button"
+            class="btn btn-sm camping-detail__reviews-toggle"
+            [class.camping-detail__reviews-toggle--open]="reviewComposerOpen()"
+            [attr.aria-expanded]="reviewComposerOpen()"
+            aria-controls="review-composer-panel"
+            id="review-composer-toggle"
+            (click)="toggleReviewComposer()">
+            @if (reviewComposerOpen()) {
+              <i class="fas fa-chevron-up mr-1" aria-hidden="true"></i>
+              {{ 'campingDetail.collapse' | transloco }}
+            } @else {
+              <i class="fas fa-chevron-down mr-1" aria-hidden="true"></i>
+              {{ 'campingDetail.addReview' | transloco }}
+            }
+          </button>
+        </div>
+
+        @if (reviewComposerOpen()) {
+          <div id="review-composer-panel" class="camping-detail__reviews-composer-panel" role="region">
+            @if (!auth.isLoggedIn()) {
+              <p class="text-muted small mb-2">{{ 'campingDetail.loginToReview' | transloco }}</p>
+              <button type="button" class="btn btn-outline-primary btn-sm" (click)="goLogin()">
+                {{ 'campingDetail.loginButton' | transloco }}
+              </button>
+            } @else if (nextReviewEligibleAt(); as eligible) {
+              <div class="alert alert-info mb-0 camping-detail__review-cooldown" role="status">
+                <p class="mb-2">
+                  <strong>{{ 'campingDetail.cooldownTitle' | transloco }}</strong>
+                </p>
+                <p class="mb-0 small">
+                  {{ 'campingDetail.cooldownBody' | transloco: { date: (eligible | date: 'dd/MM/yyyy, HH:mm') } }}
+                </p>
+              </div>
+            } @else {
+              <form [formGroup]="reviewForm" (ngSubmit)="submitReview()" class="camping-detail__review-form">
+                <div class="form-group mb-3">
+                  <span id="review-rating-label" class="d-block mb-2 camping-detail__star-picker-heading">{{ 'campingDetail.ratingLabel' | transloco }}</span>
+                  <div
+                    class="camping-detail__star-picker"
+                    role="radiogroup"
+                    aria-labelledby="review-rating-label">
+                    @for (star of [1, 2, 3, 4, 5]; track star) {
+                      <button
+                        type="button"
+                        class="camping-detail__star-btn"
+                        [class.camping-detail__star-btn--on]="reviewPickerRating() >= star - 0.5"
+                        role="radio"
+                        [attr.aria-checked]="reviewForm.controls.rating.value === star"
+                        [attr.aria-label]="('campingDetail.starAria' | transloco: { star })"
+                        (mouseenter)="reviewStarHover.set(star)"
+                        (mouseleave)="reviewStarHover.set(null)"
+                        (click)="setReviewRating(star)">
+                        <i class="fas fa-star" aria-hidden="true"></i>
+                      </button>
+                    }
+                  </div>
+                  <p class="camping-detail__star-picker-caption small text-muted mb-0 mt-2">
+                    {{ reviewRatingLabel(reviewPickerRating()) }}
+                  </p>
+                </div>
+                <div class="form-group">
+                  <label for="review-comment" class="mb-1">{{ 'campingDetail.comment' | transloco }}</label>
+                  <textarea
+                    id="review-comment"
+                    class="form-control"
+                    rows="4"
+                    formControlName="comment"
+                    [placeholder]="'campingDetail.commentPlaceholder' | transloco"></textarea>
+                  @if (reviewForm.controls.comment.touched && reviewForm.controls.comment.errors?.['required']) {
+                    <small class="text-danger d-block mt-1">{{ 'common.validation.commentRequired' | transloco }}</small>
+                  }
+                  @if (reviewForm.controls.comment.touched && reviewForm.controls.comment.errors?.['minlength']) {
+                    <small class="text-danger d-block mt-1">{{ 'common.validation.commentMinLength' | transloco }}</small>
+                  }
+                </div>
+                <button
+                  type="submit"
+                  class="btn btn-primary"
+                  [disabled]="reviewForm.invalid || reviewSubmitBusy()">
+                  {{ 'campingDetail.publishReview' | transloco }}
+                </button>
+              </form>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="camping-detail__actions-wrap">
+      <div class="container">
+        <div class="camping-detail__actions card shadow">
+          <div class="camping-detail__actions-inner">
+            <button
+              type="button"
+              class="btn"
+              [class.btn-primary]="!isFavorite()"
+              [class.btn-outline-danger]="isFavorite()"
+              [disabled]="favoriteBusy()"
+              (click)="onFavoriteClick()">
+              @if (isFavorite()) {
+                <i class="fas fa-heart-broken mr-1" aria-hidden="true"></i> {{ 'campingDetail.removeFavorite' | transloco }}
+              } @else {
+                <i class="fas fa-heart mr-1" aria-hidden="true"></i> {{ 'campingDetail.addFavorite' | transloco }}
+              }
+            </button>
+            @if (!auth.isLoggedIn()) {
+              <span class="camping-detail__actions-hint text-muted small ml-md-2 mt-2 mt-md-0 d-block d-md-inline">{{ 'campingDetail.loginHintActions' | transloco }}</span>
+            }
+            <button
+              type="button"
+              class="btn btn-primary"
+              (click)="openAddToTrip()">
+              <i class="fas fa-suitcase-rolling mr-1" aria-hidden="true"></i> {{ 'campingDetail.addToTrip' | transloco }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    @if (addToTripOpen()) {
+      <div class="container pb-4">
+        <div class="card add-trip-panel shadow-sm">
+          <div class="card-body">
+            <h3 class="h5">{{ 'campingDetail.panelAddTrip' | transloco }}</h3>
+            @if (availableTrips().length) {
+              <div class="form-group mb-0">
+                <label for="trip-pick" class="mb-1">{{ 'campingDetail.tripSelect' | transloco }}</label>
+                <select
+                  id="trip-pick"
+                  class="form-control"
+                  [value]="selectedTripId() ?? ''"
+                  (change)="onSelectTrip($event)">
+                  <option value="">{{ 'campingDetail.tripPickPlaceholder' | transloco }}</option>
+                  @for (t of availableTrips(); track t.id) {
+                    <option [value]="t.id">
+                      {{ t.name }} ({{ t.startDate | date: 'dd/MM/yy' }} – {{ t.endDate | date: 'dd/MM/yy' }})
+                    </option>
+                  }
+                </select>
+                <p class="text-muted small mt-2 mb-0">{{ 'campingDetail.tripPickerHint' | transloco }}</p>
+              </div>
+              <div class="d-flex flex-wrap align-items-center mt-3">
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  (click)="addCampsiteToSelectedTrip()"
+                  [disabled]="addToTripBusy()">
+                  {{ 'campingDetail.add' | transloco }}
+                </button>
+                <button type="button" class="btn btn-link" (click)="closeAddToTrip()">{{ 'campingDetail.close' | transloco }}</button>
+              </div>
+            } @else {
+              <p class="text-muted mb-2">{{ 'campingDetail.noTripsLeft' | transloco }}</p>
+              <a routerLink="/trips" class="btn btn-sm btn-primary mr-2">{{ 'campingDetail.manageTrips' | transloco }}</a>
+              <button type="button" class="btn btn-sm btn-link" (click)="closeAddToTrip()">{{ 'campingDetail.close' | transloco }}</button>
+            }
+          </div>
+        </div>
+      </div>
+    }
+  }
+</section>

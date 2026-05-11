@@ -10,7 +10,7 @@ import { TripRequest } from "../../models/trips/trip-request";
 export class TripsService {
 
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${environment.apiUrl}/auth`;
+  private readonly baseUrl = `${environment.apiUrl}/trips`;
 
   readonly loading = signal(false);
 
@@ -21,9 +21,9 @@ export class TripsService {
   public getAll(): Observable<TripResponse[]> {
     this.loading.set(true);
     return this.http.get<ApiResponse<TripResponse[]>>(
-        `${this.baseUrl}/trips`
+        `${this.baseUrl}`
     ).pipe(
-        take(1), 
+        take(1),
         map(response => response.data ?? []),
         finalize(() => this.loading.set(false))
     );
@@ -37,27 +37,30 @@ export class TripsService {
   public getById(id: number): Observable<TripResponse | null> {
     this.loading.set(true);
     return this.http.get<ApiResponse<TripResponse>>(
-        `${this.baseUrl}/trips/${id}`
+        `${this.baseUrl}/${id}`
     ).pipe(
-        take(1), 
+        take(1),
         map(response => response.data),
         finalize(() => this.loading.set(false))
     );
   }
 
   /**
-   * Create a trip
-   * @param request - The request body
-   * @returns An observable of boolean
+   * @returns The new trip id, or null if creation failed.
    */
-  public create(request: TripRequest): Observable<boolean> {
+  public create(request: TripRequest): Observable<number | null> {
     this.loading.set(true);
-    return this.http.post<ApiResponse<{id: number}>>(
-        `${this.baseUrl}/trips`,
+    return this.http.post<ApiResponse<{ id: number }>>(
+        `${this.baseUrl}`,
         request
     ).pipe(
-        take(1), 
-        map(response => response.success),
+        take(1),
+        map((response) => {
+          if (!response.success || response.data == null) {
+            return null;
+          }
+          return response.data.id;
+        }),
         finalize(() => this.loading.set(false))
     );
   }
@@ -71,10 +74,10 @@ export class TripsService {
   public update(id: number, request: TripRequest): Observable<boolean> {
     this.loading.set(true);
     return this.http.put<ApiResponse<void>>(
-        `${this.baseUrl}/trips/${id}`,
+        `${this.baseUrl}/${id}`,
         request
     ).pipe(
-        take(1), 
+        take(1),
         map(response => response.success),
         finalize(() => this.loading.set(false))
     );
@@ -88,9 +91,9 @@ export class TripsService {
   public delete(id: number): Observable<boolean> {
     this.loading.set(true);
     return this.http.delete<ApiResponse<void>>(
-        `${this.baseUrl}/trips/${id}`
+        `${this.baseUrl}/${id}`
     ).pipe(
-        take(1), 
+        take(1),
         map(response => response.success),
         finalize(() => this.loading.set(false))
     );
@@ -105,10 +108,10 @@ export class TripsService {
   public addCampsite(id: number, campsiteId: number): Observable<boolean> {
     this.loading.set(true);
     return this.http.post<ApiResponse<void>>(
-        `${this.baseUrl}/trips/${id}/campsites/${campsiteId}`,
+        `${this.baseUrl}/${id}/campsites/${campsiteId}`,
         null
     ).pipe(
-        take(1), 
+        take(1),
         map(response => response.success),
         finalize(() => this.loading.set(false))
     );
@@ -123,9 +126,9 @@ export class TripsService {
   public removeCampsite(id: number, campsiteId: number): Observable<boolean> {
     this.loading.set(true);
     return this.http.delete<ApiResponse<void>>(
-        `${this.baseUrl}/trips/${id}/campsites/${campsiteId}`
+        `${this.baseUrl}/${id}/campsites/${campsiteId}`
     ).pipe(
-        take(1), 
+        take(1),
         map(response => response.success),
         finalize(() => this.loading.set(false))
     );

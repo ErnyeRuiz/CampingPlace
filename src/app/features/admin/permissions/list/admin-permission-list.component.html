@@ -1,0 +1,48 @@
+<div class="d-flex flex-wrap align-items-start align-items-lg-center justify-content-between mb-4">
+  <h1 class="cp-page-title mb-0">{{ 'adminApp.permissions.listTitle' | transloco }}</h1>
+  @if (canCreate) {
+    <button type="button" class="btn btn-primary btn-sm mt-2 mt-lg-0" (click)="create()">
+      <i class="fas fa-plus mr-1"></i>
+      {{ 'adminApp.permissions.newPermission' | transloco }}
+    </button>
+  }
+</div>
+
+@if (!rows().length) {
+  <p class="text-muted">{{ 'adminApp.permissions.empty' | transloco }}</p>
+} @else {
+  <div class="table-responsive admin-table-wrap">
+    <table class="table table-striped table-hover mb-0">
+      <thead class="thead-light">
+        <tr>
+          <th>{{ 'common.name' | transloco }}</th>
+          <th>{{ 'common.description' | transloco }}</th>
+          <th>{{ 'adminApp.permissions.colCreated' | transloco }}</th>
+          <th class="text-right">{{ 'trips.colActions' | transloco }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (r of rows(); track r.id) {
+          <tr>
+            <td><code>{{ r.name }}</code></td>
+            <td>{{ r.description || ('common.dash' | transloco) }}</td>
+            <td>{{ r.createdAt | date: 'short' }}</td>
+            <td class="text-right text-nowrap">
+              @if (canUpdate) {
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-primary mr-1"
+                  (click)="edit(r.id)">
+                  {{ 'common.edit' | transloco }}
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-danger" (click)="remove(r)">
+                  {{ 'common.delete' | transloco }}
+                </button>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

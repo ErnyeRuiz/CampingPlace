@@ -1,0 +1,72 @@
+<nav class="admin-navbar navbar fixed-top border-bottom">
+  <div class="container">
+    <div class="admin-navbar__inner">
+      <div class="admin-navbar__brand d-flex align-items-center flex-shrink-0 mr-auto mr-lg-3">
+        <a
+          routerLink="/admin"
+          class="admin-navbar__brand-logo-link"
+          (click)="closeMenu()"
+          [attr.title]="'admin.homeLogoTitle' | transloco">
+          <img
+            [src]="adminBrandLogoSrc()"
+            [attr.alt]="'nav.brandAlt' | transloco"
+            class="admin-navbar__brand-logo"
+            width="160"
+            height="32"
+            decoding="async">
+        </a>
+        <span class="admin-navbar__section-label text-uppercase small font-weight-bold ml-2 ml-sm-3">
+          <i class="fas fa-tools mr-2 d-none d-sm-inline" aria-hidden="true"></i>
+          {{ 'admin.sectionBadge' | transloco }}
+        </span>
+      </div>
+      <button
+        type="button"
+        class="navbar-toggler navbar-toggler-admin d-lg-none"
+        (click)="toggleMenu()"
+        [attr.aria-expanded]="menuOpen()"
+        aria-controls="admin-nav-collapse"
+        [attr.aria-label]="'admin.menuToggle' | transloco">
+        <span class="navbar-toggler-icon-admin">
+          <i class="fas" [class.fa-bars]="!menuOpen()" [class.fa-times]="menuOpen()" aria-hidden="true"></i>
+        </span>
+      </button>
+
+      <div
+        id="admin-nav-collapse"
+        class="collapse navbar-collapse navbar-collapse-admin"
+        [class.show]="menuOpen()">
+        <ul class="navbar-nav flex-nowrap mr-auto admin-navbar__nav mb-2 mb-lg-0">
+          @for (item of visibleItems(); track item.routerLink) {
+            <li class="nav-item mr-lg-1">
+              <a
+                class="nav-link px-2"
+                [routerLink]="item.routerLink"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                (click)="closeMenu()">
+                <i [class]="item.iconClass + ' mr-1'" aria-hidden="true"></i>
+                {{ item.labelKey | transloco }}
+              </a>
+            </li>
+          }
+        </ul>
+
+        <div class="admin-navbar__actions navbar-nav ml-lg-auto flex-row flex-nowrap align-items-center mb-2 mb-lg-0">
+          <button type="button" class="btn btn-sm btn-outline-primary mb-2 mb-lg-0 mr-2" (click)="goPublic()">
+            <i class="fas fa-globe mr-1" aria-hidden="true"></i>
+            {{ 'admin.goToSite' | transloco }}
+          </button>
+          @if (auth.isLoggedIn()) {
+            <span class="small mr-md-3 d-none d-md-inline mb-2 mb-lg-0 admin-navbar__username">{{
+              auth.currentUser()?.name
+            }}</span>
+            <button type="button" class="btn btn-sm btn-outline-secondary mb-2 mb-lg-0" (click)="logout()">
+              {{ 'admin.logout' | transloco }}
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>

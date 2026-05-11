@@ -1,0 +1,154 @@
+<div class="register-page">
+  <div class="row no-gutters register-row">
+
+    <div class="col-12 col-md-6 d-none d-md-flex">
+      <div class="register-image-panel">
+        <div class="register-image-overlay">
+          <div class="register-image-content">
+            <img [src]="authHeroMarkUrl" alt="" class="register-hero-mark" width="220" height="220" decoding="async">
+            <h2>{{ 'auth.register.heroTitleCommunity' | transloco }}</h2>
+            <p>{{ registerHeroParagraph }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-6">
+      <div class="register-form-panel">
+
+        <h2 class="register-title">{{ 'auth.register.title' | transloco }}</h2>
+        <p class="register-subtitle">{{ 'auth.register.subtitle' | transloco }}</p>
+
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
+
+          <div class="form-group mb-3">
+            <span class="cp-form-label d-block mb-2">{{ 'auth.register.accountType' | transloco }}</span>
+            <div class="register-role-grid" role="radiogroup" [attr.aria-label]="'auth.register.accountType' | transloco">
+              <label
+                class="register-role-card"
+                [class.register-role-card--active]="f['role'].value === 'customer'">
+                <input
+                  type="radio"
+                  formControlName="role"
+                  value="customer"
+                  class="register-role-input">
+                <span class="register-role-title">{{ 'auth.register.roleCustomerTitle' | transloco }}</span>
+                <span class="register-role-desc">{{ 'auth.register.roleCustomerDesc' | transloco }}</span>
+              </label>
+              <label
+                class="register-role-card"
+                [class.register-role-card--active]="f['role'].value === 'admin'">
+                <input
+                  type="radio"
+                  formControlName="role"
+                  value="admin"
+                  class="register-role-input">
+                <span class="register-role-title">{{ 'auth.register.roleAdminTitle' | transloco }}</span>
+                <span class="register-role-desc">{{ 'auth.register.roleAdminDesc' | transloco }}</span>
+              </label>
+            </div>
+            @if (f['role'].invalid && f['role'].touched) {
+              <small class="text-danger mt-1 d-block">{{ 'common.validation.roleRequired' | transloco }}</small>
+            }
+          </div>
+
+          <div class="form-group mb-3">
+            <label class="cp-form-label" for="name">{{ 'auth.register.fullName' | transloco }}</label>
+            <div class="cp-input-group">
+              <i class="fas fa-envelope cp-input-icon"></i>
+              <input
+                id="name"
+                type="text"
+                class="form-control"
+                [class.is-invalid]="f['name'].invalid && f['name'].touched"
+                formControlName="name"
+                [placeholder]="'auth.register.placeholderName' | transloco"
+                autocomplete="name">
+            </div>
+            @if (f['name'].invalid && f['name'].touched) {
+              <small class="text-danger mt-1 d-block">
+                @if (f['name'].errors?.['required']) { {{ 'common.validation.nameRequired' | transloco }} }
+                @else { {{ 'common.validation.nameInvalid' | transloco }} }
+              </small>
+            }
+          </div>
+
+          <div class="form-group mb-3">
+            <label class="cp-form-label" for="email">{{ 'common.email' | transloco }}</label>
+            <div class="cp-input-group">
+              <i class="fas fa-lock cp-input-icon"></i>
+              <input
+                id="email"
+                type="email"
+                class="form-control"
+                [class.is-invalid]="f['email'].invalid && f['email'].touched"
+                formControlName="email"
+                [placeholder]="'auth.login.placeholderEmail' | transloco"
+                autocomplete="email">
+            </div>
+            @if (f['email'].invalid && f['email'].touched) {
+              <small class="text-danger mt-1 d-block">
+                @if (f['email'].errors?.['required']) { {{ 'common.validation.emailRequired' | transloco }} }
+                @else { {{ 'common.validation.emailInvalid' | transloco }} }
+              </small>
+            }
+          </div>
+
+          <div class="form-group mb-3">
+            <label class="cp-form-label" for="password">{{ 'common.password' | transloco }}</label>
+            <div class="cp-input-group">
+              <i class="fas fa-lock cp-input-icon"></i>
+              <input
+                id="password"
+                type="password"
+                class="form-control"
+                [class.is-invalid]="f['password'].invalid && f['password'].touched"
+                formControlName="password"
+                placeholder="••••••••"
+                autocomplete="new-password">
+            </div>
+            @if (f['password'].invalid && f['password'].touched) {
+              <small class="text-danger mt-1 d-block">
+                @if (f['password'].errors?.['required']) { {{ 'common.validation.passwordRequired' | transloco }} }
+                @else { {{ 'common.validation.passwordMin' | transloco }} }
+              </small>
+            }
+          </div>
+
+          <div class="form-group mb-3">
+            <label class="cp-form-label" for="confirmPassword">{{ 'auth.reset.confirmPassword' | transloco }}</label>
+            <div class="cp-input-group">
+              <i class="fas fa-lock cp-input-icon"></i>
+              <input
+                id="confirmPassword"
+                type="password"
+                class="form-control"
+                [class.is-invalid]="f['confirmPassword'].invalid && f['confirmPassword'].touched"
+                formControlName="confirmPassword"
+                placeholder="••••••••"
+                autocomplete="new-password">
+            </div>
+            @if (f['confirmPassword'].invalid && f['confirmPassword'].touched) {
+              <small class="text-danger mt-1 d-block">
+                @if (f['confirmPassword'].errors?.['required']) { {{ 'common.validation.confirmPasswordRequired' | transloco }} }
+                @else { {{ 'common.validation.passwordsMismatch' | transloco }} }
+              </small>
+            }
+          </div>
+
+          <button type="submit" class="btn btn-register-submit w-100">
+            {{ 'auth.register.submit' | transloco }}
+          </button>
+
+        </form>
+
+        <div class="register-footer">
+          <span>{{ 'auth.register.haveAccount' | transloco }}</span>
+          <a routerLink="/auth/login">{{ 'auth.register.loginLink' | transloco }}</a>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>

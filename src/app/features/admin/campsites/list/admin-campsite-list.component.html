@@ -1,0 +1,60 @@
+<div class="d-flex flex-wrap align-items-start align-items-lg-center justify-content-between mb-4">
+  <h1 class="cp-page-title mb-0">{{ 'adminApp.campsites.listTitle' | transloco }}</h1>
+  @if (canCreate) {
+    <button type="button" class="btn btn-primary btn-sm mt-2 mt-lg-0" (click)="create()">
+      <i class="fas fa-plus mr-1"></i>
+      {{ 'adminApp.campsites.newCamping' | transloco }}
+    </button>
+  }
+</div>
+
+@if (!rows().length) {
+  <p class="text-muted">{{ 'adminApp.campsites.empty' | transloco }}</p>
+} @else {
+  <div class="table-responsive admin-table-wrap">
+    <table class="table table-sm table-striped table-hover mb-0">
+      <thead class="thead-light">
+        <tr>
+          <th>{{ 'common.name' | transloco }}</th>
+          <th>{{ 'adminApp.campsites.colPrice' | transloco }}</th>
+          <th>{{ 'adminApp.campsites.colLocationIds' | transloco }}</th>
+          <th>{{ 'adminApp.campsites.colWaterElectric' | transloco }}</th>
+          <th class="text-right">{{ 'trips.colActions' | transloco }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (r of rows(); track r.id) {
+          <tr>
+            <td>{{ r.name }}</td>
+            <td>{{ r.pricePerNight | number: '1.2-2' }}</td>
+            <td><code>{{ locationSummary(r) }}</code></td>
+            <td>
+              @if (r.hasWater) {
+                <i class="fas fa-tint text-info" [title]="'adminApp.campsites.waterTitle' | transloco"></i>
+              }
+              @if (r.hasElectricity) {
+                <i class="fas fa-bolt text-warning ml-1" [title]="'adminApp.campsites.electricTitle' | transloco"></i>
+              }
+              @if (!r.hasWater && !r.hasElectricity) {
+                —
+              }
+            </td>
+            <td class="text-right text-nowrap">
+              @if (canUpdate) {
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-primary mr-1"
+                  (click)="edit(r.id)">
+                  {{ 'common.edit' | transloco }}
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-danger" (click)="remove(r)">
+                  {{ 'common.delete' | transloco }}
+                </button>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

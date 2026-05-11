@@ -1,13 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { NavbarComponent } from './shared/components/navbar/navbar.component';
-import { FooterComponent } from './shared/components/footer/footer.component';
+import { ToastComponent } from './shared/components/toast/toast.component';
+import { LoaderComponent } from './shared/components/loader/loader.component';
+import { LanguageService } from './core/services/language.service';
 
 @Component({
   selector: 'cp-root',
   standalone: true,
-  imports: [RouterOutlet, NavbarComponent, FooterComponent],
+  imports: [RouterOutlet, ToastComponent, LoaderComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
-export class App {}
+export class App {
+  /** Inicializa idioma persistente (`LanguageService`) al arrancar la app. */
+  private readonly _language = inject(LanguageService);
+}

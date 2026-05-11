@@ -1,37 +1,139 @@
+<!-- transparentAtTop(): ver comentario en navbar.component.ts (lógica ruta + tema + scroll). -->
 <nav class="navbar navbar-expand-lg fixed-top"
-     [class.navbar-transparent]="!scrolled() && !menuOpen()"
-     [class.navbar-solid]="scrolled() || menuOpen()">
+     [class.navbar-transparent]="transparentAtTop()"
+     [class.navbar-solid]="!transparentAtTop()">
   <div class="container">
 
+    <!-- Brand -->
     <a class="navbar-brand" routerLink="/campings" (click)="closeMenu()">
-      <i class="fas fa-campground me-2"></i>
-      CampingPlace
+      <img
+        [src]="brandLogoSrc()"
+        [attr.alt]="'nav.brandAlt' | transloco"
+        class="navbar-brand-img"
+        width="180"
+        height="36"
+        decoding="async">
     </a>
 
+    <!-- Mobile toggler -->
     <button class="navbar-toggler navbar-burger"
             type="button"
             (click)="toggleMenu()"
             [attr.aria-expanded]="menuOpen()"
-            aria-label="Toggle navigation">
+            [attr.aria-label]="'nav.toggleNav' | transloco">
       <span class="navbar-toggler-icon">
         <i class="fas" [class.fa-bars]="!menuOpen()" [class.fa-times]="menuOpen()"></i>
       </span>
     </button>
 
+    <!-- Collapsible content -->
     <div class="navbar-collapse" [class.show]="menuOpen()">
-      <ul class="navbar-nav ml-auto">
-        @for (item of items; track item.routerLink){
+
+      <!-- Main nav links -->
+      <ul class="navbar-nav">
+        @for (item of items; track navItemTrackId(item)) {
           <li class="nav-item">
             <a class="nav-link"
                [routerLink]="item.routerLink"
+               [fragment]="item.fragment"
                [routerLinkActive]="item.routerLinkActive"
                [routerLinkActiveOptions]="item.routerLinkActiveOptions"
                (click)="closeMenu()">
-              <i [class]="item.class"></i> {{ item.label }}
+              <i [class]="item.class"></i>{{ item.labelKey | transloco }}
+            </a>
+          </li>
+        }
+        @if (authService.isLoggedIn()) {
+          <li class="nav-item">
+            <a class="nav-link"
+               routerLink="/trips"
+               routerLinkActive="active"
+               [routerLinkActiveOptions]="{ exact: false }"
+               (click)="closeMenu()">
+              <i class="fas fa-suitcase-rolling mr-1"></i>{{ 'nav.trips' | transloco }}
+            </a>
+          </li>
+        }
+        @if (authService.isLoggedIn() && authz.hasAdminSectionAccess()) {
+          <li class="nav-item">
+            <a class="nav-link"
+               routerLink="/admin"
+               routerLinkActive="active"
+               [routerLinkActiveOptions]="{ exact: false }"
+               (click)="closeMenu()">
+              <i class="fas fa-tools mr-1"></i>{{ 'nav.administration' | transloco }}
             </a>
           </li>
         }
       </ul>
+
+      <!-- Auth & Theme actions -->
+      <div class="navbar-actions ml-auto">
+
+        <!-- Language toggle -->
+        <div
+          class="lang-toggle-group"
+          role="group"
+          [attr.aria-label]="'a11y.languageSwitcher' | transloco">
+          <button
+            type="button"
+            class="btn-lang-toggle"
+            [attr.aria-label]="'a11y.spanishLang' | transloco"
+            [title]="'a11y.spanishLang' | transloco"
+            [attr.aria-pressed]="languageService.isSpanish()"
+            (click)="languageService.setLang('es')">
+            <img src="/icons/flags/es.svg" width="23" height="15" loading="lazy" alt="">
+          </button>
+          <button
+            type="button"
+            class="btn-lang-toggle"
+            [attr.aria-label]="'a11y.englishLang' | transloco"
+            [title]="'a11y.englishLang' | transloco"
+            [attr.aria-pressed]="languageService.isEnglish()"
+            (click)="languageService.setLang('en')">
+            <img src="/icons/flags/en.svg" width="23" height="15" loading="lazy" alt="">
+          </button>
+        </div>
+
+        <!-- Theme toggle -->
+        <button class="btn-theme-toggle"
+                (click)="themeService.toggle()"
+                [title]="(themeService.isDark() ? 'theme.switchToLight' : 'theme.switchToDark') | transloco">
+          <i class="fas" [class.fa-moon]="!themeService.isDark()" [class.fa-sun]="themeService.isDark()"></i>
+        </button>
+
+        <!-- Logged in: user name + logout -->
+        @if (authService.isLoggedIn()) {
+          <a class="navbar-username"
+             routerLink="/profile"
+             (click)="closeMenu()"
+             [attr.title]="'nav.profileTitle' | transloco">
+            <i class="fas fa-user-circle mr-1"></i>
+            {{ authService.currentUser()?.name }}
+          </a>
+          <button class="btn btn-nav-logout" (click)="logout()">
+            <i class="fas fa-sign-out-alt mr-1"></i>
+            {{ 'nav.logout' | transloco }}
+          </button>
+        }
+
+        <!-- Not logged in: register + login -->
+        @else {
+          <a class="btn btn-nav-register"
+             routerLink="/auth/register"
+             (click)="closeMenu()">
+            <i class="fas fa-user-plus mr-1"></i>
+            {{ 'nav.register' | transloco }}
+          </a>
+          <a class="btn btn-nav-login"
+             routerLink="/auth/login"
+             (click)="closeMenu()">
+            <i class="fas fa-sign-in-alt mr-1"></i>
+            {{ 'nav.login' | transloco }}
+          </a>
+        }
+
+      </div>
     </div>
 
   </div>

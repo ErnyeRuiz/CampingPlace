@@ -1,0 +1,111 @@
+<div class="login-page">
+  <div class="row no-gutters login-row">
+
+    <div class="col-12 col-md-6 d-none d-md-flex">
+      <div class="login-image-panel">
+        <div class="login-image-overlay">
+          <div class="login-image-content">
+            <img [src]="authHeroMarkUrl" alt="" class="login-hero-mark" width="220" height="220" decoding="async">
+            <h2>{{ 'auth.login.heroTitle' | transloco }}</h2>
+            <p>{{ 'auth.login.heroParagraph' | transloco }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-6">
+      <div class="login-form-panel">
+
+        <h2 class="login-title">{{ 'auth.login.title' | transloco }}</h2>
+        <p class="login-subtitle">{{ 'auth.login.subtitle' | transloco }}</p>
+
+        @if (!!adminCooldownSeconds && !adminCooldownDone) {
+          <div class="alert alert-info" role="status">
+            {{ 'auth.login.adminCooldownIntro' | transloco }}<br>
+            {{ 'auth.login.adminCooldownRemain' | transloco: { duration: adminCooldownLabel } }}
+          </div>
+        }
+
+        @if (adminCooldownDone) {
+          <div class="alert alert-success" role="status">
+            {{ 'auth.login.adminReady' | transloco }}
+          </div>
+        }
+
+        @if (adminFallbackMessage) {
+          <div class="alert alert-info" role="status">{{ adminFallbackMessage }}</div>
+        }
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
+
+          <div class="form-group mb-3">
+            <label class="cp-form-label" for="email">{{ 'common.email' | transloco }}</label>
+            <div class="cp-input-group">
+              <i class="fas fa-envelope cp-input-icon"></i>
+              <input
+                id="email"
+                type="email"
+                class="form-control"
+                [class.is-invalid]="f['email'].invalid && f['email'].touched"
+                formControlName="email"
+                [placeholder]="'auth.login.placeholderEmail' | transloco"
+                autocomplete="email">
+            </div>
+            @if (f['email'].invalid && f['email'].touched) {
+              <small class="text-danger mt-1 d-block">
+                @if (f['email'].errors?.['required']) { {{ 'common.validation.emailRequired' | transloco }} }
+                @else { {{ 'common.validation.emailInvalid' | transloco }} }
+              </small>
+            }
+          </div>
+
+          <div class="form-group mb-3">
+            <label class="cp-form-label" for="password">{{ 'common.password' | transloco }}</label>
+            <div class="cp-input-group">
+              <i class="fas fa-lock cp-input-icon"></i>
+              <input
+                id="password"
+                [type]="showPassword ? 'text' : 'password'"
+                class="form-control"
+                [class.is-invalid]="f['password'].invalid && f['password'].touched"
+                formControlName="password"
+                placeholder="••••••••"
+                autocomplete="current-password">
+              <button
+                type="button"
+                class="cp-password-toggle"
+                (click)="togglePassword()"
+                [title]="(showPassword ? 'common.hidePassword' : 'common.showPassword') | transloco">
+                <i class="fas" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
+              </button>
+            </div>
+            @if (f['password'].invalid && f['password'].touched) {
+              <small class="text-danger mt-1 d-block">
+                @if (f['password'].errors?.['required']) { {{ 'common.validation.passwordRequired' | transloco }} }
+                @else { {{ 'common.validation.passwordMin' | transloco }} }
+              </small>
+            }
+          </div>
+
+          <button type="submit" class="btn btn-login-submit w-100">
+            {{ 'auth.login.submit' | transloco }}
+          </button>
+
+        </form>
+
+        <div class="login-footer">
+          <div class="mb-2">
+            <span>{{ 'auth.login.forgotPrompt' | transloco }}</span>
+            <a routerLink="/forgot-password">{{ 'auth.login.forgotLink' | transloco }}</a>
+          </div>
+          <div>
+            <span>{{ 'auth.login.noAccount' | transloco }}</span>
+            <a routerLink="/auth/register">{{ 'auth.login.registerLink' | transloco }}</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>

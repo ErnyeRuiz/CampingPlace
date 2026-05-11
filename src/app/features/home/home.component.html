@@ -1,0 +1,133 @@
+<!-- ─── Hero Section ───────────────────────────────────────────────────────── -->
+<div class="page-header camping-hero"
+     style="background-image: url('https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&w=1920&q=80')">
+  <div class="filter"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8 offset-md-2 text-center text-white">
+        <p class="hero-brand mb-3 mb-md-4">
+          <img [src]="heroBrandUrl" [attr.alt]="'nav.brandAlt' | transloco" class="hero-brand-logo" width="420" height="84" decoding="async">
+        </p>
+        <h1 class="hero-title">
+          {{ 'home.heroTitleLine1' | transloco }}<br>
+          <span class="hero-title--accent">{{ 'home.heroTitleAccent' | transloco }}</span>
+        </h1>
+        <p class="hero-subtitle">
+          {{ 'home.heroSubtitlePart1' | transloco }}<br>
+          {{ 'home.heroSubtitlePart2' | transloco }}
+        </p>
+        <a href="#explorar" class="btn btn-neutral btn-lg mt-3">
+          <i class="fas fa-compass mr-2"></i> {{ 'home.exploreNow' | transloco }}
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Stats Bar ──────────────────────────────────────────────────────────── -->
+<div class="stats-bar">
+  <div class="container">
+    <div class="row text-center justify-content-center">
+      <div class="col-6 col-md-5">
+        <img [src]="themedMarkUrl()" alt="" class="stats-mark" width="28" height="28" decoding="async">
+        <div class="stats-number">{{ totalCount() }}</div>
+        <div class="stats-label">{{ 'home.statsCampings' | transloco }}</div>
+      </div>
+      <div class="col-6 col-md-5">
+        <i class="fas fa-star stats-icon"></i>
+        <div class="stats-number">
+          @if (averageRating() != null) {
+            {{ averageRating()! | number:'1.1-2' }}
+          } @else {
+            —
+          }
+        </div>
+        <div class="stats-label">{{ 'home.statsAvgRating' | transloco }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Camping Cards Section ─────────────────────────────────────────────── -->
+<div class="section section-gray" id="explorar">
+  <div class="container">
+
+    <div class="row mb-4">
+      <div class="col text-center">
+        <h2 class="section-title">{{ 'home.sectionTitle' | transloco }}</h2>
+        <p class="section-subtitle text-muted">
+          {{ 'home.sectionSubtitle' | transloco }}
+        </p>
+        <div class="section-divider"></div>
+      </div>
+    </div>
+
+    @if (isEmpty()) {
+      <div class="text-center py-5">
+        <img [src]="themedMarkUrl()" alt="" class="empty-state-mark mb-3" width="72" height="72" decoding="async">
+        <p class="text-muted">{{ 'home.emptyState' | transloco }}</p>
+      </div>
+    }
+
+    @if (campites().length > 0) {
+      <div class="row">
+        @for (campsite of campites(); track campsite.id) {
+          <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card camping-card h-100">
+
+              <div class="card-img-wrapper">
+                @if (favoriteCampsiteIds().has(campsite.id)) {
+                  <span class="card-fav-heart" [attr.title]="'home.favTitle' | transloco">
+                    <i class="fas fa-heart" aria-hidden="true"></i>
+                    <span class="sr-only">{{ 'home.favSrOnly' | transloco }}</span>
+                  </span>
+                }
+                @if (campsite.images && campsite.images.length > 0) {
+                  <img [src]="getImageFromBase64(campsite.images[0].imageBase64)"
+                       class="card-img-top"
+                       loading="lazy">
+                } @else {
+                  <div class="card-img-placeholder">
+                    <img [src]="themedMarkUrl()" alt="" class="card-placeholder-mark" width="48" height="48" decoding="async">
+                  </div>
+                }
+                <span class="card-badge">
+                  {{ getProvinciaName(campsite.idProvincia) }}
+                </span>
+              </div>
+
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title">{{ campsite.name }}</h5>
+
+                <p class="card-location text-muted mb-2">
+                  <i class="fas fa-map-pin mr-1"></i>
+                  {{ getCantonName(campsite.idCanton) }}, {{ getDistritoName(campsite.idDistrito) }}
+                </p>
+
+                @if (campsite.description) {
+                  <p class="card-text card-description text-muted small mb-3">
+                    {{ campsite.description | slice:0:90 }}{{ campsite.description.length > 90 ? '...' : '' }}
+                  </p>
+                }
+
+                <div class="mt-auto pt-3 d-flex justify-content-between align-items-center card-footer-row">
+                  <div class="card-price">
+                    <span class="price-amount">
+                      {{ campsite.pricePerNight | currency:'CRC':'symbol-narrow':'1.0-0' }}
+                    </span>
+                    <span class="price-label text-muted"> {{ 'home.perNight' | transloco }}</span>
+                  </div>
+                  <a [routerLink]="['/campings', campsite.id]" class="btn btn-primary btn-sm">
+                    {{ 'home.viewDetail' | transloco }}
+                  </a>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+  </div>
+</div>

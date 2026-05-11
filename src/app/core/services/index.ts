@@ -1,1 +1,1 @@
-export * from './http/camping.service';
+export * from './http/campsites.service';

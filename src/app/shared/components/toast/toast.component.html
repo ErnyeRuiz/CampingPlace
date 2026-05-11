@@ -1,0 +1,18 @@
+<div class="cp-toast-container" aria-live="polite" aria-atomic="false">
+  @for (toast of toasts(); track toast.id) {
+    <div class="cp-toast cp-toast--{{ toast.type }}" role="alert">
+      <span class="cp-toast__icon">
+        @switch (toast.type) {
+          @case ('success') { <i class="fas fa-check-circle"></i> }
+          @case ('info')    { <i class="fas fa-info-circle"></i> }
+          @case ('warning') { <i class="fas fa-exclamation-triangle"></i> }
+          @case ('danger')  { <i class="fas fa-times-circle"></i> }
+        }
+      </span>
+      <span class="cp-toast__message">{{ toast.message }}</span>
+      <button class="cp-toast__close" (click)="dismiss(toast.id)" [attr.aria-label]="'a11y.closeToast' | transloco">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  }
+</div>

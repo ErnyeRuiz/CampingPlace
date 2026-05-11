@@ -1,17 +1,128 @@
 // Google Fonts
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
 
+html {
+  scroll-behavior: smooth;
+}
+
 // Bootstrap 4 is loaded via angular.json styles array (pre-compiled CSS)
 
-// ─── Paper Kit 2 Global Variables ────────────────────────────────────────────
+// ─── Color System: Pastel Blues (Light Theme) ────────────────────────────────
 
 :root {
-  --pk-primary:       #f96332;
-  --pk-text-dark:     #2c2c2c;
-  --pk-text-muted:    #888;
-  --pk-bg-light:      #f9f9f9;
-  --pk-card-shadow:   0 6px 10px -4px rgba(0, 0, 0, .15);
-  --pk-navbar-height: 70px;
+  // Primary palette – pastel cornflower blue
+  --cp-primary:         #4A8FD9;
+  --cp-primary-hover:   #2E74C0;
+  --cp-primary-light:   #7EB5E8;
+  --cp-primary-pale:    #EBF4FF;
+  --cp-primary-rgb:     74, 143, 217;
+
+  // Backgrounds
+  --cp-bg:              #F4F9FF;
+  --cp-bg-card:         #FFFFFF;
+  --cp-surface:         #EBF4FF;
+  --cp-surface-2:       #D6EBFF;
+
+  // Text
+  --cp-text:            #1A2F4B;
+  --cp-text-muted:      #6B8EB5;
+  --cp-text-light:      #FFFFFF;
+
+  // Borders & shadows
+  --cp-border:          #C5DCF2;
+  --cp-border-focus:    #4A8FD9;
+  --cp-shadow:          0 6px 20px rgba(74, 143, 217, 0.18);
+  --cp-shadow-hover:    0 12px 32px rgba(74, 143, 217, 0.28);
+  --cp-shadow-card:     0 6px 10px -4px rgba(74, 143, 217, 0.18);
+
+  // Semantic
+  --cp-success:         #52C47A;
+  --cp-danger:          #E85D5D;
+  --cp-warning:         #F5A623;
+
+  // Toast colors
+  --cp-toast-success-bg:     #e6f8ed;
+  --cp-toast-success-border: #52C47A;
+  --cp-toast-success-text:   #1f7044;
+  --cp-toast-success-icon:   #3daa68;
+  --cp-toast-info-bg:        #e8f2fb;
+  --cp-toast-info-border:    #4A8FD9;
+  --cp-toast-info-text:      #1b5698;
+  --cp-toast-info-icon:      #4A8FD9;
+  --cp-toast-warning-bg:     #fef4e0;
+  --cp-toast-warning-border: #F5A623;
+  --cp-toast-warning-text:   #7a4f00;
+  --cp-toast-warning-icon:   #d4921a;
+  --cp-toast-danger-bg:      #fdeaea;
+  --cp-toast-danger-border:  #E85D5D;
+  --cp-toast-danger-text:    #9b1c1c;
+  --cp-toast-danger-icon:    #E85D5D;
+
+  // Legacy Paper Kit compat (keeps existing components working)
+  --pk-primary:         #4A8FD9;
+  --pk-text-dark:       #1A2F4B;
+  --pk-text-muted:      #6B8EB5;
+  --pk-bg-light:        #EBF4FF;
+  --pk-card-shadow:     0 6px 10px -4px rgba(74, 143, 217, .18);
+  --pk-navbar-height:   70px;
+
+  --cp-admin-navbar-height: 56px;
+  --cp-admin-bg:        var(--cp-bg);
+}
+
+// ─── Dark Theme ───────────────────────────────────────────────────────────────
+
+[data-theme="dark"] {
+  --cp-primary:         #6BAED6;
+  --cp-primary-hover:   #9ECAE1;
+  --cp-primary-light:   #4393C4;
+  --cp-primary-pale:    #1C2D3F;
+  --cp-primary-rgb:     107, 174, 214;
+
+  --cp-bg:              #0D1B2A;
+  --cp-bg-card:         #162233;
+  --cp-surface:         #1C2D3F;
+  --cp-surface-2:       #243447;
+
+  --cp-text:            #D4E9F7;
+  --cp-text-muted:      #8AB3CF;
+  --cp-text-light:      #FFFFFF;
+
+  --cp-border:          #2A4060;
+  --cp-border-focus:    #6BAED6;
+  --cp-shadow:          0 6px 20px rgba(0, 0, 0, 0.4);
+  --cp-shadow-hover:    0 12px 32px rgba(0, 0, 0, 0.5);
+  --cp-shadow-card:     0 6px 10px -4px rgba(0, 0, 0, 0.3);
+
+  --cp-success:         #3DA868;
+  --cp-danger:          #E85D5D;
+  --cp-warning:         #D4921A;
+
+  // Toast colors (dark theme)
+  --cp-toast-success-bg:     #0e2d1c;
+  --cp-toast-success-border: #3DA868;
+  --cp-toast-success-text:   #7dd9a5;
+  --cp-toast-success-icon:   #3DA868;
+  --cp-toast-info-bg:        #0e2035;
+  --cp-toast-info-border:    #6BAED6;
+  --cp-toast-info-text:      #9ecae1;
+  --cp-toast-info-icon:      #6BAED6;
+  --cp-toast-warning-bg:     #2e1f08;
+  --cp-toast-warning-border: #D4921A;
+  --cp-toast-warning-text:   #f0c060;
+  --cp-toast-warning-icon:   #D4921A;
+  --cp-toast-danger-bg:      #2e0e0e;
+  --cp-toast-danger-border:  #E85D5D;
+  --cp-toast-danger-text:    #f09090;
+  --cp-toast-danger-icon:    #E85D5D;
+
+  --pk-primary:         #6BAED6;
+  --pk-text-dark:       #D4E9F7;
+  --pk-text-muted:      #8AB3CF;
+  --pk-bg-light:        #1C2D3F;
+  --pk-card-shadow:     0 6px 10px -4px rgba(0, 0, 0, .3);
+
+  --cp-admin-bg:        var(--cp-bg);
 }
 
 // ─── Base ─────────────────────────────────────────────────────────────────────
@@ -24,13 +135,14 @@ html, body {
 
 body {
   font-family: 'Montserrat', sans-serif;
-  color: var(--pk-text-dark);
-  background-color: #fff;
+  color: var(--cp-text);
+  background-color: var(--cp-bg);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-// ─── Paper Kit Typography ─────────────────────────────────────────────────────
+// ─── Typography ───────────────────────────────────────────────────────────────
 
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Montserrat', sans-serif;
@@ -38,7 +150,27 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: -0.01em;
 }
 
-// ─── Paper Kit Buttons ────────────────────────────────────────────────────────
+// ─── Breadcrumb ───────────────────────────────────────────────────────────────
+
+.cp-breadcrumb {
+  font-size: 0.9rem;
+  padding-top: 0.5rem;
+  margin-bottom: 0;
+}
+
+.cp-breadcrumb__link {
+  color: var(--cp-primary, #4a8fd9);
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.cp-breadcrumb__sep {
+  margin: 0 0.35rem;
+  color: var(--cp-text-muted, #6b8eb5);
+}
+
+// ─── Buttons ──────────────────────────────────────────────────────────────────
 
 .btn {
   border-radius: 30px;
@@ -50,15 +182,27 @@ h1, h2, h3, h4, h5, h6 {
   transition: all 0.3s ease;
 
   &.btn-primary {
-    background-color: var(--pk-primary);
-    border-color: var(--pk-primary);
+    background-color: var(--cp-primary);
+    border-color: var(--cp-primary);
     color: #fff;
 
     &:hover {
-      background-color: #d94e1e;
-      border-color: #d94e1e;
+      background-color: var(--cp-primary-hover);
+      border-color: var(--cp-primary-hover);
       transform: translateY(-1px);
-      box-shadow: 0 8px 20px rgba(249, 99, 50, 0.35);
+      box-shadow: var(--cp-shadow);
+    }
+  }
+
+  &.btn-outline-primary {
+    color: var(--cp-primary);
+    border-color: var(--cp-primary);
+
+    &:hover {
+      background-color: var(--cp-primary);
+      border-color: var(--cp-primary);
+      color: #fff;
+      transform: translateY(-1px);
     }
   }
 
@@ -71,7 +215,7 @@ h1, h2, h3, h4, h5, h6 {
   &.btn-neutral {
     background-color: #fff;
     border-color: #fff;
-    color: var(--pk-primary);
+    color: var(--cp-primary);
 
     &:hover {
       transform: translateY(-1px);
@@ -80,16 +224,31 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-// ─── Paper Kit Cards ──────────────────────────────────────────────────────────
+[data-theme="dark"] .btn.btn-neutral {
+  background-color: var(--cp-bg-card);
+  border-color: var(--cp-border);
+  color: var(--cp-primary);
+
+  &:hover {
+    background-color: var(--cp-primary);
+    border-color: var(--cp-primary);
+    color: var(--cp-text-light);
+    transform: translateY(-1px);
+    box-shadow: var(--cp-shadow);
+  }
+}
+
+// ─── Cards ────────────────────────────────────────────────────────────────────
 
 .card {
   border: 0;
   border-radius: 6px;
-  box-shadow: var(--pk-card-shadow);
+  box-shadow: var(--cp-shadow-card);
+  background-color: var(--cp-bg-card);
   transition: box-shadow 0.3s ease, transform 0.3s ease;
 
   &:hover {
-    box-shadow: 0 12px 24px -4px rgba(0, 0, 0, .2);
+    box-shadow: var(--cp-shadow-hover);
     transform: translateY(-4px);
   }
 }
@@ -102,7 +261,13 @@ h1, h2, h3, h4, h5, h6 {
   flex-direction: column;
 }
 
-// ─── Page Header (Hero Section) ───────────────────────────────────────────────
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+// ─── Page Header (Hero) ───────────────────────────────────────────────────────
 
 .page-header {
   min-height: 100vh;
@@ -147,5 +312,337 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .section-gray {
-  background-color: var(--pk-bg-light);
+  background-color: var(--cp-surface);
+}
+
+// ─── Shared Form Input ────────────────────────────────────────────────────────
+
+.cp-input-group {
+  position: relative;
+
+  > .cp-input-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--cp-text-muted);
+    font-size: 0.9rem;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .form-control {
+    padding-left: 2.75rem;
+    padding-right: 2.75rem;
+    border: 1.5px solid var(--cp-border);
+    border-radius: 10px;
+    background-color: var(--cp-bg);
+    color: var(--cp-text);
+    height: 48px;
+    font-size: 0.9rem;
+    font-family: 'Montserrat', sans-serif;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.3s ease;
+
+    &::placeholder {
+      color: var(--cp-text-muted);
+      opacity: 0.7;
+    }
+
+    &:focus {
+      border-color: var(--cp-border-focus);
+      box-shadow: 0 0 0 3px rgba(var(--cp-primary-rgb), 0.15);
+      background-color: var(--cp-bg-card);
+      outline: none;
+    }
+
+    &.is-invalid {
+      border-color: var(--cp-danger);
+    }
+  }
+
+  .cp-password-toggle {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--cp-text-muted);
+    cursor: pointer;
+    padding: 0.25rem 0.4rem;
+    transition: color 0.2s;
+    z-index: 2;
+
+    &:hover { color: var(--cp-primary); }
+    &:focus { outline: none; }
+  }
+}
+
+// ─── Auth Form Label ──────────────────────────────────────────────────────────
+
+.cp-form-label {
+  font-weight: 600;
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--cp-text);
+  margin-bottom: 0.4rem;
+  display: block;
+}
+
+// ─── Auth Alert ───────────────────────────────────────────────────────────────
+
+.cp-alert-danger {
+  background-color: rgba(232, 93, 93, 0.12);
+  border: 1px solid rgba(232, 93, 93, 0.3);
+  color: var(--cp-danger);
+  border-radius: 8px;
+  font-size: 0.875rem;
+  padding: 0.65rem 1rem;
+}
+
+.cp-alert-success {
+  background-color: rgba(82, 196, 122, 0.12);
+  border: 1px solid rgba(82, 196, 122, 0.3);
+  color: var(--cp-success);
+  border-radius: 8px;
+  font-size: 0.875rem;
+  padding: 0.65rem 1rem;
+}
+
+// ─── Skeleton Loader ──────────────────────────────────────────────────────────
+
+@keyframes cp-skeleton-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+%cp-skeleton-base {
+  background: linear-gradient(
+    90deg,
+    var(--cp-surface) 25%,
+    var(--cp-surface-2) 50%,
+    var(--cp-surface) 75%
+  );
+  background-size: 200% 100%;
+  animation: cp-skeleton-shimmer 1.6s ease-in-out infinite;
+  border-radius: 8px;
+}
+
+.cp-skeleton-row {
+  @extend %cp-skeleton-base;
+  height: 2.4rem;
+  margin-bottom: 0.75rem;
+  width: 100%;
+  display: block;
+}
+
+.cp-skeleton-card {
+  @extend %cp-skeleton-base;
+  height: 200px;
+  width: 100%;
+  display: block;
+}
+
+// ─── Shared page titles (trips, admin, profile, etc.) ───────────────────────────
+
+.cp-page-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--cp-text);
+  margin-bottom: 1rem;
+}
+
+// ─── Theme toggle (shared public + admin navbar) ───────────────────────────────
+
+.btn-theme-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.35rem 0.5rem;
+  border-radius: 8px;
+  transition: color 0.2s, background-color 0.2s;
+  font-size: 1rem;
+  flex-shrink: 0;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 2px rgba(var(--cp-primary-rgb), 0.45);
+  }
+}
+
+// ─── Language toggle (public + admin navbar) ───────────────────────────────────
+
+.lang-toggle-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  flex-shrink: 0;
+}
+
+.btn-lang-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  padding: 0.26rem;
+  border-radius: 8px;
+  transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+  flex-shrink: 0;
+
+  img {
+    display: block;
+    width: 1.42rem;
+    height: auto;
+    border-radius: 2px;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06);
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 2px rgba(var(--cp-primary-rgb), 0.45);
+  }
+
+  &[aria-pressed='true'] {
+    border-color: rgba(var(--cp-primary-rgb), 0.55);
+    background-color: rgba(var(--cp-primary-rgb), 0.1);
+  }
+}
+
+// ─── Admin shell (layout + themed tables/forms) ───────────────────────────────
+
+.admin-shell {
+  min-height: 100vh;
+  background-color: var(--cp-admin-bg);
+}
+
+.admin-shell .card:hover {
+  transform: none;
+  box-shadow: var(--cp-shadow-card);
+}
+
+.admin-form-card {
+  border: 1px solid var(--cp-border);
+  border-radius: 0.5rem;
+  background-color: var(--cp-bg-card);
+}
+
+.admin-table-wrap {
+  overflow-x: auto;
+  border-radius: 0.5rem;
+  border: 1px solid var(--cp-border);
+  background-color: var(--cp-bg-card);
+  box-shadow: var(--cp-shadow-card);
+}
+
+.admin-table-wrap .table {
+  margin-bottom: 0;
+  color: var(--cp-text);
+}
+
+.admin-table-wrap .thead-light th {
+  background-color: var(--cp-surface);
+  color: var(--cp-text);
+  border-color: var(--cp-border);
+}
+
+.admin-table-wrap .table-striped tbody tr:nth-of-type(odd) {
+  background-color: rgba(var(--cp-primary-rgb), 0.04);
+}
+
+[data-theme="dark"] .admin-table-wrap .table-striped tbody tr:nth-of-type(odd) {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.admin-table-wrap tbody tr:hover {
+  background-color: rgba(var(--cp-primary-rgb), 0.08);
+}
+
+[data-theme="dark"] .admin-table-wrap tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+// ─── Dark: generic Bootstrap 4 fields (admin + app screens) ─────────────────────
+
+[data-theme="dark"] {
+  .form-control {
+    background-color: var(--cp-surface-2);
+    border-color: var(--cp-border);
+    color: var(--cp-text);
+
+    &:focus {
+      background-color: var(--cp-surface);
+      border-color: var(--cp-border-focus);
+      color: var(--cp-text);
+    }
+
+    &::placeholder {
+      color: var(--cp-text-muted);
+      opacity: 0.75;
+    }
+
+    &:disabled,
+    &[readonly] {
+      background-color: var(--cp-surface);
+      opacity: 0.85;
+    }
+  }
+
+  .custom-control-label {
+    color: var(--cp-text);
+  }
+
+  .list-group-item {
+    background-color: var(--cp-bg-card);
+    border-color: var(--cp-border);
+    color: var(--cp-text);
+  }
+
+  .text-muted {
+    color: var(--cp-text-muted) !important;
+  }
+
+  .custom-control-input:disabled ~ .custom-control-label {
+    opacity: 0.65;
+  }
+}
+
+// ─── Admin permission checklist (contrast on light + dark) ─────────────────────
+
+.admin-perm-list .list-group-item strong {
+  color: var(--cp-text);
+  font-weight: 600;
+}
+
+.admin-perm-list .list-group-item .text-muted {
+  color: var(--cp-text-muted) !important;
+}
+
+.admin-perm-list {
+  max-height: min(52vh, 440px);
+  overflow: auto;
+  border-radius: 0.375rem;
+  border: 1px solid var(--cp-border);
+}
+
+.admin-table-wrap code {
+  padding: 0.15em 0.4em;
+  font-size: 0.9em;
+  border-radius: 4px;
+  background-color: var(--cp-surface);
+  color: var(--cp-primary-hover);
+}
+
+[data-theme='dark'] .admin-table-wrap code {
+  background-color: rgba(0, 0, 0, 0.35);
+  color: var(--cp-primary-light);
 }

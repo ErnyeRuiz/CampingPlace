@@ -1,4 +1,6 @@
 // ─── Navbar ───────────────────────────────────────────────────────────────────
+// Las clases .navbar-transparent y .navbar-solid son excluyentes; las activa `transparentAtTop()`
+// desde el componente TS. No mezclar ambas: la plantilla pone una u otra según el computed.
 
 .navbar {
   height: 70px;
@@ -6,42 +8,119 @@
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
   padding: 0 1rem;
 
+  // Modo “hero”: sin fondo, texto e iconos claros para contrastar con imagen/video oscuro detrás.
   &.navbar-transparent {
     background-color: transparent;
 
     .navbar-brand,
     .nav-link {
       color: rgba(255, 255, 255, 0.95) !important;
+      &:hover { color: #fff !important; }
+    }
 
+    .navbar-toggler-icon i { color: #fff; }
+
+    .btn-nav-register {
+      color: rgba(255, 255, 255, 0.9);
+      border-color: rgba(255, 255, 255, 0.6);
       &:hover {
-        color: #fff !important;
+        background: rgba(255, 255, 255, 0.15);
+        color: #fff;
+        border-color: #fff;
       }
     }
 
-    .navbar-toggler-icon i {
+    .btn-nav-login {
+      background: rgba(255, 255, 255, 0.18);
+      border-color: rgba(255, 255, 255, 0.5);
       color: #fff;
+      &:hover {
+        background: rgba(255, 255, 255, 0.30);
+        border-color: #fff;
+      }
+    }
+
+    .btn-nav-logout {
+      color: rgba(255, 255, 255, 0.9);
+      border-color: rgba(255, 255, 255, 0.4);
+      &:hover {
+        background: rgba(255, 255, 255, 0.15);
+        color: #fff;
+      }
+    }
+
+    .navbar-username { color: rgba(255, 255, 255, 0.85); }
+
+    .btn-theme-toggle {
+      color: rgba(255, 255, 255, 0.8);
+      &:hover { color: #fff; }
+    }
+
+    .lang-toggle-group .btn-lang-toggle {
+      &[aria-pressed='true'] {
+        border-color: rgba(255, 255, 255, 0.5);
+        background: rgba(255, 255, 255, 0.12);
+      }
+
+      &:focus-visible {
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.35);
+      }
     }
   }
 
+  // Modo “barra normal”: fondo de tarjeta del tema y colores CSS variables (legible en claro/oscuro).
   &.navbar-solid {
-    background-color: rgba(255, 255, 255, 0.97);
-    box-shadow: 0 2px 12px rgba(0, 0, 0, .12);
+    background-color: var(--cp-bg-card);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, .10);
 
     .navbar-brand {
-      color: #f96332 !important;
+      color: var(--cp-primary) !important;
     }
 
     .nav-link {
-      color: #444 !important;
+      color: var(--cp-text) !important;
+      &:hover, &.active { color: var(--cp-primary) !important; }
+    }
 
-      &:hover,
-      &.active {
-        color: #f96332 !important;
+    .navbar-toggler-icon i { color: var(--cp-text); }
+
+    .btn-nav-register {
+      color: var(--cp-primary);
+      border-color: var(--cp-primary);
+      &:hover {
+        background: var(--cp-primary);
+        color: #fff;
       }
     }
 
-    .navbar-toggler-icon i {
-      color: #444;
+    .btn-nav-login {
+      background: var(--cp-primary);
+      border-color: var(--cp-primary);
+      color: #fff;
+      &:hover {
+        background: var(--cp-primary-hover);
+        border-color: var(--cp-primary-hover);
+      }
+    }
+
+    .btn-nav-logout {
+      color: var(--cp-danger);
+      border-color: var(--cp-danger);
+      &:hover {
+        background: var(--cp-danger);
+        color: #fff;
+      }
+    }
+
+    .navbar-username { color: var(--cp-text-muted); }
+
+    .btn-theme-toggle {
+      color: var(--cp-text-muted);
+      &:hover { color: var(--cp-primary); }
+    }
+
+    .lang-toggle-group .btn-lang-toggle img {
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
     }
   }
 }
@@ -52,10 +131,16 @@
   font-weight: 700;
   font-size: 1.2rem;
   letter-spacing: -0.01em;
-  transition: color 0.3s ease;
+  transition: opacity 0.3s ease;
+  display: inline-flex;
+  align-items: center;
 
-  i {
-    font-size: 1.3rem;
+  .navbar-brand-img {
+    height: 2.5rem;
+    width: auto;
+    max-width: 11rem;
+    object-fit: contain;
+    display: block;
   }
 }
 
@@ -68,10 +153,7 @@
   text-transform: uppercase;
   padding: 0.5rem 0.9rem !important;
   transition: color 0.3s ease;
-
-  i {
-    font-size: 0.9rem;
-  }
+  i { font-size: 0.85rem; }
 }
 
 // ─── Toggler ──────────────────────────────────────────────────────────────────
@@ -80,61 +162,144 @@
   border: none;
   background: transparent;
   padding: 0.4rem;
-
-  &:focus {
-    outline: none;
-    box-shadow: none;
-  }
+  &:focus { outline: none; box-shadow: none; }
 
   .navbar-toggler-icon {
     background: none;
     width: auto;
     height: auto;
-
-    i {
-      font-size: 1.3rem;
-      transition: all 0.3s ease;
-    }
+    i { font-size: 1.3rem; transition: all 0.3s ease; }
   }
 }
 
-// ─── Collapse (mobile) ────────────────────────────────────────────────────────
+// ─── Collapse ─────────────────────────────────────────────────────────────────
 
 .navbar-collapse {
   display: none;
-
-  &.show {
-    display: block;
-  }
+  &.show { display: block; }
 
   @media (min-width: 992px) {
     display: flex !important;
+    align-items: center;
+  }
+}
+
+// ─── Actions Row ──────────────────────────────────────────────────────────────
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+// ─── Auth Buttons (shared base) ───────────────────────────────────────────────
+
+.btn-nav-register,
+.btn-nav-login,
+.btn-nav-logout {
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.4rem 1rem;
+  border-width: 1.5px;
+  border-style: solid;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  transition: all 0.25s ease;
+  cursor: pointer;
+  background: transparent;
+
+  &:hover { transform: translateY(-1px); }
+}
+
+// ─── User name ────────────────────────────────────────────────────────────────
+
+.navbar-username {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.9;
   }
 }
 
 // ─── Mobile dropdown ──────────────────────────────────────────────────────────
+// Panel del menú colapsable: fondo tarjeta y enlaces con --cp-* (menuOpen() además fuerza barra sólida en TS).
 
 @media (max-width: 991.98px) {
   .navbar-collapse.show {
-    background-color: rgba(255, 255, 255, 0.97);
-    border-top: 1px solid #eee;
-    padding: 0.5rem 0 1rem;
+    background-color: var(--cp-bg-card);
+    border-top: 1px solid var(--cp-border);
+    padding: 0.75rem 0 1.25rem;
     margin: 0 -1rem;
     padding-left: 1rem;
     padding-right: 1rem;
   }
 
   .navbar-collapse.show .nav-link {
-    color: #444 !important;
-    padding: 0.6rem 0 !important;
-    border-bottom: 1px solid #f0f0f0;
+    color: var(--cp-text) !important;
+    padding: 0.65rem 0 !important;
+    border-bottom: 1px solid var(--cp-border);
 
-    &:hover {
-      color: #f96332 !important;
+    &:hover, &.active { color: var(--cp-primary) !important; }
+    &:last-child { border-bottom: none; }
+  }
+
+  .navbar-actions {
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--cp-border);
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .navbar-username {
+    width: 100%;
+    max-width: 100%;
+    padding: 0.35rem 0;
+    color: var(--cp-text-muted) !important;
+  }
+
+  .btn-nav-register,
+  .btn-nav-login,
+  .btn-nav-logout {
+    font-size: 0.78rem;
+    padding: 0.45rem 1.1rem;
+
+    &.btn-nav-register {
+      color: var(--cp-primary) !important;
+      border-color: var(--cp-primary) !important;
     }
 
-    &:last-child {
-      border-bottom: none;
+    &.btn-nav-login {
+      background: var(--cp-primary) !important;
+      border-color: var(--cp-primary) !important;
+      color: #fff !important;
     }
+
+    &.btn-nav-logout {
+      color: var(--cp-danger) !important;
+      border-color: var(--cp-danger) !important;
+    }
+  }
+
+  .btn-theme-toggle {
+    color: var(--cp-text-muted) !important;
+    &:hover { color: var(--cp-primary) !important; }
+  }
+
+  .lang-toggle-group .btn-lang-toggle img {
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
   }
 }
