@@ -106,12 +106,7 @@ export class RegisterComponent {
           this.toast.danger(
             'La cuenta se creó pero no recibimos el identificador. Contactá soporte.',
           );
-        } else {
-          this.toast.danger('No se pudo crear la cuenta. Intenta de nuevo.');
         }
-      },
-      error: () => {
-        this.toast.danger('Error al registrarse. El correo puede estar en uso.');
       },
     });
   }

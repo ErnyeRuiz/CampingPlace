@@ -40,12 +40,7 @@ export class ForgotPasswordComponent {
             'Si tu correo está registrado, recibirás un código para restablecer la contraseña. Te llevamos al inicio de sesión…',
           );
           setTimeout(() => void this.router.navigate(['/auth/login']), 2200);
-        } else {
-          this.toast.danger('No se pudo enviar la solicitud. Intenta de nuevo.');
         }
-      },
-      error: () => {
-        this.toast.danger('Error al enviar la solicitud. Intenta de nuevo más tarde.');
       },
     });
   }

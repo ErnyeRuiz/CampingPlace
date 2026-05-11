@@ -10,7 +10,6 @@ import {
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/http/auth.service';
-import { ToastService } from '../../../core/services/toast.service';
 import { ResetPasswordRequest } from '../../../core/models/auth/reset-password-request';
 
 function passwordMatchValidator(): ValidatorFn {
@@ -31,7 +30,6 @@ function passwordMatchValidator(): ValidatorFn {
 export class ResetPasswordComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly auth = inject(AuthService);
-  private readonly toast = inject(ToastService);
   private readonly router = inject(Router);
 
   /** Bound from `?code=`; cuando hay valor, se precarga en el form y el campo queda deshabilitado. */
@@ -102,14 +100,7 @@ export class ResetPasswordComponent implements OnInit {
             queryParams: { reset: 'success' },
             replaceUrl: true,
           });
-        } else {
-          this.toast.danger('No se pudo restablecer la contraseña. Intenta de nuevo.');
         }
-      },
-      error: () => {
-        this.toast.danger(
-          'No se pudo restablecer la contraseña. Verifica el código o solicita uno nuevo.',
-        );
       },
     });
   }

@@ -59,7 +59,6 @@ export class AdminPermissionFormComponent implements OnInit {
         this.roles = list;
         this.cdr.markForCheck();
       },
-      error: () => this.toast.danger('No se pudieron cargar los roles.'),
     });
 
     const idParam = this.route.snapshot.paramMap.get('id');
@@ -97,7 +96,6 @@ export class AdminPermissionFormComponent implements OnInit {
         });
       },
       error: () => {
-        this.toast.danger('Error al cargar el permiso.');
         void this.router.navigate(['/admin/permissions']);
       },
     });
@@ -118,38 +116,47 @@ export class AdminPermissionFormComponent implements OnInit {
       description: raw.description.trim() ? raw.description.trim() : null,
     };
     const assignRoleId = this.canAssignToRole ? raw.assignToRoleId : null;
+    const willAssignRole =
+      assignRoleId != null && Number(assignRoleId) > 0;
 
     if (this.permissionId === null) {
-      this.permissionsApi.create(body).subscribe({
-        next: (newId) => {
-          if (newId === null) {
-            return;
-          }
-          this.afterSaveOptionalAssign(newId, assignRoleId, true);
-        },
-        error: () => this.toast.danger('No se pudo crear el permiso.'),
-      });
+      this.permissionsApi
+        .create(
+          body,
+          willAssignRole ? { suppressSuccessToast: true } : undefined,
+        )
+        .subscribe({
+          next: (newId) => {
+            if (newId === null) {
+              return;
+            }
+            this.afterSaveOptionalAssign(newId, assignRoleId);
+          },
+        });
       return;
     }
 
-    this.permissionsApi.update(this.permissionId, body).subscribe({
-      next: (ok) => {
-        if (!ok) {
-          return;
-        }
-        this.afterSaveOptionalAssign(this.permissionId!, assignRoleId, false);
-      },
-      error: () => this.toast.danger('No se pudo actualizar el permiso.'),
-    });
+    this.permissionsApi
+      .update(
+        this.permissionId,
+        body,
+        willAssignRole ? { suppressSuccessToast: true } : undefined,
+      )
+      .subscribe({
+        next: (ok) => {
+          if (!ok) {
+            return;
+          }
+          this.afterSaveOptionalAssign(this.permissionId!, assignRoleId);
+        },
+      });
   }
 
   private afterSaveOptionalAssign(
     permissionId: number,
     roleId: number | null,
-    isNew: boolean,
   ): void {
     if (roleId === null || roleId <= 0) {
-      this.toast.success(isNew ? 'Permiso creado.' : 'Permiso actualizado.');
       void this.router.navigate(['/admin/permissions']);
       return;
     }
@@ -166,26 +173,15 @@ export class AdminPermissionFormComponent implements OnInit {
         this.rolesApi
           .replacePermissions(roleId, { permissionIds: [...existing] })
           .subscribe({
-            next: (ok) => {
-              if (ok) {
-                this.toast.success(
-                  isNew
-                    ? 'Permiso creado y asignado al rol.'
-                    : 'Permiso actualizado y asignado al rol.',
-                );
-              } else {
-                this.toast.danger('Guardado, pero no se pudo asignar al rol.');
-              }
+            next: () => {
               void this.router.navigate(['/admin/permissions']);
             },
             error: () => {
-              this.toast.danger('Guardado, pero error al asignar al rol.');
               void this.router.navigate(['/admin/permissions']);
             },
           });
       },
       error: () => {
-        this.toast.danger('No se pudo cargar el rol para asignar permisos.');
         void this.router.navigate(['/admin/permissions']);
       },
     });

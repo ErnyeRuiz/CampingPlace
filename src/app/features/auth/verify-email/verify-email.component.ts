@@ -105,12 +105,7 @@ export class VerifyEmailComponent implements OnDestroy, OnInit {
           if (success) {
             this.toast.success('Código reenviado. Revisá tu correo.');
             this.startResendCooldown();
-          } else {
-            this.toast.danger('No se pudo reenviar el código. Intenta de nuevo.');
           }
-        },
-        error: () => {
-          this.toast.danger('No se pudo reenviar el código. Intenta más tarde.');
         },
       });
   }
@@ -137,12 +132,7 @@ export class VerifyEmailComponent implements OnDestroy, OnInit {
           void this.router.navigate(['/auth/login'], {
             queryParams: { verified: 'success' },
           });
-        } else {
-          this.toast.danger('No se pudo verificar el correo. Revisá el código.');
         }
-      },
-      error: () => {
-        this.toast.danger('No se pudo verificar el correo. Intenta de nuevo.');
       },
     });
   }

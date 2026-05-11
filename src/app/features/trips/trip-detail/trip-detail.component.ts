@@ -80,7 +80,6 @@ export class TripDetailComponent implements OnInit {
           });
         } else {
           this.trip.set(null);
-          this.toast.danger('No se encontró el viaje.');
         }
       },
       error: () => this.trip.set(null),

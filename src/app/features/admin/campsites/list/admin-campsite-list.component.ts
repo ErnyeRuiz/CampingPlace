@@ -11,7 +11,6 @@ import { PERMISSIONS } from '../../../../core/constants/permissions';
 import { AuthorizationService } from '../../../../core/services/authorization.service';
 import { CampsitesService } from '../../../../core/services/http/campsites.service';
 import { CampsiteResponse } from '../../../../core/models/campsites/campsite-response';
-import { ToastService } from '../../../../core/services/toast.service';
 
 @Component({
   selector: 'cp-admin-campsite-list',
@@ -24,7 +23,6 @@ import { ToastService } from '../../../../core/services/toast.service';
 export class AdminCampsiteListComponent implements OnInit {
   private readonly api = inject(CampsitesService);
   private readonly router = inject(Router);
-  private readonly toast = inject(ToastService);
   private readonly authz = inject(AuthorizationService);
 
   readonly rows = signal<CampsiteResponse[]>([]);
@@ -44,7 +42,6 @@ export class AdminCampsiteListComponent implements OnInit {
   reload(): void {
     this.api.getManaged().subscribe({
       next: (list) => this.rows.set(list),
-      error: () => this.toast.danger('No se pudieron cargar los campings.'),
     });
   }
 
@@ -63,11 +60,9 @@ export class AdminCampsiteListComponent implements OnInit {
     this.api.delete(row.id).subscribe({
       next: (ok) => {
         if (ok) {
-          this.toast.success('Camping eliminado.');
           this.reload();
         }
       },
-      error: () => this.toast.danger('No se pudo eliminar el camping.'),
     });
   }
 

@@ -11,7 +11,6 @@ import { PERMISSIONS } from '../../../../core/constants/permissions';
 import { AuthorizationService } from '../../../../core/services/authorization.service';
 import { RolesService } from '../../../../core/services/http/roles.service';
 import { RoleResponse } from '../../../../core/models/roles/role-response';
-import { ToastService } from '../../../../core/services/toast.service';
 
 @Component({
   selector: 'cp-admin-role-list',
@@ -24,7 +23,6 @@ import { ToastService } from '../../../../core/services/toast.service';
 export class AdminRoleListComponent implements OnInit {
   private readonly rolesApi = inject(RolesService);
   private readonly router = inject(Router);
-  private readonly toast = inject(ToastService);
   private readonly authz = inject(AuthorizationService);
 
   readonly rows = signal<RoleResponse[]>([]);
@@ -44,7 +42,6 @@ export class AdminRoleListComponent implements OnInit {
   reload(): void {
     this.rolesApi.getAll().subscribe({
       next: (list) => this.rows.set(list),
-      error: () => this.toast.danger('No se pudieron cargar los roles.'),
     });
   }
 
@@ -63,11 +60,9 @@ export class AdminRoleListComponent implements OnInit {
     this.rolesApi.delete(row.id).subscribe({
       next: (ok) => {
         if (ok) {
-          this.toast.success('Rol eliminado.');
           this.reload();
         }
       },
-      error: () => this.toast.danger('No se pudo eliminar el rol.'),
     });
   }
 }

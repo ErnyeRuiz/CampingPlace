@@ -89,7 +89,6 @@ export class AdminRoleFormComponent implements OnInit {
           this.selectedPermissionIds = new Set(ids);
         },
         error: () => {
-          this.toast.danger('Error al cargar el rol.');
           void this.router.navigate(['/admin/roles']);
         },
       });
@@ -100,7 +99,6 @@ export class AdminRoleFormComponent implements OnInit {
         this.allPermissions = list;
         this.cdr.markForCheck();
       },
-      error: () => this.toast.danger('No se pudieron cargar los permisos.'),
     });
   }
 
@@ -141,39 +139,31 @@ export class AdminRoleFormComponent implements OnInit {
             return;
           }
           const canEditAfter = this.authz.hasPermission(PERMISSIONS.RoleUpdate);
-          this.toast.success(
-            canEditAfter
-              ? 'Rol creado. Asigna permisos en la siguiente pantalla.'
-              : 'Rol creado.',
-          );
           void this.router.navigate(
             canEditAfter ? ['/admin/roles', newId] : ['/admin/roles'],
           );
         },
-        error: () => this.toast.danger('No se pudo crear el rol.'),
       });
       return;
     }
 
-    this.rolesApi.update(this.roleId, body).subscribe({
+    this.rolesApi
+      .update(this.roleId, body, { suppressSuccessToast: true })
+      .subscribe({
       next: (ok) => {
         if (!ok) {
           return;
         }
         const ids = [...this.selectedPermissionIds];
         this.rolesApi.replacePermissions(this.roleId!, { permissionIds: ids }).subscribe({
-          next: (okPerm) => {
-            if (okPerm) {
-              this.toast.success('Rol y permisos actualizados.');
-            } else {
-              this.toast.danger('Rol guardado; permisos no se actualizaron.');
-            }
+          next: () => {
             void this.router.navigate(['/admin/roles']);
           },
-          error: () => this.toast.danger('Rol guardado; error al actualizar permisos.'),
+          error: () => {
+            void this.router.navigate(['/admin/roles']);
+          },
         });
       },
-      error: () => this.toast.danger('No se pudo actualizar el rol.'),
     });
   }
 }

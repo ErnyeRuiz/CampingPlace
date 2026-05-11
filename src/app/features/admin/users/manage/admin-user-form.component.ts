@@ -115,8 +115,6 @@ export class AdminUserFormComponent implements OnInit {
         this.pageLoading.set(false);
       },
       error: () => {
-        this.pageLoading.set(false);
-        this.toast.danger('No se pudo cargar el usuario o los roles.');
         void this.router.navigate(['/admin/users']);
       },
     });
@@ -161,11 +159,8 @@ export class AdminUserFormComponent implements OnInit {
         if (ok) {
           this.toast.success('Usuario actualizado.');
           void this.router.navigate(['/admin/users']);
-        } else {
-          this.toast.danger('No se pudo actualizar el usuario.');
         }
       },
-      error: () => this.toast.danger('No se pudo actualizar el usuario.'),
     });
   }
 }

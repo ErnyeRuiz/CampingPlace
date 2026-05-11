@@ -11,7 +11,6 @@ import { PERMISSIONS } from '../../../../core/constants/permissions';
 import { AuthorizationService } from '../../../../core/services/authorization.service';
 import { PermissionsService } from '../../../../core/services/http/permissions.service';
 import { PermissionResponse } from '../../../../core/models/permissions/permission-response';
-import { ToastService } from '../../../../core/services/toast.service';
 
 @Component({
   selector: 'cp-admin-permission-list',
@@ -24,7 +23,6 @@ import { ToastService } from '../../../../core/services/toast.service';
 export class AdminPermissionListComponent implements OnInit {
   private readonly api = inject(PermissionsService);
   private readonly router = inject(Router);
-  private readonly toast = inject(ToastService);
   private readonly authz = inject(AuthorizationService);
 
   readonly rows = signal<PermissionResponse[]>([]);
@@ -44,7 +42,6 @@ export class AdminPermissionListComponent implements OnInit {
   reload(): void {
     this.api.getAll().subscribe({
       next: (list) => this.rows.set(list),
-      error: () => this.toast.danger('No se pudieron cargar los permisos.'),
     });
   }
 
@@ -63,11 +60,9 @@ export class AdminPermissionListComponent implements OnInit {
     this.api.delete(row.id).subscribe({
       next: (ok) => {
         if (ok) {
-          this.toast.success('Permiso eliminado.');
           this.reload();
         }
       },
-      error: () => this.toast.danger('No se pudo eliminar el permiso.'),
     });
   }
 }

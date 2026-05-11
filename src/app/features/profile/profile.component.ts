@@ -73,7 +73,6 @@ export class ProfileComponent implements OnInit {
       next: ({ me, trips, favs, cat }) => {
         this.catalog.set(cat);
         if (!me) {
-          this.toast.danger('No se pudo cargar tu perfil. Intenta cerrar sesión y volver a entrar.');
           return;
         }
         this.profile.set({

@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../../../environments/environment';
+import { httpContextSuppressSuccessFeedback } from '../../context/http-feedback-context';
 import { ApiResponse } from '../../models/api/api-response';
 import { RolePermissionsRequest } from '../../models/roles/role-permissions-request';
 import { RoleResponse } from '../../models/roles/role-response';
@@ -61,9 +62,21 @@ export class RolesService {
     );
   }
 
-  update(id: number, body: RoleUpsertRequest): Observable<boolean> {
+  update(
+    id: number,
+    body: RoleUpsertRequest,
+    opts?: { suppressSuccessToast?: boolean },
+  ): Observable<boolean> {
     this.loading.set(true);
-    return this.http.put<ApiResponse<void>>(`${this.baseUrl}/${id}`, body).pipe(
+    const httpOpts =
+      opts?.suppressSuccessToast === true
+        ? { context: httpContextSuppressSuccessFeedback() }
+        : undefined;
+    return this.http.put<ApiResponse<void>>(
+      `${this.baseUrl}/${id}`,
+      body,
+      httpOpts,
+    ).pipe(
       take(1),
       map((r) => r.success),
         finalize(() => {

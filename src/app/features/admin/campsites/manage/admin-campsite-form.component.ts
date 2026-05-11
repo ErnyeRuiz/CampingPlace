@@ -211,7 +211,6 @@ export class AdminCampsiteFormComponent implements OnInit, OnDestroy {
 
     this.locationApi.loadUbicacionCatalog().subscribe({
       next: (cat) => (this.catalog = cat),
-      error: () => this.toast.danger('No se pudo cargar el catálogo de ubicación.'),
     });
 
     if (idParam === null) {
@@ -252,7 +251,6 @@ export class AdminCampsiteFormComponent implements OnInit, OnDestroy {
         });
       },
       error: () => {
-        this.toast.danger('Error al cargar el camping.');
         void this.router.navigate(['/admin/campsites']);
       },
     });
@@ -288,10 +286,8 @@ export class AdminCampsiteFormComponent implements OnInit, OnDestroy {
           if (newId === null) {
             return;
           }
-          this.toast.success('Camping creado.');
           void this.router.navigate(['/admin/campsites']);
         },
-        error: () => this.toast.danger('No se pudo crear el camping.'),
       });
       return;
     }
@@ -302,11 +298,9 @@ export class AdminCampsiteFormComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (ok) => {
           if (ok) {
-            this.toast.success('Camping actualizado.');
             void this.router.navigate(['/admin/campsites']);
           }
         },
-        error: () => this.toast.danger('No se pudo actualizar el camping.'),
       });
   }
 }

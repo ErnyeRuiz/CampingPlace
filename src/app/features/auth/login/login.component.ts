@@ -183,8 +183,6 @@ export class LoginComponent implements OnInit, OnDestroy {
           } else {
             this.router.navigate(['/campings']);
           }
-        } else {
-          this.toast.danger('Credenciales incorrectas. Verifica tu correo y contraseña.');
         }
       },
       error: (err: HttpErrorResponse) => {
@@ -222,8 +220,6 @@ export class LoginComponent implements OnInit, OnDestroy {
             msg || 'Tu cuenta de administrador aún no está disponible.';
           return;
         }
-
-        this.toast.danger('Error al iniciar sesión. Intenta de nuevo más tarde.');
       },
     });
   }
