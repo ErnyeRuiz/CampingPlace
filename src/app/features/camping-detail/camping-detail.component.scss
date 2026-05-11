@@ -90,6 +90,14 @@
   color: var(--cp-primary, #4a8fd9);
   font-size: 4rem;
 
+  .camping-detail__hero-placeholder-mark {
+    height: 4rem;
+    width: auto;
+    max-width: 70%;
+    object-fit: contain;
+    opacity: 0.85;
+  }
+
   @media (min-width: 992px) {
     height: clamp(12rem, 22vw, 17.5rem);
     max-height: min(280px, 38vh);

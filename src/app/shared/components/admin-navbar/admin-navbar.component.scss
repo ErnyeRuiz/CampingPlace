@@ -21,6 +21,38 @@
   height: 100%;
 }
 
+.admin-navbar__brand {
+  min-height: 2rem;
+}
+
+.admin-navbar__brand-logo-link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  line-height: 0;
+}
+
+.admin-navbar__brand-logo {
+  height: 1.65rem;
+  width: auto;
+  max-width: 9.5rem;
+  object-fit: contain;
+  display: block;
+}
+
+.admin-navbar__section-label {
+  color: var(--cp-text-muted);
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+@media (max-width: 575.98px) {
+  .admin-navbar__brand-logo {
+    max-width: 7.5rem;
+  }
+}
+
 .admin-navbar .navbar-brand {
   color: var(--cp-primary);
   letter-spacing: 0.08em;
@@ -264,7 +296,7 @@
     flex-wrap: nowrap;
   }
 
-  .admin-navbar .navbar-brand.mr-auto {
+  .admin-navbar__brand {
     margin-right: 0.75rem !important;
   }
 

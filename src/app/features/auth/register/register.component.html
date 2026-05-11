@@ -6,7 +6,7 @@
       <div class="register-image-panel">
         <div class="register-image-overlay">
           <div class="register-image-content">
-            <i class="fas fa-campground"></i>
+            <img [src]="authHeroMarkUrl" alt="" class="register-hero-mark" width="220" height="220" decoding="async">
             <h2>Nos complace que te unas a nuestra comunidad</h2>
             <p>{{ registerHeroParagraph }}</p>
           </div>
@@ -19,11 +19,6 @@
       <div class="register-form-panel">
 
         <!-- Brand -->
-        <a class="register-brand" routerLink="/campings">
-          <i class="fas fa-campground"></i>
-          <span>CampingPlace</span>
-        </a>
-
         <h2 class="register-title">Crear Cuenta</h2>
         <p class="register-subtitle">Ingresa tus datos para registrarte en CampingPlace</p>
 

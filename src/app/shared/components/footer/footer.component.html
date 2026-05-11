@@ -2,22 +2,15 @@
   <div class="container">
     <div class="row align-items-center">
 
-      <div class="col-md-4 text-center text-md-left mb-3 mb-md-0">
-        <span class="footer-brand">
-          <i class="fas fa-campground mr-2"></i>CampingPlace
+      <div class="col-md-2 text-center text-md-left mb-3 mb-md-0">
+        <span class="footer-brand d-inline-flex align-items-center">
+          <img [src]="footerBrandUrl" alt="CampingPlace" class="footer-brand-logo" width="220" height="44" decoding="async">
         </span>
       </div>
 
-      <div class="col-md-4 text-center mb-3 mb-md-0">
-        <ul class="footer-links list-unstyled mb-0">
-          <!-- <li><a routerLink="/campings">Explorar</a></li> -->
-          <!-- <li><a routerLink="/map">Mapa</a></li> -->
-        </ul>
-      </div>
-
-      <div class="col-md-4 text-center text-md-right">
+      <div class="col-md-7 text-center text-md-right">
         <p class="footer-copy mb-0">
-          &copy; {{ year }} CampingPlace. Todos los derechos reservados.
+          &copy; {{ year }} CampingPlace. Proyecto de portafolio desarrollado por <a [href]="linkedinUrl" target="_blank">Ernye Ruiz Cerdas</a>.
         </p>
       </div>
 

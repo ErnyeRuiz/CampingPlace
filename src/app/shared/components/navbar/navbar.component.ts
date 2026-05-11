@@ -1,4 +1,5 @@
 import { Component, HostListener, computed, inject, signal } from '@angular/core';
+import { AppBranding } from '../../../core/branding/app-branding';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { filter } from 'rxjs/operators';
@@ -43,6 +44,16 @@ export class NavbarComponent {
       )
       .subscribe(() => this.routePath.set(NavbarComponent.normalizePath(this.router.url)));
   }
+
+  /** Wordmark: hero o fondo oscuro → marca clara; tarjeta clara → marca oscura. */
+  readonly brandLogoSrc = computed(() => {
+    if (this.transparentAtTop()) {
+      return AppBranding.wordmarkOnDarkBg;
+    }
+    return this.themeService.isDark()
+      ? AppBranding.wordmarkOnDarkBg
+      : AppBranding.wordmarkOnLightBg;
+  });
 
   /** Whether the navbar is transparent at the top of the page */
   readonly transparentAtTop = computed(() => {

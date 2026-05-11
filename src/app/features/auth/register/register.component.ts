@@ -13,6 +13,7 @@ import { AuthService } from '../../../core/services/http/auth.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { RegisterRequest, RegisterRole } from '../../../core/models/auth/register-request';
 import { SESSION_STORAGE_KEYS } from '../../../core/constants/session-storage.keys';
+import { authHeroMarkUrl, injectAuthFormBrandLogoUrl } from '../../../core/branding/app-branding';
 
 function passwordMatchValidator(): ValidatorFn {
   return (group: AbstractControl): ValidationErrors | null => {
@@ -35,6 +36,9 @@ export class RegisterComponent {
   private readonly auth   = inject(AuthService);
   private readonly toast  = inject(ToastService);
   private readonly router = inject(Router);
+
+  readonly authFormBrandLogoUrl = injectAuthFormBrandLogoUrl();
+  readonly authHeroMarkUrl = authHeroMarkUrl;
 
   showPassword        = false;
   showConfirmPassword = false;

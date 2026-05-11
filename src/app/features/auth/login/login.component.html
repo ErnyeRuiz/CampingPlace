@@ -6,7 +6,7 @@
       <div class="login-image-panel">
         <div class="login-image-overlay">
           <div class="login-image-content">
-            <i class="fas fa-campground"></i>
+            <img [src]="authHeroMarkUrl" alt="" class="login-hero-mark" width="220" height="220" decoding="async">
             <h2>Bienvenido de vuelta</h2>
             <p>
               Descubre los mejores lugares para acampar en Costa Rica.
@@ -22,11 +22,6 @@
       <div class="login-form-panel">
 
         <!-- Brand -->
-        <a class="login-brand" routerLink="/campings">
-          <i class="fas fa-campground"></i>
-          <span>CampingPlace</span>
-        </a>
-
         <h2 class="login-title">Iniciar Sesión</h2>
         <p class="login-subtitle">Ingresa tus credenciales para continuar</p>
 

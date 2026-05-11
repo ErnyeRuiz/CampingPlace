@@ -5,7 +5,7 @@
       <div class="login-image-panel">
         <div class="login-image-overlay">
           <div class="login-image-content">
-            <i class="fas fa-envelope-circle-check"></i>
+            <img [src]="authHeroMarkUrl" alt="" class="login-hero-mark" width="220" height="220" decoding="async">
             <h2>Verificá tu correo</h2>
             <p>
               Ingresá el código de 6 dígitos que te enviamos por email para activar tu cuenta
@@ -20,8 +20,7 @@
       <div class="login-form-panel">
 
         <a class="login-brand" routerLink="/campings">
-          <i class="fas fa-campground"></i>
-          <span>CampingPlace</span>
+          <img [src]="authFormBrandLogoUrl()" alt="CampingPlace" class="login-brand-logo" width="220" height="44" decoding="async">
         </a>
 
         <h2 class="login-title">Verificar email</h2>

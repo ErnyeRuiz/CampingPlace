@@ -12,6 +12,7 @@ import { SESSION_STORAGE_KEYS } from '../../../core/constants/session-storage.ke
 import { AuthService } from '../../../core/services/http/auth.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { isAppInternalPath } from '../../../core/utils/return-url';
+import { authHeroMarkUrl, injectAuthFormBrandLogoUrl } from '../../../core/branding/app-branding';
 
 function formatDurationParts(totalSeconds: number): string {
   const s = Math.max(0, Math.floor(totalSeconds));
@@ -75,6 +76,9 @@ export class LoginComponent implements OnInit, OnDestroy {
   private readonly toast = inject(ToastService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+
+  readonly authFormBrandLogoUrl = injectAuthFormBrandLogoUrl();
+  readonly authHeroMarkUrl = authHeroMarkUrl;
 
   private adminIntervalId: ReturnType<typeof setInterval> | null = null;
 

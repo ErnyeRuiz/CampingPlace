@@ -5,6 +5,9 @@
   <div class="container">
     <div class="row">
       <div class="col-md-8 offset-md-2 text-center text-white">
+        <p class="hero-brand mb-3 mb-md-4">
+          <img [src]="heroBrandUrl" alt="CampingPlace" class="hero-brand-logo" width="420" height="84" decoding="async">
+        </p>
         <h1 class="hero-title">
           Descubre los mejores<br>
           <span class="hero-title--accent">Lugares de Camping</span>
@@ -26,7 +29,7 @@
   <div class="container">
     <div class="row text-center justify-content-center">
       <div class="col-6 col-md-5">
-        <i class="fas fa-campground stats-icon"></i>
+        <img [src]="themedMarkUrl()" alt="" class="stats-mark" width="28" height="28" decoding="async">
         <div class="stats-number">{{ totalCount() }}</div>
         <div class="stats-label">Campings</div>
       </div>
@@ -61,7 +64,7 @@
 
     @if (isEmpty()) {
       <div class="text-center py-5">
-        <i class="fas fa-campground fa-3x text-muted mb-3"></i>
+        <img [src]="themedMarkUrl()" alt="" class="empty-state-mark mb-3" width="72" height="72" decoding="async">
         <p class="text-muted">No se encontraron lugares de camping.</p>
       </div>
     }
@@ -85,7 +88,7 @@
                        loading="lazy">
                 } @else {
                   <div class="card-img-placeholder">
-                    <i class="fas fa-campground"></i>
+                    <img [src]="themedMarkUrl()" alt="" class="card-placeholder-mark" width="48" height="48" decoding="async">
                   </div>
                 }
                 <span class="card-badge">

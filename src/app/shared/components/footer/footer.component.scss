@@ -13,8 +13,12 @@
   font-size: 1.1rem;
   color: #fff;
 
-  i {
-    color: #f96332;
+  .footer-brand-logo {
+    height: 3.00rem;
+    width: auto;
+    max-width: 13.5rem;
+    object-fit: contain;
+    display: block;
   }
 }
 

@@ -116,8 +116,17 @@
   font-weight: 700;
   font-size: 1.2rem;
   letter-spacing: -0.01em;
-  transition: color 0.3s ease;
-  i { font-size: 1.3rem; }
+  transition: opacity 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+
+  .navbar-brand-img {
+    height: 2.5rem;
+    width: auto;
+    max-width: 11rem;
+    object-fit: contain;
+    display: block;
+  }
 }
 
 // ─── Nav Links ────────────────────────────────────────────────────────────────

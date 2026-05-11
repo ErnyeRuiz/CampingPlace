@@ -29,6 +29,7 @@ import { CampsiteReviewResponse } from '../../core/models/campsites/campsite-rev
 import { FavoriteResponse } from '../../core/models/favorites/favorite-response';
 import { TripResponse } from '../../core/models/trips/trip-response';
 import { UbicacionCatalog } from '../../core/models/location/ubicacion-catalog';
+import { injectThemedMarkUrl } from '../../core/branding/app-branding';
 
 const REVIEW_COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000;
 
@@ -49,6 +50,8 @@ export class CampingDetailComponent implements OnInit {
   private readonly router          = inject(Router);
   private readonly toast           = inject(ToastService);
   private readonly fb              = inject(FormBuilder);
+
+  readonly themedMarkUrl = injectThemedMarkUrl();
 
   readonly id = input.required({ transform: numberAttribute });
 

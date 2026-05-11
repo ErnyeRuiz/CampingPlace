@@ -29,18 +29,27 @@
     rgba(13, 27, 42, 0.85) 100%
   );
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   padding: 3.5rem;
 }
 
 .register-image-content {
   color: #fff;
 
-  i.fas.fa-campground {
-    font-size: 2.8rem;
-    margin-bottom: 1.25rem;
+  .register-hero-mark {
+    height: 6.5rem;
+    width: auto;
+    max-width: min(75vw, 15.5rem);
+    aspect-ratio: 1;
+    object-fit: contain;
     display: block;
-    opacity: 0.9;
+    //margin-bottom: 1.75rem;
+    filter: drop-shadow(0 3px 14px rgba(0, 0, 0, 0.35));
+
+    @media (min-width: 1200px) {
+      height: 7.5rem;
+      max-width: min(75vw, 17.5rem);
+    }
   }
 
   h2 {
@@ -107,16 +116,12 @@
   margin-bottom: 2.5rem;
   justify-content: center;
 
-  i {
-    font-size: 1.75rem;
-    color: var(--cp-primary);
-  }
-
-  span {
-    font-size: 1.35rem;
-    font-weight: 700;
-    color: var(--cp-text);
-    letter-spacing: -0.02em;
+  .register-brand-logo {
+    height: 2.35rem;
+    width: auto;
+    max-width: 15rem;
+    object-fit: contain;
+    display: block;
   }
 }
 

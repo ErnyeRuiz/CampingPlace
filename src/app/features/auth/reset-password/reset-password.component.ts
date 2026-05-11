@@ -11,6 +11,7 @@ import {
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/http/auth.service';
 import { ResetPasswordRequest } from '../../../core/models/auth/reset-password-request';
+import { authHeroMarkUrl, injectAuthFormBrandLogoUrl } from '../../../core/branding/app-branding';
 
 function passwordMatchValidator(): ValidatorFn {
   return (group: AbstractControl): ValidationErrors | null => {
@@ -31,6 +32,9 @@ export class ResetPasswordComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+
+  readonly authFormBrandLogoUrl = injectAuthFormBrandLogoUrl();
+  readonly authHeroMarkUrl = authHeroMarkUrl;
 
   /** Bound from `?code=`; cuando hay valor, se precarga en el form y el campo queda deshabilitado. */
   readonly codeFromQuery = input<string | undefined>(undefined, { alias: 'code' });

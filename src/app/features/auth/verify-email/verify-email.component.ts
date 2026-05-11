@@ -11,6 +11,7 @@ import { SESSION_STORAGE_KEYS } from '../../../core/constants/session-storage.ke
 import { VerifyEmailRequest } from '../../../core/models/auth/verify-email-request';
 import { AuthService } from '../../../core/services/http/auth.service';
 import { ToastService } from '../../../core/services/toast.service';
+import { authHeroMarkUrl, injectAuthFormBrandLogoUrl } from '../../../core/branding/app-branding';
 
 @Component({
   selector: 'cp-verify-email',
@@ -24,6 +25,9 @@ export class VerifyEmailComponent implements OnDestroy, OnInit {
   private readonly auth = inject(AuthService);
   private readonly toast = inject(ToastService);
   private readonly router = inject(Router);
+
+  readonly authFormBrandLogoUrl = injectAuthFormBrandLogoUrl();
+  readonly authHeroMarkUrl = authHeroMarkUrl;
 
   private userId: number | null = null;
   private resendCooldownTimerId: ReturnType<typeof setInterval> | null = null;

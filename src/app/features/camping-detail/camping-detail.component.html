@@ -29,7 +29,7 @@
           <img class="camping-detail__hero-pic" [src]="imgSrc" alt="" />
         } @else {
           <div class="camping-detail__hero-img camping-detail__hero-img--empty" aria-hidden="true">
-            <i class="fas fa-campground"></i>
+            <img [src]="themedMarkUrl()" alt="" class="camping-detail__hero-placeholder-mark" width="64" height="64" decoding="async">
           </div>
         }
       </div>

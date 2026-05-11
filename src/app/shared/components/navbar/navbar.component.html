@@ -6,8 +6,13 @@
 
     <!-- Brand -->
     <a class="navbar-brand" routerLink="/campings" (click)="closeMenu()">
-      <i class="fas fa-campground mr-2"></i>
-      CampingPlace
+      <img
+        [src]="brandLogoSrc()"
+        alt="CampingPlace"
+        class="navbar-brand-img"
+        width="180"
+        height="36"
+        decoding="async">
     </a>
 
     <!-- Mobile toggler -->

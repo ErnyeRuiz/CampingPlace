@@ -23,6 +23,7 @@ import { AuthService } from '../../core/services/http/auth.service';
 import { FavoritesService } from '../../core/services/http/favorites.services';
 import { FavoriteResponse } from '../../core/models/favorites/favorite-response';
 import { DashboardService } from '../../core/services/http/dashboard.service';
+import { AppBranding, injectThemedMarkUrl } from '../../core/branding/app-branding';
 
 @Component({
   selector: 'cp-home',
@@ -39,6 +40,9 @@ export class HomeComponent implements OnInit {
   private readonly favorites = inject(FavoritesService);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
+
+  readonly themedMarkUrl = injectThemedMarkUrl();
+  readonly heroBrandUrl = AppBranding.wordmarkOnDarkBg;
 
   readonly campites = signal<CampsiteResponse[]>([]);
   /** Evita mostrar “vacío” antes de que termine la primera carga (sin UI de loading local). */

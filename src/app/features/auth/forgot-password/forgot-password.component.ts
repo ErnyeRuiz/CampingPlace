@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/http/auth.service';
 import { ToastService } from '../../../core/services/toast.service';
+import { authHeroMarkUrl, injectAuthFormBrandLogoUrl } from '../../../core/branding/app-branding';
 
 @Component({
   selector: 'cp-forgot-password',
@@ -16,6 +17,9 @@ export class ForgotPasswordComponent {
   private readonly auth = inject(AuthService);
   private readonly toast = inject(ToastService);
   private readonly router = inject(Router);
+
+  readonly authFormBrandLogoUrl = injectAuthFormBrandLogoUrl();
+  readonly authHeroMarkUrl = authHeroMarkUrl;
 
   readonly form: FormGroup = this.fb.group({
     email: ['', [Validators.required, Validators.email]],

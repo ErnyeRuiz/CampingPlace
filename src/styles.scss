@@ -224,6 +224,20 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+[data-theme="dark"] .btn.btn-neutral {
+  background-color: var(--cp-bg-card);
+  border-color: var(--cp-border);
+  color: var(--cp-primary);
+
+  &:hover {
+    background-color: var(--cp-primary);
+    border-color: var(--cp-primary);
+    color: var(--cp-text-light);
+    transform: translateY(-1px);
+    box-shadow: var(--cp-shadow);
+  }
+}
+
 // ─── Cards ────────────────────────────────────────────────────────────────────
 
 .card {

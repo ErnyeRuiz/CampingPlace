@@ -1,8 +1,9 @@
-import { Component, HostListener, inject, signal } from '@angular/core';
+import { Component, HostListener, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../core/services/http/auth.service';
 import { AuthorizationService } from '../../../core/services/authorization.service';
 import { ThemeService } from '../../../core/services/theme.service';
+import { AppBranding } from '../../../core/branding/app-branding';
 
 @Component({
   selector: 'cp-admin-navbar',
@@ -16,6 +17,12 @@ export class AdminNavbarComponent {
   protected readonly authz = inject(AuthorizationService);
   protected readonly themeService = inject(ThemeService);
   private readonly router = inject(Router);
+
+  readonly adminBrandLogoSrc = computed(() =>
+    this.themeService.isDark()
+      ? AppBranding.wordmarkOnDarkBg
+      : AppBranding.wordmarkOnLightBg,
+  );
 
   /** Menú colapsable en vista estrecha (sin depender del JS de Bootstrap). */
   protected readonly menuOpen = signal(false);
