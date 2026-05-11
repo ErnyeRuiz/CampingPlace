@@ -9,6 +9,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { AuthService } from '../../../core/services/http/auth.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { RegisterRequest, RegisterRole } from '../../../core/models/auth/register-request';
@@ -26,7 +27,7 @@ function passwordMatchValidator(): ValidatorFn {
 @Component({
   selector: 'cp-register',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, TranslocoPipe],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
 })
@@ -36,6 +37,7 @@ export class RegisterComponent {
   private readonly auth   = inject(AuthService);
   private readonly toast  = inject(ToastService);
   private readonly router = inject(Router);
+  private readonly transloco = inject(TranslocoService);
 
   readonly authFormBrandLogoUrl = injectAuthFormBrandLogoUrl();
   readonly authHeroMarkUrl = authHeroMarkUrl;
@@ -60,21 +62,12 @@ export class RegisterComponent {
   get registerHeroParagraph(): string {
     const role = this.f['role'].value as RegisterRole | null;
     if (role === 'admin') {
-      return (
-        'Tu espacio en la naturaleza merece ser vivido por muchos: vos abrís la puerta del fogón ' +
-        'y la comunidad se encarga del resto.'
-      );
+      return this.transloco.translate('auth.register.heroAdmin');
     }
     if (role === 'customer') {
-      return (
-        'Como cliente vas a explorar campings, comparar opciones y reservar tu próxima estadía ' +
-        'en compañía de otros amantes de la naturaleza.'
-      );
+      return this.transloco.translate('auth.register.heroCustomer');
     }
-    return (
-      'Gracias por querer sumarte. Elegí Cliente para viajar y descubrir, ' +
-      'o Administrador para dar vida a tu camping desde adentro.'
-    );
+    return this.transloco.translate('auth.register.heroDefault');
   }
 
   togglePassword():        void { this.showPassword        = !this.showPassword; }
@@ -101,14 +94,14 @@ export class RegisterComponent {
             String(userId),
           );
           this.toast.success(
-            '¡Cuenta creada! Te enviamos un código a tu correo para verificar tu cuenta.',
+            this.transloco.translate('toast.registerSuccess'),
           );
           void this.router.navigate(['/verify-email'], {
             queryParams: { email: this.registerForm.value.email },
           });
         } else if (success) {
           this.toast.danger(
-            'La cuenta se creó pero no recibimos el identificador. Contactá soporte.',
+            this.transloco.translate('toast.registerNoUserId'),
           );
         }
       },

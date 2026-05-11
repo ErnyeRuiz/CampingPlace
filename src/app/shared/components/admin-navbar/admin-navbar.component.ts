@@ -1,5 +1,6 @@
 import { Component, HostListener, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { AuthService } from '../../../core/services/http/auth.service';
 import { AuthorizationService } from '../../../core/services/authorization.service';
 import { ThemeService } from '../../../core/services/theme.service';
@@ -8,7 +9,7 @@ import { AppBranding } from '../../../core/branding/app-branding';
 @Component({
   selector: 'cp-admin-navbar',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive, TranslocoPipe],
   templateUrl: './admin-navbar.component.html',
   styleUrl: './admin-navbar.component.scss',
 })

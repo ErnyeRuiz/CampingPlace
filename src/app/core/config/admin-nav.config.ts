@@ -1,7 +1,8 @@
 import { PERMISSIONS, PermissionKey } from '../constants/permissions';
 
 export interface AdminNavItem {
-  label: string;
+  /** Clave Transloco, p. ej. `admin.nav.roles`. */
+  labelKey: string;
   routerLink: string;
   /** Solo rol SuperUser (sesión o JWT). */
   superUserOnly?: boolean;
@@ -15,25 +16,25 @@ export interface AdminNavItem {
  */
 export const ADMIN_NAV_ITEMS: readonly AdminNavItem[] = [
   {
-    label: 'Roles',
+    labelKey: 'admin.nav.roles',
     routerLink: '/admin/roles',
     permissions: [PERMISSIONS.RoleCreate, PERMISSIONS.RoleUpdate],
     iconClass: 'fas fa-user-shield',
   },
   {
-    label: 'Permisos',
+    labelKey: 'admin.nav.permissions',
     routerLink: '/admin/permissions',
     permissions: [PERMISSIONS.PermissionCreate, PERMISSIONS.PermissionUpdate],
     iconClass: 'fas fa-key',
   },
   {
-    label: 'Campings',
+    labelKey: 'admin.nav.campsites',
     routerLink: '/admin/campsites',
     permissions: [PERMISSIONS.CampsiteCreate, PERMISSIONS.CampsiteUpdate],
     iconClass: 'fas fa-campground',
   },
   {
-    label: 'Usuarios',
+    labelKey: 'admin.nav.users',
     routerLink: '/admin/users',
     superUserOnly: true,
     iconClass: 'fas fa-users',

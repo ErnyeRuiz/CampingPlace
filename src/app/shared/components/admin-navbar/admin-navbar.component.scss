@@ -124,15 +124,6 @@
   line-height: 1;
 }
 
-.admin-navbar .btn-theme-toggle {
-  color: var(--cp-text-muted);
-
-  &:hover {
-    color: var(--cp-primary);
-    background-color: rgba(var(--cp-primary-rgb), 0.08);
-  }
-}
-
 .admin-navbar__username {
   color: var(--cp-text);
   font-weight: 600;
@@ -286,9 +277,10 @@
     }
   }
 
+  // No encoger por debajo del contenido: si flex-shrink > 0, los enlaces
+  // siguen pintándose a ancho completo y se superponen a la zona de acciones (idioma).
   .admin-navbar .admin-navbar__nav.navbar-nav {
-    flex: 0 1 auto;
-    min-width: 0;
+    flex: 0 0 auto;
     margin-bottom: 0 !important;
   }
 

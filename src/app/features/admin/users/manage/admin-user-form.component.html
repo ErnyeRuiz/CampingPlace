@@ -1,21 +1,21 @@
 @if (pageLoading()) {
-  <p class="text-muted">Cargando…</p>
+  <p class="text-muted">{{ 'common.loading' | transloco }}</p>
 } @else {
   <section class="admin-form-page">
-    <nav class="cp-breadcrumb mb-3" aria-label="Migas de pan">
-      <a routerLink="/admin/users" class="cp-breadcrumb__link">Usuarios</a>
+    <nav class="cp-breadcrumb mb-3" [attr.aria-label]="'a11y.breadcrumb' | transloco">
+      <a routerLink="/admin/users" class="cp-breadcrumb__link">{{ 'admin.nav.users' | transloco }}</a>
       <span class="cp-breadcrumb__sep" aria-hidden="true">/</span>
-      <span class="text-muted">Editar</span>
+      <span class="text-muted">{{ 'adminApp.users.breadcrumbEdit' | transloco }}</span>
     </nav>
 
     <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-md-between mb-3 mb-md-4">
       <div>
-        <h1 class="cp-page-title mb-1">Editar usuario</h1>
+        <h1 class="cp-page-title mb-1">{{ 'adminApp.users.formEditTitle' | transloco }}</h1>
         @if (userId() !== null) {
           <p class="text-muted small mb-0">ID {{ userId() }}</p>
         }
       </div>
-      <a routerLink="/admin/users" class="btn btn-outline-secondary btn-sm mt-2 mt-md-0">« Volver a la lista</a>
+      <a routerLink="/admin/users" class="btn btn-outline-secondary btn-sm mt-2 mt-md-0">{{ 'common.backToList' | transloco }}</a>
     </div>
 
   <div class="row">
@@ -23,15 +23,15 @@
       <form [formGroup]="form" (ngSubmit)="submit()" class="card shadow-sm admin-form-card">
         <div class="card-body">
           <div class="form-group">
-            <label for="user-name">Nombre</label>
+            <label for="user-name">{{ 'common.name' | transloco }}</label>
             <input id="user-name" class="form-control" formControlName="name" autocomplete="name" />
             @if (form.get('name')?.touched && form.get('name')?.invalid) {
-              <div class="invalid-feedback d-block">Nombre obligatorio (máx. 200 caracteres).</div>
+              <div class="invalid-feedback d-block">{{ 'adminApp.users.nameRequired' | transloco }}</div>
             }
           </div>
 
           <div class="form-group">
-            <label for="user-email">Correo</label>
+            <label for="user-email">{{ 'common.email' | transloco }}</label>
             <input
               id="user-email"
               type="email"
@@ -39,28 +39,28 @@
               formControlName="email"
               autocomplete="email" />
             @if (form.get('email')?.touched && form.get('email')?.invalid) {
-              <div class="invalid-feedback d-block">Correo obligatorio y válido.</div>
+              <div class="invalid-feedback d-block">{{ 'adminApp.users.emailRequired' | transloco }}</div>
             }
           </div>
 
           <div class="form-group">
-            <label for="user-role">Rol</label>
+            <label for="user-role">{{ 'adminApp.users.colRole' | transloco }}</label>
             <select id="user-role" class="form-control" formControlName="roleId">
-              <option [ngValue]="null">Seleccione un rol</option>
+              <option [ngValue]="null">{{ 'adminApp.users.selectRole' | transloco }}</option>
               @for (r of roles(); track r.id) {
                 <option [ngValue]="r.id">{{ r.name }}</option>
               }
             </select>
             @if (form.get('roleId')?.touched && form.get('roleId')?.invalid) {
-              <div class="invalid-feedback d-block">Debe seleccionar un rol.</div>
+              <div class="invalid-feedback d-block">{{ 'adminApp.users.roleRequired' | transloco }}</div>
             }
           </div>
 
           <hr class="my-4" />
 
-          <h2 class="h6 mb-3">Cambiar contraseña <span class="text-muted font-weight-normal">(opcional)</span></h2>
+          <h2 class="h6 mb-3">{{ 'adminApp.users.changePassword' | transloco }} <span class="text-muted font-weight-normal">{{ 'adminApp.users.optional' | transloco }}</span></h2>
           <p class="small text-muted mb-3">
-            Si no desea cambiarla, deje ambos campos vacíos. Si la cambia, mínimo {{ PASSWORD_MIN }} caracteres y debe coincidir en ambos campos.
+            {{ 'adminApp.users.passwordHint' | transloco:{ min: PASSWORD_MIN } }}
           </p>
 
           <div class="custom-control custom-checkbox mb-3">
@@ -70,11 +70,11 @@
               id="hide-pwd"
               [checked]="hidePassword()"
               (change)="toggleHidePassword()" />
-            <label class="custom-control-label" for="hide-pwd">Ocultar contraseña</label>
+            <label class="custom-control-label" for="hide-pwd">{{ 'adminApp.users.hidePassword' | transloco }}</label>
           </div>
 
           <div class="form-group">
-            <label for="user-password">Nueva contraseña</label>
+            <label for="user-password">{{ 'adminApp.users.newPassword' | transloco }}</label>
             <input
               id="user-password"
               class="form-control"
@@ -84,7 +84,7 @@
           </div>
 
           <div class="form-group">
-            <label for="user-password-confirm">Confirmar contraseña</label>
+            <label for="user-password-confirm">{{ 'adminApp.users.confirmPassword' | transloco }}</label>
             <input
               id="user-password-confirm"
               class="form-control"
@@ -99,17 +99,17 @@
             (form.get('password')?.value || form.get('confirmPassword')?.value)
           ) {
             <div class="alert alert-warning py-2 small mb-3">
-              La contraseña debe tener al menos {{ PASSWORD_MIN }} caracteres en ambos campos.
+              {{ 'adminApp.users.passwordTooShortBoth' | transloco:{ min: PASSWORD_MIN } }}
             </div>
           }
 
           @if (form.touched && form.errors?.['passwordMismatch']) {
-            <div class="alert alert-warning py-2 small mb-3">Las contraseñas no coinciden.</div>
+            <div class="alert alert-warning py-2 small mb-3">{{ 'adminApp.users.passwordMismatch' | transloco }}</div>
           }
 
           <button type="submit" class="btn btn-primary mt-2">
             <i class="fas fa-check mr-1" aria-hidden="true"></i>
-            Guardar
+            {{ 'common.save' | transloco }}
           </button>
         </div>
       </form>

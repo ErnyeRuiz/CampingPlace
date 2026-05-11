@@ -9,6 +9,7 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { pairwise, startWith } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { CampingFilter } from '../../core/models';
@@ -28,7 +29,7 @@ import { AppBranding, injectThemedMarkUrl } from '../../core/branding/app-brandi
 @Component({
   selector: 'cp-home',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, TranslocoPipe],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })

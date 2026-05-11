@@ -6,14 +6,15 @@ import {
   signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { UserSystemResponse } from '../../../../core/models/user/user-system-response';
 import { UserService } from '../../../../core/services/http/user.service';
 
 @Component({
   selector: 'cp-admin-users',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, TranslocoPipe],
   templateUrl: './admin-users.component.html',
   styleUrl: './admin-users.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

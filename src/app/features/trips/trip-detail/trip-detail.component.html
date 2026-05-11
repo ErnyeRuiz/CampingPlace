@@ -1,11 +1,11 @@
 <section class="trip-detail-page">
   <div class="container">
-    <nav class="cp-breadcrumb mb-3" aria-label="Migas de pan">
-      <a routerLink="/profile" class="cp-breadcrumb__link">Perfil</a>
+    <nav class="cp-breadcrumb mb-3" [attr.aria-label]="'a11y.breadcrumb' | transloco">
+      <a routerLink="/profile" class="cp-breadcrumb__link">{{ 'profile.breadcrumb' | transloco }}</a>
       <span class="cp-breadcrumb__sep" aria-hidden="true">/</span>
-      <a routerLink="/trips" class="cp-breadcrumb__link">Mis viajes</a>
+      <a routerLink="/trips" class="cp-breadcrumb__link">{{ 'trips.breadcrumb' | transloco }}</a>
       <span class="cp-breadcrumb__sep" aria-hidden="true">/</span>
-      <span class="text-muted">Detalle</span>
+      <span class="text-muted">{{ 'tripDetail.breadcrumbDetail' | transloco }}</span>
     </nav>
 
     @if (trip(); as t) {
@@ -18,10 +18,10 @@
       </header>
 
       <div class="d-flex flex-wrap align-items-center justify-content-between mb-3">
-        <h2 class="h5 mb-0">Campings en este viaje</h2>
+        <h2 class="h5 mb-0">{{ 'tripDetail.campsitesHeading' | transloco }}</h2>
         @if (!addOpen()) {
           <button type="button" class="btn btn-sm btn-primary" (click)="startAdd()">
-            <i class="fas fa-plus mr-1"></i> Agregar camping
+            <i class="fas fa-plus mr-1"></i> {{ 'tripDetail.addCampsite' | transloco }}
           </button>
         }
       </div>
@@ -31,13 +31,13 @@
           <div class="card-body">
             <div class="form-row align-items-end">
               <div class="form-group col-md-8 mb-2 mb-md-0">
-                <label for="add-campsite" class="mb-1">Elegir camping</label>
+                <label for="add-campsite" class="mb-1">{{ 'tripDetail.pickCampsite' | transloco }}</label>
                 <select
                   id="add-campsite"
                   class="form-control"
                   [value]="selectedAddId() ?? ''"
                   (change)="onSelectCampsiteToAdd($event)">
-                  <option value="">—</option>
+                  <option value="">{{ 'tripDetail.pickEmpty' | transloco }}</option>
                   @for (c of availableCampsites(); track c.id) {
                     <option [value]="c.id">{{ c.name }}</option>
                   }
@@ -49,20 +49,20 @@
                   class="btn btn-primary btn-block"
                   (click)="addSelected()"
                   [disabled]="!availableCampsites().length">
-                  Añadir
+                  {{ 'tripDetail.add' | transloco }}
                 </button>
-                <button type="button" class="btn btn-link" (click)="cancelAdd()">Cancelar</button>
+                <button type="button" class="btn btn-link" (click)="cancelAdd()">{{ 'common.cancel' | transloco }}</button>
               </div>
             </div>
             @if (!availableCampsites().length) {
-              <p class="text-muted small mb-0 mt-2">No hay más campings disponibles para añadir (o no hay campings en el catálogo).</p>
+              <p class="text-muted small mb-0 mt-2">{{ 'tripDetail.noAvailableCampsites' | transloco }}</p>
             }
           </div>
         </div>
       }
 
       @if (!t.campSiteSummaries.length) {
-        <p class="text-muted">Aún no has agregado campings a este viaje.</p>
+        <p class="text-muted">{{ 'tripDetail.emptyCampsites' | transloco }}</p>
       } @else {
         <div class="row">
           @for (c of t.campSiteSummaries; track c.id) {
@@ -72,21 +72,21 @@
                   <img
                     class="card-img-top trip-campsite-card__image"
                     [src]="getImageFromBase64(c.image ?? '')"
-                    [alt]="'Imagen: ' + c.name"
+                    [attr.alt]="'tripDetail.favImageAlt' | transloco: { name: c.name }"
                     (error)="onCampsiteImgError($event)" />
                 </div>
                 <div class="card-body d-flex flex-column">
                   <h3 class="h5 card-title">{{ c.name }}</h3>
                   <p class="card-text text-muted small flex-grow-1">{{ shortDescription(c.description) }}</p>
-                  <p class="small mb-1"><strong>{{ c.pricePerNight | currency: 'CRC' }}</strong> / noche</p>
+                  <p class="small mb-1"><strong>{{ c.pricePerNight | currency: 'CRC' }}</strong> {{ 'tripDetail.perNight' | transloco }}</p>
                   <p class="small text-muted mb-3">{{ locationLine(c) }}</p>
                   <div class="mt-auto">
-                    <a [routerLink]="['/campings', c.id]" class="btn btn-sm btn-outline-primary mr-1">Ver camping</a>
+                    <a [routerLink]="['/campings', c.id]" class="btn btn-sm btn-outline-primary mr-1">{{ 'tripDetail.viewCampsite' | transloco }}</a>
                     @if (removeConfirmCampsiteId() === c.id) {
-                      <button type="button" class="btn btn-sm btn-danger mr-1" (click)="doRemoveCampsite(c.id)">Confirmar</button>
-                      <button type="button" class="btn btn-sm btn-link" (click)="cancelRemoveCampsite()">No</button>
+                      <button type="button" class="btn btn-sm btn-danger mr-1" (click)="doRemoveCampsite(c.id)">{{ 'common.confirm' | transloco }}</button>
+                      <button type="button" class="btn btn-sm btn-link" (click)="cancelRemoveCampsite()">{{ 'common.no' | transloco }}</button>
                     } @else {
-                      <button type="button" class="btn btn-sm btn-outline-danger" (click)="askRemoveCampsite(c.id)">Quitar del viaje</button>
+                      <button type="button" class="btn btn-sm btn-outline-danger" (click)="askRemoveCampsite(c.id)">{{ 'tripDetail.removeConfirm' | transloco }}</button>
                     }
                   </div>
                 </div>

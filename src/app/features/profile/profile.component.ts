@@ -6,6 +6,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { ToastService } from '../../core/services/toast.service';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -26,7 +27,7 @@ const TRIPS_PREVIEW_LIMIT = 5;
 @Component({
   selector: 'cp-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, TranslocoPipe],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss',
 })
@@ -38,6 +39,7 @@ export class ProfileComponent implements OnInit {
   private readonly location = inject(LocationService);
   private readonly fb       = inject(FormBuilder);
   private readonly toast    = inject(ToastService);
+  private readonly transloco = inject(TranslocoService);
 
   readonly profile       = signal<UserResponse | null>(null);
   readonly tripsList     = signal<TripResponse[]>([]);
@@ -110,7 +112,7 @@ export class ProfileComponent implements OnInit {
           this.auth.updateStoredProfile({ name });
           const p = this.profile();
           if (p) this.profile.set({ ...p, name });
-          this.toast.success('Perfil actualizado correctamente.');
+          this.toast.success(this.transloco.translate('toast.profileUpdated'));
         }
       },
     });

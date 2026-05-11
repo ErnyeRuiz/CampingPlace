@@ -23,6 +23,7 @@ import { UserUpdateRequest } from '../../../../core/models/user/user-update-requ
 import { RolesService } from '../../../../core/services/http/roles.service';
 import { UserService } from '../../../../core/services/http/user.service';
 import { ToastService } from '../../../../core/services/toast.service';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 
 const PASSWORD_MIN = 6;
 
@@ -46,7 +47,7 @@ function adminPasswordGroupValidator(): ValidatorFn {
 @Component({
   selector: 'cp-admin-user-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, TranslocoPipe],
   templateUrl: './admin-user-form.component.html',
   styleUrl: './admin-user-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -59,6 +60,7 @@ export class AdminUserFormComponent implements OnInit {
   private readonly usersApi = inject(UserService);
   private readonly rolesApi = inject(RolesService);
   private readonly toast = inject(ToastService);
+  private readonly transloco = inject(TranslocoService);
 
   readonly roles = signal<RoleResponse[]>([]);
   readonly pageLoading = signal(true);
@@ -101,7 +103,7 @@ export class AdminUserFormComponent implements OnInit {
         this.roles.set(roles);
         if (!user) {
           this.pageLoading.set(false);
-          this.toast.danger('Usuario no encontrado.');
+          this.toast.danger(this.transloco.translate('toast.adminUserNotFound'));
           void this.router.navigate(['/admin/users']);
           return;
         }
@@ -157,7 +159,7 @@ export class AdminUserFormComponent implements OnInit {
     this.usersApi.updateById(id, body).subscribe({
       next: (ok) => {
         if (ok) {
-          this.toast.success('Usuario actualizado.');
+          this.toast.success(this.transloco.translate('toast.adminUserUpdated'));
           void this.router.navigate(['/admin/users']);
         }
       },

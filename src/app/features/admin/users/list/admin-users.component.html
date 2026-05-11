@@ -1,24 +1,24 @@
 <div class="d-flex flex-wrap align-items-start justify-content-between mb-4">
-  <h1 class="cp-page-title mb-0">Usuarios</h1>
+  <h1 class="cp-page-title mb-0">{{ 'adminApp.users.listTitle' | transloco }}</h1>
 </div>
 
 @if (loading()) {
-  <p class="text-muted mb-0">Cargando usuarios…</p>
+  <p class="text-muted mb-0">{{ 'adminApp.users.loading' | transloco }}</p>
 } @else if (!rows().length) {
-  <p class="text-muted">No hay usuarios registrados.</p>
+  <p class="text-muted">{{ 'adminApp.users.empty' | transloco }}</p>
 } @else {
   <div class="table-responsive admin-table-wrap">
     <table class="table table-striped table-hover mb-0">
       <thead class="thead-light">
         <tr>
-          <th>Nombre</th>
-          <th>Correo</th>
-          <th>Rol</th>
-          <th>Registro</th>
-          <th class="text-right">Campings</th>
-          <th class="text-right">Viajes</th>
-          <th class="text-right">Favoritos</th>
-          <th class="text-right">Acciones</th>
+          <th>{{ 'common.name' | transloco }}</th>
+          <th>{{ 'common.email' | transloco }}</th>
+          <th>{{ 'adminApp.users.colRole' | transloco }}</th>
+          <th>{{ 'adminApp.users.colRegistered' | transloco }}</th>
+          <th class="text-right">{{ 'adminApp.users.colCampings' | transloco }}</th>
+          <th class="text-right">{{ 'adminApp.users.colTrips' | transloco }}</th>
+          <th class="text-right">{{ 'adminApp.users.colFavorites' | transloco }}</th>
+          <th class="text-right">{{ 'trips.colActions' | transloco }}</th>
         </tr>
       </thead>
       <tbody>
@@ -33,7 +33,7 @@
             <td class="text-right">{{ r.favorites | number }}</td>
             <td class="text-right text-nowrap">
               <button type="button" class="btn btn-sm btn-outline-primary" (click)="edit(r.id)">
-                Editar
+                {{ 'common.edit' | transloco }}
               </button>
             </td>
           </tr>

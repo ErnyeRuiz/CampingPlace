@@ -1,16 +1,16 @@
 <section class="trips-page">
   <div class="container">
-    <nav class="cp-breadcrumb mb-3" aria-label="Migas de pan">
-      <a routerLink="/profile" class="cp-breadcrumb__link">Perfil</a>
+    <nav class="cp-breadcrumb mb-3" [attr.aria-label]="'a11y.breadcrumb' | transloco">
+      <a routerLink="/profile" class="cp-breadcrumb__link">{{ 'profile.breadcrumb' | transloco }}</a>
       <span class="cp-breadcrumb__sep" aria-hidden="true">/</span>
-      <span class="text-muted">Mis viajes</span>
+      <span class="text-muted">{{ 'trips.breadcrumb' | transloco }}</span>
     </nav>
 
     <div class="d-flex flex-wrap align-items-start align-items-md-center justify-content-between mb-4">
-      <h1 class="cp-page-title mb-0">Mis viajes</h1>
+      <h1 class="cp-page-title mb-0">{{ 'trips.title' | transloco }}</h1>
       @if (formMode() === null) {
         <button type="button" class="btn btn-primary mt-2 mt-md-0" (click)="startCreate()">
-          <i class="fas fa-plus mr-1"></i> Nuevo viaje
+          <i class="fas fa-plus mr-1"></i> {{ 'trips.newTrip' | transloco }}
         </button>
       }
     </div>
@@ -19,11 +19,15 @@
       <div class="card shadow-sm mb-4 trips-page__form-card">
         <div class="card-body">
           <h2 class="h5 card-title">
-            @if (formMode() === 'create') { Nuevo viaje } @else { Editar viaje }
+            @if (formMode() === 'create') {
+              {{ 'trips.formNewTitle' | transloco }}
+            } @else {
+              {{ 'trips.formEditTitle' | transloco }}
+            }
           </h2>
           <form [formGroup]="form" (ngSubmit)="submitForm()">
             <div class="form-group">
-              <label for="trip-name">Nombre</label>
+              <label for="trip-name">{{ 'common.name' | transloco }}</label>
               <input
                 id="trip-name"
                 class="form-control"
@@ -33,7 +37,7 @@
             </div>
             <div class="form-row">
               <div class="form-group col-md-6">
-                <label for="trip-start">Inicio</label>
+                <label for="trip-start">{{ 'trips.labelStart' | transloco }}</label>
                 <input
                   id="trip-start"
                   class="form-control"
@@ -42,7 +46,7 @@
                   [class.is-invalid]="f['startDate'].touched && f['startDate'].invalid" />
               </div>
               <div class="form-group col-md-6">
-                <label for="trip-end">Fin</label>
+                <label for="trip-end">{{ 'trips.labelEnd' | transloco }}</label>
                 <input
                   id="trip-end"
                   class="form-control"
@@ -53,9 +57,9 @@
             </div>
             <div class="d-flex flex-wrap align-items-center">
               <button type="submit" class="btn btn-primary">
-                <i class="fas fa-check mr-1"></i> Guardar
+                <i class="fas fa-check mr-1"></i> {{ 'common.save' | transloco }}
               </button>
-              <button type="button" class="btn btn-outline-secondary ml-2" (click)="cancelForm()">Cancelar</button>
+              <button type="button" class="btn btn-outline-secondary ml-2" (click)="cancelForm()">{{ 'common.cancel' | transloco }}</button>
             </div>
           </form>
         </div>
@@ -63,16 +67,16 @@
     }
 
     @if (!tripsList().length) {
-      <p class="text-muted">Aún no tienes viajes. Crea el primero para agregar campings.</p>
+      <p class="text-muted">{{ 'trips.emptyList' | transloco }}</p>
     } @else {
       <div class="table-responsive shadow-sm card">
         <table class="table table-hover table-striped trips-table mb-0">
           <thead class="thead-light">
             <tr>
-              <th>Nombre</th>
-              <th>Fechas</th>
-              <th>Campings</th>
-              <th class="text-right">Acciones</th>
+              <th>{{ 'common.name' | transloco }}</th>
+              <th>{{ 'trips.colDates' | transloco }}</th>
+              <th>{{ 'trips.colCampings' | transloco }}</th>
+              <th class="text-right">{{ 'trips.colActions' | transloco }}</th>
             </tr>
           </thead>
           <tbody>
@@ -88,15 +92,15 @@
                   <span class="badge badge-pill badge-secondary">{{ t.campSiteSummaries.length }}</span>
                 </td>
                 <td class="text-right text-nowrap">
-                  <a [routerLink]="['/trips', t.id]" class="btn btn-sm btn-outline-primary mr-1">Ver</a>
-                  <button type="button" class="btn btn-sm btn-outline-secondary mr-1" (click)="startEdit(t)">Editar</button>
+                  <a [routerLink]="['/trips', t.id]" class="btn btn-sm btn-outline-primary mr-1">{{ 'common.view' | transloco }}</a>
+                  <button type="button" class="btn btn-sm btn-outline-secondary mr-1" (click)="startEdit(t)">{{ 'common.edit' | transloco }}</button>
                   @if (deleteConfirmId() === t.id) {
                     <span class="d-inline-block">
-                      <button type="button" class="btn btn-sm btn-danger mr-1" (click)="doDelete(t.id)">Confirmar</button>
-                      <button type="button" class="btn btn-sm btn-link" (click)="cancelDelete()">No</button>
+                      <button type="button" class="btn btn-sm btn-danger mr-1" (click)="doDelete(t.id)">{{ 'common.confirm' | transloco }}</button>
+                      <button type="button" class="btn btn-sm btn-link" (click)="cancelDelete()">{{ 'common.no' | transloco }}</button>
                     </span>
                   } @else {
-                    <button type="button" class="btn btn-sm btn-outline-danger" (click)="confirmDelete(t.id)">Eliminar</button>
+                    <button type="button" class="btn btn-sm btn-outline-danger" (click)="confirmDelete(t.id)">{{ 'common.delete' | transloco }}</button>
                   }
                 </td>
               </tr>

@@ -475,6 +475,49 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+// ─── Language toggle (public + admin navbar) ───────────────────────────────────
+
+.lang-toggle-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  flex-shrink: 0;
+}
+
+.btn-lang-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  padding: 0.26rem;
+  border-radius: 8px;
+  transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+  flex-shrink: 0;
+
+  img {
+    display: block;
+    width: 1.42rem;
+    height: auto;
+    border-radius: 2px;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06);
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 2px rgba(var(--cp-primary-rgb), 0.45);
+  }
+
+  &[aria-pressed='true'] {
+    border-color: rgba(var(--cp-primary-rgb), 0.55);
+    background-color: rgba(var(--cp-primary-rgb), 0.1);
+  }
+}
+
 // ─── Admin shell (layout + themed tables/forms) ───────────────────────────────
 
 .admin-shell {

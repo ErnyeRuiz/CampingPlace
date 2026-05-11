@@ -1,6 +1,7 @@
 import { Component, OnInit, inject, signal, input, numberAttribute, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { ToastService } from '../../../core/services/toast.service';
 import { TripsService } from '../../../core/services/http/trips.service';
 import { LocationService } from '../../../core/services/http/location.service';
@@ -13,7 +14,7 @@ import { CampsiteResponse } from '../../../core/models/campsites/campsite-respon
 @Component({
   selector: 'cp-trip-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, TranslocoPipe],
   templateUrl: './trip-detail.component.html',
   styleUrl: './trip-detail.component.scss',
 })
@@ -22,6 +23,7 @@ export class TripDetailComponent implements OnInit {
   private readonly location = inject(LocationService);
   private readonly sites    = inject(CampsitesService);
   private readonly toast    = inject(ToastService);
+  private readonly transloco = inject(TranslocoService);
 
   /** Route param: `trips/:id` */
   readonly id = input.required({ transform: numberAttribute });
@@ -146,7 +148,7 @@ export class TripDetailComponent implements OnInit {
   addSelected(): void {
     const siteId = this.selectedAddId();
     if (siteId == null) {
-      this.toast.warning('Selecciona un camping para agregar.');
+      this.toast.warning(this.transloco.translate('tripDetail.toastSelectCampsite'));
       return;
     }
     this.trips.addCampsite(this.id(), siteId).subscribe({

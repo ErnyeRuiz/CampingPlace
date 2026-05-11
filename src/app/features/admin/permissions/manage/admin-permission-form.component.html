@@ -1,13 +1,13 @@
 <section class="admin-form-page">
-  <nav class="cp-breadcrumb mb-3" aria-label="Migas de pan">
-    <a routerLink="/admin/permissions" class="cp-breadcrumb__link">Permisos</a>
+  <nav class="cp-breadcrumb mb-3" [attr.aria-label]="'a11y.breadcrumb' | transloco">
+    <a routerLink="/admin/permissions" class="cp-breadcrumb__link">{{ 'admin.nav.permissions' | transloco }}</a>
     <span class="cp-breadcrumb__sep" aria-hidden="true">/</span>
-    <span class="text-muted">{{ permissionId === null ? 'Nuevo' : 'Editar' }}</span>
+    <span class="text-muted">{{ (permissionId === null ? 'common.new' : 'common.edit') | transloco }}</span>
   </nav>
 
   <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-md-between mb-3 mb-md-4">
-    <h1 class="cp-page-title mb-0">{{ permissionId === null ? 'Nuevo permiso' : 'Editar permiso' }}</h1>
-    <a routerLink="/admin/permissions" class="btn btn-outline-secondary btn-sm mt-2 mt-md-0">« Volver a la lista</a>
+    <h1 class="cp-page-title mb-0">{{ (permissionId === null ? 'adminApp.permissions.formTitleNew' : 'adminApp.permissions.formTitleEdit') | transloco }}</h1>
+    <a routerLink="/admin/permissions" class="btn btn-outline-secondary btn-sm mt-2 mt-md-0">{{ 'common.backToList' | transloco }}</a>
   </div>
 
   <div class="row">
@@ -15,34 +15,31 @@
       <form [formGroup]="form" (ngSubmit)="submit()" class="card shadow-sm mb-4 admin-form-card">
         <div class="card-body">
           <div class="form-group">
-            <label for="perm-name">Nombre</label>
+            <label for="perm-name">{{ 'common.name' | transloco }}</label>
             <input id="perm-name" class="form-control" formControlName="name" />
             @if (form.get('name')?.touched && form.get('name')?.invalid) {
-              <div class="invalid-feedback d-block">Nombre obligatorio.</div>
+              <div class="invalid-feedback d-block">{{ 'adminApp.permissions.nameRequired' | transloco }}</div>
             }
           </div>
           <div class="form-group">
-            <label for="perm-desc">Descripción</label>
+            <label for="perm-desc">{{ 'common.description' | transloco }}</label>
             <textarea id="perm-desc" class="form-control" rows="3" formControlName="description"></textarea>
           </div>
           @if (canAssignToRole) {
             <div class="form-group">
-              <label for="perm-role">Asignar también a un rol (opcional)</label>
+              <label for="perm-role">{{ 'adminApp.permissions.assignRoleLabel' | transloco }}</label>
               <select id="perm-role" class="form-control" formControlName="assignToRoleId">
-                <option [ngValue]="null">— No asignar automáticamente —</option>
+                <option [ngValue]="null">{{ 'adminApp.permissions.assignRoleNone' | transloco }}</option>
                 @for (r of roles; track r.id) {
                   <option [ngValue]="r.id">{{ r.name }}</option>
                 }
               </select>
-              <small class="form-text text-muted">
-                Si eliges un rol, se añade este permiso a los que ya tenga (sin quitar los demás). Requiere que el API devuelva
-                los permisos actuales en GET /roles/:id.
-              </small>
+              <small class="form-text text-muted">{{ 'adminApp.permissions.assignRoleHelp' | transloco }}</small>
             </div>
           }
           <button type="submit" class="btn btn-primary mt-2" [disabled]="!canSubmit">
             <i class="fas fa-check mr-1" aria-hidden="true"></i>
-            Guardar
+            {{ 'common.save' | transloco }}
           </button>
         </div>
       </form>

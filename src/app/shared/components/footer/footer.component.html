@@ -4,13 +4,14 @@
 
       <div class="col-md-2 text-center text-md-left mb-3 mb-md-0">
         <span class="footer-brand d-inline-flex align-items-center">
-          <img [src]="footerBrandUrl" alt="CampingPlace" class="footer-brand-logo" width="220" height="44" decoding="async">
+          <img [src]="footerBrandUrl" [attr.alt]="'nav.brandAlt' | transloco" class="footer-brand-logo" width="220" height="44" decoding="async">
         </span>
       </div>
 
       <div class="col-md-7 text-center text-md-right">
         <p class="footer-copy mb-0">
-          &copy; {{ year }} CampingPlace. Proyecto de portafolio desarrollado por <a [href]="linkedinUrl" target="_blank">Ernye Ruiz Cerdas</a>.
+          {{ 'footer.copyright' | transloco: { year } }}
+          <a [href]="linkedinUrl" target="_blank">Ernye Ruiz Cerdas</a>.
         </p>
       </div>
 

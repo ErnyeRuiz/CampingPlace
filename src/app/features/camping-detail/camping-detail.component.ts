@@ -14,6 +14,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { ToastService } from '../../core/services/toast.service';
 import { AuthorizationService } from '../../core/services/authorization.service';
 import { PERMISSIONS } from '../../core/constants/permissions';
@@ -36,7 +37,7 @@ const REVIEW_COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000;
 @Component({
   selector: 'cp-camping-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule, TranslocoPipe],
   templateUrl: './camping-detail.component.html',
   styleUrl: './camping-detail.component.scss',
 })
@@ -50,6 +51,7 @@ export class CampingDetailComponent implements OnInit {
   private readonly router          = inject(Router);
   private readonly toast           = inject(ToastService);
   private readonly fb              = inject(FormBuilder);
+  private readonly transloco       = inject(TranslocoService);
 
   readonly themedMarkUrl = injectThemedMarkUrl();
 
@@ -166,7 +168,7 @@ export class CampingDetailComponent implements OnInit {
         this.reviews.set(this.sortReviewsDesc(reviewRows));
         if (!site) {
           this.campsite.set(null);
-          this.toast.warning('No se encontró este camping o ya no está disponible.');
+          this.toast.warning(this.transloco.translate('campingDetail.toastNotFound'));
           this.detailLoading.set(false);
           return;
         }
@@ -210,23 +212,23 @@ export class CampingDetailComponent implements OnInit {
   }
 
   reviewRatingLabel(stars: number): string {
-    switch (stars) {
-      case 5:
-        return 'Excelente';
-      case 4:
-        return 'Muy bueno';
-      case 3:
-        return 'Bueno';
-      case 2:
-        return 'Regular';
-      default:
-        return 'Necesita mejorar';
-    }
+    const rounded = Math.min(5, Math.max(1, Math.round(Number(stars))));
+    const key =
+      rounded === 1
+        ? 'campingDetail.reviewRatingStars.1'
+        : rounded === 2
+          ? 'campingDetail.reviewRatingStars.2'
+          : rounded === 3
+            ? 'campingDetail.reviewRatingStars.3'
+            : rounded === 4
+              ? 'campingDetail.reviewRatingStars.4'
+              : 'campingDetail.reviewRatingStars.5';
+    return this.transloco.translate(key);
   }
 
   reviewAuthorDisplay(r: CampsiteReviewResponse): string {
     const name = r.userName?.trim();
-    return name?.length ? name : 'Usuario';
+    return name?.length ? name : this.transloco.translate('campingDetail.anonymousUser');
   }
 
   canEditReview(r: CampsiteReviewResponse): boolean {
@@ -312,8 +314,7 @@ export class CampingDetailComponent implements OnInit {
     if (!this.canDeleteReview(r) || this.reviewRowActionsDisabled()) {
       return;
     }
-    const msg =
-      '¿Eliminar esta opinión? Esta acción no se puede deshacer.';
+    const msg = this.transloco.translate('campingDetail.confirmDeleteReview');
     if (!confirm(msg)) {
       return;
     }
@@ -518,7 +519,7 @@ export class CampingDetailComponent implements OnInit {
   addCampsiteToSelectedTrip(): void {
     const tripId = this.selectedTripId();
     if (tripId == null) {
-      this.toast.warning('Elige un viaje.');
+      this.toast.warning(this.transloco.translate('campingDetail.toastPickTrip'));
       return;
     }
     this.addToTripBusy.set(true);

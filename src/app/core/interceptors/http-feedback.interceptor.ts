@@ -7,6 +7,7 @@ import {
 import { inject } from '@angular/core';
 import { tap, catchError, finalize } from 'rxjs';
 import { throwError } from 'rxjs';
+import { TranslocoService } from '@jsverse/transloco';
 import { LoadingService } from '../services/loading.service';
 import { ToastService } from '../services/toast.service';
 import { ApiResponse } from '../models/api/api-response';
@@ -41,23 +42,23 @@ function extractMessageFromUnknown(body: unknown): string | null {
   return null;
 }
 
-function friendlyHttpFallback(err: HttpErrorResponse): string {
+function friendlyHttpFallback(err: HttpErrorResponse, transloco: TranslocoService): string {
   if (err.status === 0) {
-    return 'No pudimos conectar. Revisá tu conexión e intentá de nuevo.';
+    return transloco.translate('http.errorNetwork');
   }
   if (err.status >= 400 && err.status < 500) {
-    return 'No pudimos completar la solicitud.';
+    return transloco.translate('http.error4xx');
   }
   if (err.status >= 500) {
-    return 'El servidor respondió con un error. Probá más tarde.';
+    return transloco.translate('http.error5xx');
   }
-  return 'Ocurrió un error inesperado. Intentá de nuevo.';
+  return transloco.translate('http.errorGeneric');
 }
 
-function envelopeFailureFallback(req: HttpRequest<unknown>): string {
+function envelopeFailureFallback(req: HttpRequest<unknown>, transloco: TranslocoService): string {
   return isMutation(req)
-    ? 'No pudimos completar la acción. Intentá de nuevo.'
-    : 'No pudimos cargar la información. Intentá de nuevo.';
+    ? transloco.translate('http.mutationFailed')
+    : transloco.translate('http.loadFailed');
 }
 
 /** Login errors handled in {@link LoginComponent} (UI + redirect); skip duplicate danger toast. */
@@ -78,6 +79,7 @@ function shouldSuppressLoginErrorToast(
 export const httpFeedbackInterceptor: HttpInterceptorFn = (req, next) => {
   const loading = inject(LoadingService);
   const toast   = inject(ToastService);
+  const transloco = inject(TranslocoService);
 
   loading.increment();
 
@@ -90,7 +92,7 @@ export const httpFeedbackInterceptor: HttpInterceptorFn = (req, next) => {
             const apiMsg =
               normalizeUserFacingMessage(body.message)
               ?? extractMessageFromUnknown(body);
-            toast.danger(apiMsg ?? envelopeFailureFallback(req));
+            toast.danger(apiMsg ?? envelopeFailureFallback(req, transloco));
           } else if (
             body.success &&
             isMutation(req) &&
@@ -110,7 +112,7 @@ export const httpFeedbackInterceptor: HttpInterceptorFn = (req, next) => {
           normalizeUserFacingMessage(
             (error.error as ApiResponse<unknown> | null)?.message,
           ) ?? extractMessageFromUnknown(error.error);
-        toast.danger(apiMsg ?? friendlyHttpFallback(error));
+        toast.danger(apiMsg ?? friendlyHttpFallback(error, transloco));
       }
       return throwError(() => error);
     }),

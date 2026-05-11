@@ -6,18 +6,18 @@
     <div class="row">
       <div class="col-md-8 offset-md-2 text-center text-white">
         <p class="hero-brand mb-3 mb-md-4">
-          <img [src]="heroBrandUrl" alt="CampingPlace" class="hero-brand-logo" width="420" height="84" decoding="async">
+          <img [src]="heroBrandUrl" [attr.alt]="'nav.brandAlt' | transloco" class="hero-brand-logo" width="420" height="84" decoding="async">
         </p>
         <h1 class="hero-title">
-          Descubre los mejores<br>
-          <span class="hero-title--accent">Lugares de Camping</span>
+          {{ 'home.heroTitleLine1' | transloco }}<br>
+          <span class="hero-title--accent">{{ 'home.heroTitleAccent' | transloco }}</span>
         </h1>
         <p class="hero-subtitle">
-          Naturaleza, aventura y desconexión al alcance de tu mano.<br>
-          Encuentra el lugar perfecto para tu próxima escapada.
+          {{ 'home.heroSubtitlePart1' | transloco }}<br>
+          {{ 'home.heroSubtitlePart2' | transloco }}
         </p>
         <a href="#explorar" class="btn btn-neutral btn-lg mt-3">
-          <i class="fas fa-compass mr-2"></i> Explorar ahora
+          <i class="fas fa-compass mr-2"></i> {{ 'home.exploreNow' | transloco }}
         </a>
       </div>
     </div>
@@ -31,7 +31,7 @@
       <div class="col-6 col-md-5">
         <img [src]="themedMarkUrl()" alt="" class="stats-mark" width="28" height="28" decoding="async">
         <div class="stats-number">{{ totalCount() }}</div>
-        <div class="stats-label">Campings</div>
+        <div class="stats-label">{{ 'home.statsCampings' | transloco }}</div>
       </div>
       <div class="col-6 col-md-5">
         <i class="fas fa-star stats-icon"></i>
@@ -42,7 +42,7 @@
             —
           }
         </div>
-        <div class="stats-label">Rating promedio</div>
+        <div class="stats-label">{{ 'home.statsAvgRating' | transloco }}</div>
       </div>
     </div>
   </div>
@@ -54,9 +54,9 @@
 
     <div class="row mb-4">
       <div class="col text-center">
-        <h2 class="section-title">Lugares Disponibles</h2>
+        <h2 class="section-title">{{ 'home.sectionTitle' | transloco }}</h2>
         <p class="section-subtitle text-muted">
-          Explora nuestra selección de campings en todo el país
+          {{ 'home.sectionSubtitle' | transloco }}
         </p>
         <div class="section-divider"></div>
       </div>
@@ -65,7 +65,7 @@
     @if (isEmpty()) {
       <div class="text-center py-5">
         <img [src]="themedMarkUrl()" alt="" class="empty-state-mark mb-3" width="72" height="72" decoding="async">
-        <p class="text-muted">No se encontraron lugares de camping.</p>
+        <p class="text-muted">{{ 'home.emptyState' | transloco }}</p>
       </div>
     }
 
@@ -77,9 +77,9 @@
 
               <div class="card-img-wrapper">
                 @if (favoriteCampsiteIds().has(campsite.id)) {
-                  <span class="card-fav-heart" title="En tus favoritos">
+                  <span class="card-fav-heart" [attr.title]="'home.favTitle' | transloco">
                     <i class="fas fa-heart" aria-hidden="true"></i>
-                    <span class="sr-only">En tus favoritos</span>
+                    <span class="sr-only">{{ 'home.favSrOnly' | transloco }}</span>
                   </span>
                 }
                 @if (campsite.images && campsite.images.length > 0) {
@@ -110,26 +110,15 @@
                   </p>
                 }
 
-                <!-- <div class="card-rating mb-2">
-                  @for (star of [1, 2, 3, 4, 5]; track star) {
-                    <i class="fas fa-star"
-                       [class.star-filled]="star <= camping.rating"
-                       [class.star-empty]="star > camping.rating"></i>
-                  }
-                  <span class="rating-count ml-1 text-muted small">
-                    ({{ camping.reviewCount }})
-                  </span>
-                </div> -->
-
                 <div class="mt-auto pt-3 d-flex justify-content-between align-items-center card-footer-row">
                   <div class="card-price">
                     <span class="price-amount">
                       {{ campsite.pricePerNight | currency:'CRC':'symbol-narrow':'1.0-0' }}
                     </span>
-                    <span class="price-label text-muted"> / noche</span>
+                    <span class="price-label text-muted"> {{ 'home.perNight' | transloco }}</span>
                   </div>
                   <a [routerLink]="['/campings', campsite.id]" class="btn btn-primary btn-sm">
-                    Ver detalle
+                    {{ 'home.viewDetail' | transloco }}
                   </a>
                 </div>
               </div>

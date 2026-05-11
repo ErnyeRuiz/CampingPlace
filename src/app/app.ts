@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ToastComponent } from './shared/components/toast/toast.component';
 import { LoaderComponent } from './shared/components/loader/loader.component';
+import { LanguageService } from './core/services/language.service';
 
 @Component({
   selector: 'cp-root',
@@ -10,4 +11,7 @@ import { LoaderComponent } from './shared/components/loader/loader.component';
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
-export class App {}
+export class App {
+  /** Inicializa idioma persistente (`LanguageService`) al arrancar la app. */
+  private readonly _language = inject(LanguageService);
+}

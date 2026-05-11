@@ -9,6 +9,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { AuthService } from '../../../core/services/http/auth.service';
 import { ResetPasswordRequest } from '../../../core/models/auth/reset-password-request';
 import { authHeroMarkUrl, injectAuthFormBrandLogoUrl } from '../../../core/branding/app-branding';
@@ -24,7 +25,7 @@ function passwordMatchValidator(): ValidatorFn {
 @Component({
   selector: 'cp-reset-password',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, TranslocoPipe],
   templateUrl: './reset-password.component.html',
   styleUrl: '../login/login.component.scss',
 })
@@ -32,6 +33,7 @@ export class ResetPasswordComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly transloco = inject(TranslocoService);
 
   readonly authFormBrandLogoUrl = injectAuthFormBrandLogoUrl();
   readonly authHeroMarkUrl = authHeroMarkUrl;
@@ -82,6 +84,12 @@ export class ResetPasswordComponent implements OnInit {
 
   toggleConfirmPassword(): void {
     this.showConfirmPassword = !this.showConfirmPassword;
+  }
+
+  recoveryCodePlaceholder(): string {
+    return this.codeLockedFromUrl
+      ? this.transloco.translate('auth.reset.codePlaceholderEmpty')
+      : this.transloco.translate('auth.reset.codePlaceholder');
   }
 
   onSubmit(): void {

@@ -10,7 +10,7 @@
         }
       </span>
       <span class="cp-toast__message">{{ toast.message }}</span>
-      <button class="cp-toast__close" (click)="dismiss(toast.id)" aria-label="Cerrar">
+      <button class="cp-toast__close" (click)="dismiss(toast.id)" [attr.aria-label]="'a11y.closeToast' | transloco">
         <i class="fas fa-times"></i>
       </button>
     </div>

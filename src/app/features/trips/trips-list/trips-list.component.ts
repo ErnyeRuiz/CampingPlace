@@ -2,6 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { TripsService } from '../../../core/services/http/trips.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { TripResponse } from '../../../core/models/trips/trip-response';
@@ -12,7 +13,7 @@ type FormMode = 'create' | 'edit' | null;
 @Component({
   selector: 'cp-trips-list',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, TranslocoPipe],
   templateUrl: './trips-list.component.html',
   styleUrl: './trips-list.component.scss',
 })
@@ -21,6 +22,7 @@ export class TripsListComponent implements OnInit {
   private readonly fb     = inject(FormBuilder);
   private readonly router = inject(Router);
   private readonly toast  = inject(ToastService);
+  private readonly transloco = inject(TranslocoService);
 
   readonly tripsList = signal<TripResponse[]>([]);
   readonly formMode  = signal<FormMode>(null);
@@ -101,7 +103,7 @@ export class TripsListComponent implements OnInit {
     const start = this.parseFormDateOnly(startDate);
     const end   = this.parseFormDateOnly(endDate);
     if (end < start) {
-      this.toast.warning('La fecha de fin debe ser posterior o igual al inicio.');
+      this.toast.warning(this.transloco.translate('trips.toastDateRange'));
       return;
     }
 

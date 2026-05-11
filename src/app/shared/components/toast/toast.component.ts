@@ -1,9 +1,11 @@
 import { Component, inject } from '@angular/core';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'cp-toast',
   standalone: true,
+  imports: [TranslocoPipe],
   templateUrl: './toast.component.html',
   styleUrl: './toast.component.scss',
 })

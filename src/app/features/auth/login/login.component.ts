@@ -7,26 +7,16 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+
 import { LoginRequest } from '../../../core/models/auth/login-request';
 import { SESSION_STORAGE_KEYS } from '../../../core/constants/session-storage.keys';
 import { AuthService } from '../../../core/services/http/auth.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { isAppInternalPath } from '../../../core/utils/return-url';
-import { authHeroMarkUrl, injectAuthFormBrandLogoUrl } from '../../../core/branding/app-branding';
 
-function formatDurationParts(totalSeconds: number): string {
-  const s = Math.max(0, Math.floor(totalSeconds));
-  const days = Math.floor(s / 86400);
-  const hours = Math.floor((s % 86400) / 3600);
-  const minutes = Math.floor((s % 3600) / 60);
-  const seconds = s % 60;
-  return [
-    `${days} ${days === 1 ? 'día' : 'días'}`,
-    `${hours} ${hours === 1 ? 'hora' : 'horas'}`,
-    `${minutes} ${minutes === 1 ? 'minuto' : 'minutos'}`,
-    `${seconds} ${seconds === 1 ? 'segundo' : 'segundos'}`,
-  ].join(', ');
-}
+
+import { authHeroMarkUrl, injectAuthFormBrandLogoUrl } from '../../../core/branding/app-branding';
 
 /** First integer in the API message (e.g. AdminAccountNotReady(1234)). */
 function parseSecondsFromMessage(message: string): number | null {
@@ -66,7 +56,7 @@ function extractUserIdFromLoginErrorData(data: unknown): number | undefined {
 @Component({
   selector: 'cp-login',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, TranslocoPipe],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
@@ -76,6 +66,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   private readonly toast = inject(ToastService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+  private readonly transloco = inject(TranslocoService);
 
   readonly authFormBrandLogoUrl = injectAuthFormBrandLogoUrl();
   readonly authHeroMarkUrl = authHeroMarkUrl;
@@ -101,13 +92,32 @@ export class LoginComponent implements OnInit, OnDestroy {
     if (this.adminCooldownSeconds == null) {
       return '';
     }
-    return formatDurationParts(this.adminCooldownSeconds);
+    return this.formatCooldownDuration(this.adminCooldownSeconds);
+  }
+
+  private formatCooldownDuration(totalSeconds: number): string {
+    const s = Math.max(0, Math.floor(totalSeconds));
+    const days = Math.floor(s / 86400);
+    const hours = Math.floor((s % 86400) / 3600);
+    const minutes = Math.floor((s % 3600) / 60);
+    const seconds = s % 60;
+    const t = this.transloco;
+    const parts: string[] = [];
+    const push = (n: number, oneKey: string, otherKey: string) => {
+      if (n <= 0) return;
+      parts.push(t.translate(n === 1 ? oneKey : otherKey, { count: n }));
+    };
+    push(days, 'auth.login.timeDayOne', 'auth.login.timeDayOther');
+    push(hours, 'auth.login.timeHourOne', 'auth.login.timeHourOther');
+    push(minutes, 'auth.login.timeMinuteOne', 'auth.login.timeMinuteOther');
+    push(seconds, 'auth.login.timeSecondOne', 'auth.login.timeSecondOther');
+    return parts.join(', ');
   }
 
   ngOnInit(): void {
     const qp = this.route.snapshot.queryParamMap;
     if (qp.get('reset') === 'success') {
-      this.toast.success('Contraseña actualizada. Inicia sesión con tu nueva contraseña.');
+      this.toast.success(this.transloco.translate('toast.loginResetSuccess'));
       void this.router.navigate([], {
         relativeTo: this.route,
         queryParams: { reset: null },
@@ -116,7 +126,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       });
     }
     if (qp.get('verified') === 'success') {
-      this.toast.success('Email verificado. Ya podés iniciar sesión.');
+      this.toast.success(this.transloco.translate('toast.loginVerifiedSuccess'));
       void this.router.navigate([], {
         relativeTo: this.route,
         queryParams: { verified: null },
@@ -197,7 +207,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           const userId = extractUserIdFromLoginErrorData(body?.data);
           if (userId == null) {
             this.toast.danger(
-              'No pudimos iniciar la verificación de correo. Intenta de nuevo.',
+              this.transloco.translate('toast.loginVerifyEmailFailed'),
             );
             return;
           }
@@ -221,7 +231,7 @@ export class LoginComponent implements OnInit, OnDestroy {
             return;
           }
           this.adminFallbackMessage =
-            msg || 'Tu cuenta de administrador aún no está disponible.';
+            msg || this.transloco.translate('auth.login.adminFallbackDefault');
           return;
         }
       },

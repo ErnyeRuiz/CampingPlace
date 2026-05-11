@@ -3,12 +3,14 @@ import { AppBranding } from '../../../core/branding/app-branding';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { AuthService } from '../../../core/services/http/auth.service';
 import { AuthorizationService } from '../../../core/services/authorization.service';
+import { LanguageService } from '../../../core/services/language.service';
 import { ThemeService } from '../../../core/services/theme.service';
 
 interface NavItem {
-  label: string;
+  labelKey: string;
   routerLink: string;
   fragment?: string;
   routerLinkActive: string;
@@ -19,7 +21,7 @@ interface NavItem {
 @Component({
   selector: 'cp-navbar',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive, TranslocoPipe],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss',
 })
@@ -28,6 +30,7 @@ export class NavbarComponent {
   protected readonly authService  = inject(AuthService);
   protected readonly authz        = inject(AuthorizationService);
   protected readonly themeService = inject(ThemeService);
+  protected readonly languageService = inject(LanguageService);
   private  readonly router        = inject(Router);
 
   /**
@@ -74,14 +77,14 @@ export class NavbarComponent {
 
   protected readonly items: NavItem[] = [
     {
-      label: 'Inicio',
+      labelKey: 'nav.home',
       routerLink: '/campings',
       routerLinkActive: 'active',
       routerLinkActiveOptions: { exact: true },
       class: 'fas fa-home mr-1',
     },
     {
-      label: 'Explorar',
+      labelKey: 'nav.explore',
       routerLink: '/campings',
       fragment: 'explorar',
       routerLinkActive: 'active',
@@ -89,7 +92,7 @@ export class NavbarComponent {
       class: 'fas fa-list mr-1',
     },
     // {
-    //   label: 'Mapa',
+    //   labelKey: 'nav.map',
     //   routerLink: '/map',
     //   routerLinkActive: 'active',
     //   routerLinkActiveOptions: { exact: true },
@@ -116,5 +119,9 @@ export class NavbarComponent {
     this.authService.logout();
     this.closeMenu();
     this.router.navigate(['/campings']);
+  }
+
+  protected navItemTrackId(item: NavItem): string {
+    return `${item.routerLink}_${item.fragment ?? ''}`;
   }
 }

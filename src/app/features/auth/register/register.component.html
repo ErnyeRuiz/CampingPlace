@@ -1,34 +1,29 @@
 <div class="register-page">
   <div class="row no-gutters register-row">
 
-    <!-- ─── Left: Image Panel ─────────────────────────────────────── -->
     <div class="col-12 col-md-6 d-none d-md-flex">
       <div class="register-image-panel">
         <div class="register-image-overlay">
           <div class="register-image-content">
             <img [src]="authHeroMarkUrl" alt="" class="register-hero-mark" width="220" height="220" decoding="async">
-            <h2>Nos complace que te unas a nuestra comunidad</h2>
+            <h2>{{ 'auth.register.heroTitleCommunity' | transloco }}</h2>
             <p>{{ registerHeroParagraph }}</p>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ─── Right: Form Panel ─────────────────────────────────────── -->
     <div class="col-12 col-md-6">
       <div class="register-form-panel">
 
-        <!-- Brand -->
-        <h2 class="register-title">Crear Cuenta</h2>
-        <p class="register-subtitle">Ingresa tus datos para registrarte en CampingPlace</p>
+        <h2 class="register-title">{{ 'auth.register.title' | transloco }}</h2>
+        <p class="register-subtitle">{{ 'auth.register.subtitle' | transloco }}</p>
 
-        <!-- Form -->
         <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
 
-          <!-- Role -->
           <div class="form-group mb-3">
-            <span class="cp-form-label d-block mb-2">Tipo de cuenta</span>
-            <div class="register-role-grid" role="radiogroup" aria-label="Tipo de cuenta">
+            <span class="cp-form-label d-block mb-2">{{ 'auth.register.accountType' | transloco }}</span>
+            <div class="register-role-grid" role="radiogroup" [attr.aria-label]="'auth.register.accountType' | transloco">
               <label
                 class="register-role-card"
                 [class.register-role-card--active]="f['role'].value === 'customer'">
@@ -37,8 +32,8 @@
                   formControlName="role"
                   value="customer"
                   class="register-role-input">
-                <span class="register-role-title">Cliente</span>
-                <span class="register-role-desc">Explorá y reservá campings</span>
+                <span class="register-role-title">{{ 'auth.register.roleCustomerTitle' | transloco }}</span>
+                <span class="register-role-desc">{{ 'auth.register.roleCustomerDesc' | transloco }}</span>
               </label>
               <label
                 class="register-role-card"
@@ -48,18 +43,17 @@
                   formControlName="role"
                   value="admin"
                   class="register-role-input">
-                <span class="register-role-title">Administrador</span>
-                <span class="register-role-desc">Gestioná tus propios campings</span>
+                <span class="register-role-title">{{ 'auth.register.roleAdminTitle' | transloco }}</span>
+                <span class="register-role-desc">{{ 'auth.register.roleAdminDesc' | transloco }}</span>
               </label>
             </div>
             @if (f['role'].invalid && f['role'].touched) {
-              <small class="text-danger mt-1 d-block">Elegí un tipo de cuenta.</small>
+              <small class="text-danger mt-1 d-block">{{ 'common.validation.roleRequired' | transloco }}</small>
             }
           </div>
 
-          <!-- Name -->
           <div class="form-group mb-3">
-            <label class="cp-form-label" for="name">Nombre completo</label>
+            <label class="cp-form-label" for="name">{{ 'auth.register.fullName' | transloco }}</label>
             <div class="cp-input-group">
               <i class="fas fa-envelope cp-input-icon"></i>
               <input
@@ -68,20 +62,19 @@
                 class="form-control"
                 [class.is-invalid]="f['name'].invalid && f['name'].touched"
                 formControlName="name"
-                placeholder="Tu nombre completo"
+                [placeholder]="'auth.register.placeholderName' | transloco"
                 autocomplete="name">
             </div>
             @if (f['name'].invalid && f['name'].touched) {
               <small class="text-danger mt-1 d-block">
-                @if (f['name'].errors?.['required']) { El nombre es requerido. }
-                @else { Ingresa un nombre válido. }
+                @if (f['name'].errors?.['required']) { {{ 'common.validation.nameRequired' | transloco }} }
+                @else { {{ 'common.validation.nameInvalid' | transloco }} }
               </small>
             }
           </div>
 
-          <!-- Email -->
           <div class="form-group mb-3">
-            <label class="cp-form-label" for="email">Correo electrónico</label>
+            <label class="cp-form-label" for="email">{{ 'common.email' | transloco }}</label>
             <div class="cp-input-group">
               <i class="fas fa-lock cp-input-icon"></i>
               <input
@@ -90,20 +83,19 @@
                 class="form-control"
                 [class.is-invalid]="f['email'].invalid && f['email'].touched"
                 formControlName="email"
-                placeholder="tu@correo.com"
+                [placeholder]="'auth.login.placeholderEmail' | transloco"
                 autocomplete="email">
             </div>
             @if (f['email'].invalid && f['email'].touched) {
               <small class="text-danger mt-1 d-block">
-                @if (f['email'].errors?.['required']) { El correo es requerido. }
-                @else { Ingresa un correo válido. }
+                @if (f['email'].errors?.['required']) { {{ 'common.validation.emailRequired' | transloco }} }
+                @else { {{ 'common.validation.emailInvalid' | transloco }} }
               </small>
             }
           </div>
 
-          <!-- Password -->
           <div class="form-group mb-3">
-            <label class="cp-form-label" for="password">Contraseña</label>
+            <label class="cp-form-label" for="password">{{ 'common.password' | transloco }}</label>
             <div class="cp-input-group">
               <i class="fas fa-lock cp-input-icon"></i>
               <input
@@ -117,15 +109,14 @@
             </div>
             @if (f['password'].invalid && f['password'].touched) {
               <small class="text-danger mt-1 d-block">
-                @if (f['password'].errors?.['required']) { La contraseña es requerida. }
-                @else { Mínimo 6 caracteres. }
+                @if (f['password'].errors?.['required']) { {{ 'common.validation.passwordRequired' | transloco }} }
+                @else { {{ 'common.validation.passwordMin' | transloco }} }
               </small>
             }
           </div>
 
-          <!-- Confirm password -->
           <div class="form-group mb-3">
-            <label class="cp-form-label" for="confirmPassword">Confirmar contraseña</label>
+            <label class="cp-form-label" for="confirmPassword">{{ 'auth.reset.confirmPassword' | transloco }}</label>
             <div class="cp-input-group">
               <i class="fas fa-lock cp-input-icon"></i>
               <input
@@ -139,23 +130,21 @@
             </div>
             @if (f['confirmPassword'].invalid && f['confirmPassword'].touched) {
               <small class="text-danger mt-1 d-block">
-                @if (f['confirmPassword'].errors?.['required']) { La confirmación de contraseña es requerida. }
-                @else { Las contraseñas no coinciden. }
+                @if (f['confirmPassword'].errors?.['required']) { {{ 'common.validation.confirmPasswordRequired' | transloco }} }
+                @else { {{ 'common.validation.passwordsMismatch' | transloco }} }
               </small>
             }
           </div>
 
-          <!-- Submit -->
           <button type="submit" class="btn btn-register-submit w-100">
-            Crear Cuenta
+            {{ 'auth.register.submit' | transloco }}
           </button>
 
         </form>
 
-        <!-- Footer links -->
         <div class="register-footer">
-          <span>¿Ya tienes una cuenta?</span>
-          <a routerLink="/auth/login">Inicia sesión aquí</a>
+          <span>{{ 'auth.register.haveAccount' | transloco }}</span>
+          <a routerLink="/auth/login">{{ 'auth.register.loginLink' | transloco }}</a>
         </div>
 
       </div>

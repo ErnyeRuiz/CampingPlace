@@ -12,12 +12,12 @@ import { PermissionResponse } from '../../../../core/models/permissions/permissi
 import { PermissionsService } from '../../../../core/services/http/permissions.service';
 import { RolesService } from '../../../../core/services/http/roles.service';
 import { ToastService } from '../../../../core/services/toast.service';
-
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 
 @Component({
   selector: 'cp-admin-role-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, TranslocoPipe],
   templateUrl: './admin-role-form.component.html',
   styleUrl: './admin-role-form.component.scss',
 })
@@ -30,6 +30,7 @@ export class AdminRoleFormComponent implements OnInit {
   private readonly toast = inject(ToastService);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly authz = inject(AuthorizationService);
+  private readonly transloco = inject(TranslocoService);
   readonly form = this.fb.nonNullable.group({
     name: ['', [Validators.required, Validators.maxLength(200)]],
     description: [''],
@@ -77,7 +78,7 @@ export class AdminRoleFormComponent implements OnInit {
       this.rolesApi.getById(id).subscribe({
         next: (role) => {
           if (!role) {
-            this.toast.danger('Rol no encontrado.');
+            this.toast.danger(this.transloco.translate('toast.adminRoleNotFound'));
             void this.router.navigate(['/admin/roles']);
             return;
           }

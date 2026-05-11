@@ -55,6 +55,17 @@
       color: rgba(255, 255, 255, 0.8);
       &:hover { color: #fff; }
     }
+
+    .lang-toggle-group .btn-lang-toggle {
+      &[aria-pressed='true'] {
+        border-color: rgba(255, 255, 255, 0.5);
+        background: rgba(255, 255, 255, 0.12);
+      }
+
+      &:focus-visible {
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.35);
+      }
+    }
   }
 
   // Modo “barra normal”: fondo de tarjeta del tema y colores CSS variables (legible en claro/oscuro).
@@ -106,6 +117,10 @@
     .btn-theme-toggle {
       color: var(--cp-text-muted);
       &:hover { color: var(--cp-primary); }
+    }
+
+    .lang-toggle-group .btn-lang-toggle img {
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
     }
   }
 }
@@ -282,5 +297,9 @@
   .btn-theme-toggle {
     color: var(--cp-text-muted) !important;
     &:hover { color: var(--cp-primary) !important; }
+  }
+
+  .lang-toggle-group .btn-lang-toggle img {
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
   }
 }

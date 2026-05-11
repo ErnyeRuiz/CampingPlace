@@ -7,6 +7,7 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { APP_HOME_PATH, PERMISSIONS } from '../../../../core/constants/permissions';
 import { AuthorizationService } from '../../../../core/services/authorization.service';
 import { CampsitesService } from '../../../../core/services/http/campsites.service';
@@ -19,7 +20,7 @@ import { ToastService } from '../../../../core/services/toast.service';
 @Component({
   selector: 'cp-admin-campsite-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, TranslocoPipe],
   templateUrl: './admin-campsite-form.component.html',
   styleUrl: './admin-campsite-form.component.scss',
 })
@@ -32,6 +33,7 @@ export class AdminCampsiteFormComponent implements OnInit, OnDestroy {
   private readonly toast = inject(ToastService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly authz = inject(AuthorizationService);
+  private readonly transloco = inject(TranslocoService);
 
   catalog: UbicacionCatalog | null = null;
   campsiteId: number | null = null;
@@ -227,7 +229,7 @@ export class AdminCampsiteFormComponent implements OnInit, OnDestroy {
     this.campsitesApi.getbyId(id).subscribe({
       next: (cs) => {
         if (!cs) {
-          this.toast.danger('Camping no encontrado.');
+          this.toast.danger(this.transloco.translate('toast.adminCampsiteNotFound'));
           void this.router.navigate(['/admin/campsites']);
           return;
         }

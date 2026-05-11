@@ -8,7 +8,7 @@
     <a class="navbar-brand" routerLink="/campings" (click)="closeMenu()">
       <img
         [src]="brandLogoSrc()"
-        alt="CampingPlace"
+        [attr.alt]="'nav.brandAlt' | transloco"
         class="navbar-brand-img"
         width="180"
         height="36"
@@ -20,7 +20,7 @@
             type="button"
             (click)="toggleMenu()"
             [attr.aria-expanded]="menuOpen()"
-            aria-label="Toggle navigation">
+            [attr.aria-label]="'nav.toggleNav' | transloco">
       <span class="navbar-toggler-icon">
         <i class="fas" [class.fa-bars]="!menuOpen()" [class.fa-times]="menuOpen()"></i>
       </span>
@@ -31,7 +31,7 @@
 
       <!-- Main nav links -->
       <ul class="navbar-nav">
-        @for (item of items; track item.label) {
+        @for (item of items; track navItemTrackId(item)) {
           <li class="nav-item">
             <a class="nav-link"
                [routerLink]="item.routerLink"
@@ -39,18 +39,7 @@
                [routerLinkActive]="item.routerLinkActive"
                [routerLinkActiveOptions]="item.routerLinkActiveOptions"
                (click)="closeMenu()">
-              <i [class]="item.class"></i>{{ item.label }}
-            </a>
-          </li>
-        }
-        @if (authService.isLoggedIn() && authz.hasAdminSectionAccess()) {
-          <li class="nav-item">
-            <a class="nav-link"
-               routerLink="/admin"
-               routerLinkActive="active"
-               [routerLinkActiveOptions]="{ exact: false }"
-               (click)="closeMenu()">
-              <i class="fas fa-tools mr-1"></i>Administración
+              <i [class]="item.class"></i>{{ item.labelKey | transloco }}
             </a>
           </li>
         }
@@ -61,7 +50,18 @@
                routerLinkActive="active"
                [routerLinkActiveOptions]="{ exact: false }"
                (click)="closeMenu()">
-              <i class="fas fa-suitcase-rolling mr-1"></i>Viajes
+              <i class="fas fa-suitcase-rolling mr-1"></i>{{ 'nav.trips' | transloco }}
+            </a>
+          </li>
+        }
+        @if (authService.isLoggedIn() && authz.hasAdminSectionAccess()) {
+          <li class="nav-item">
+            <a class="nav-link"
+               routerLink="/admin"
+               routerLinkActive="active"
+               [routerLinkActiveOptions]="{ exact: false }"
+               (click)="closeMenu()">
+              <i class="fas fa-tools mr-1"></i>{{ 'nav.administration' | transloco }}
             </a>
           </li>
         }
@@ -70,10 +70,35 @@
       <!-- Auth & Theme actions -->
       <div class="navbar-actions ml-auto">
 
+        <!-- Language toggle -->
+        <div
+          class="lang-toggle-group"
+          role="group"
+          [attr.aria-label]="'a11y.languageSwitcher' | transloco">
+          <button
+            type="button"
+            class="btn-lang-toggle"
+            [attr.aria-label]="'a11y.spanishLang' | transloco"
+            [title]="'a11y.spanishLang' | transloco"
+            [attr.aria-pressed]="languageService.isSpanish()"
+            (click)="languageService.setLang('es')">
+            <img src="/icons/flags/es.svg" width="23" height="15" loading="lazy" alt="">
+          </button>
+          <button
+            type="button"
+            class="btn-lang-toggle"
+            [attr.aria-label]="'a11y.englishLang' | transloco"
+            [title]="'a11y.englishLang' | transloco"
+            [attr.aria-pressed]="languageService.isEnglish()"
+            (click)="languageService.setLang('en')">
+            <img src="/icons/flags/en.svg" width="23" height="15" loading="lazy" alt="">
+          </button>
+        </div>
+
         <!-- Theme toggle -->
         <button class="btn-theme-toggle"
                 (click)="themeService.toggle()"
-                [title]="themeService.isDark() ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'">
+                [title]="(themeService.isDark() ? 'theme.switchToLight' : 'theme.switchToDark') | transloco">
           <i class="fas" [class.fa-moon]="!themeService.isDark()" [class.fa-sun]="themeService.isDark()"></i>
         </button>
 
@@ -82,13 +107,13 @@
           <a class="navbar-username"
              routerLink="/profile"
              (click)="closeMenu()"
-             title="Mi perfil">
+             [attr.title]="'nav.profileTitle' | transloco">
             <i class="fas fa-user-circle mr-1"></i>
             {{ authService.currentUser()?.name }}
           </a>
           <button class="btn btn-nav-logout" (click)="logout()">
             <i class="fas fa-sign-out-alt mr-1"></i>
-            Cerrar Sesión
+            {{ 'nav.logout' | transloco }}
           </button>
         }
 
@@ -98,13 +123,13 @@
              routerLink="/auth/register"
              (click)="closeMenu()">
             <i class="fas fa-user-plus mr-1"></i>
-            Registrarse
+            {{ 'nav.register' | transloco }}
           </a>
           <a class="btn btn-nav-login"
              routerLink="/auth/login"
              (click)="closeMenu()">
             <i class="fas fa-sign-in-alt mr-1"></i>
-            Iniciar Sesión
+            {{ 'nav.login' | transloco }}
           </a>
         }
 

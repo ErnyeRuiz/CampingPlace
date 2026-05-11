@@ -7,6 +7,7 @@ import {
 } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { Router, RouterLink } from '@angular/router';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { SESSION_STORAGE_KEYS } from '../../../core/constants/session-storage.keys';
 import { VerifyEmailRequest } from '../../../core/models/auth/verify-email-request';
 import { AuthService } from '../../../core/services/http/auth.service';
@@ -16,7 +17,7 @@ import { authHeroMarkUrl, injectAuthFormBrandLogoUrl } from '../../../core/brand
 @Component({
   selector: 'cp-verify-email',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, TranslocoPipe],
   templateUrl: './verify-email.component.html',
   styleUrl: '../login/login.component.scss',
 })
@@ -25,6 +26,7 @@ export class VerifyEmailComponent implements OnDestroy, OnInit {
   private readonly auth = inject(AuthService);
   private readonly toast = inject(ToastService);
   private readonly router = inject(Router);
+  private readonly transloco = inject(TranslocoService);
 
   readonly authFormBrandLogoUrl = injectAuthFormBrandLogoUrl();
   readonly authHeroMarkUrl = authHeroMarkUrl;
@@ -107,7 +109,7 @@ export class VerifyEmailComponent implements OnDestroy, OnInit {
       .subscribe({
         next: (success) => {
           if (success) {
-            this.toast.success('Código reenviado. Revisá tu correo.');
+            this.toast.success(this.transloco.translate('toast.verifyResendSuccess'));
             this.startResendCooldown();
           }
         },

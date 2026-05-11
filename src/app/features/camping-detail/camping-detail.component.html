@@ -1,9 +1,9 @@
 <section class="camping-detail">
   <div class="container py-3">
-    <nav class="camping-detail__crumb" aria-label="Migas de pan">
-      <a routerLink="/campings" class="camping-detail__crumb-link">Inicio</a>
+    <nav class="camping-detail__crumb" [attr.aria-label]="'a11y.breadcrumb' | transloco">
+      <a routerLink="/campings" class="camping-detail__crumb-link">{{ 'nav.home' | transloco }}</a>
       <span class="camping-detail__crumb-sep" aria-hidden="true">/</span>
-      <span class="text-muted">Detalle</span>
+      <span class="text-muted">{{ 'campingDetail.breadcrumbDetail' | transloco }}</span>
     </nav>
   </div>
 
@@ -55,20 +55,20 @@
                   class="camping-detail__thumb"
                   [class.camping-detail__thumb--active]="$index === activeImageIdx()"
                   (click)="selectThumb($index)">
-                  <img [src]="imageSrc(img.imageBase64)" [alt]="'Vista ' + ($index + 1)" />
+                  <img [src]="imageSrc(img.imageBase64)" [attr.alt]="'campingDetail.thumbAlt' | transloco: { index: $index + 1 }" />
                 </button>
               }
             </div>
           }
 
           <div class="camping-detail__prose">
-            <h2 class="camping-detail__h2">Descripción</h2>
+            <h2 class="camping-detail__h2">{{ 'campingDetail.description' | transloco }}</h2>
             <p class="camping-detail__text">{{ c.description }}</p>
           </div>
 
           @if (c.direccionExacta) {
             <div class="camping-detail__prose">
-              <h2 class="camping-detail__h2">Dirección</h2>
+              <h2 class="camping-detail__h2">{{ 'campingDetail.address' | transloco }}</h2>
               <p class="camping-detail__text mb-0">
                 <i class="fas fa-home mr-1 text-muted" aria-hidden="true"></i>{{ c.direccionExacta }}
               </p>
@@ -81,10 +81,10 @@
             <div class="card-body">
               <div class="camping-detail__price mb-3">
                 <span class="camping-detail__amount">{{ c.pricePerNight | currency: 'CRC':'symbol-narrow':'1.0-0' }}</span>
-                <span class="camping-detail__per text-muted"> / noche</span>
+                <span class="camping-detail__per text-muted">{{ 'campingDetail.perNight' | transloco }}</span>
               </div>
 
-              <div class="camping-detail__rating mb-3" aria-label="Valoración aproximada">
+              <div class="camping-detail__rating mb-3" [attr.aria-label]="'campingDetail.ratingApprox' | transloco">
                 @for (star of [1,2,3,4,5]; track star) {
                   <i class="fas fa-star camping-detail__star"
                      [class.camping-detail__star--on]="c.rating >= star - 0.5"></i>
@@ -94,18 +94,18 @@
 
               <div class="camping-detail__chips mb-3">
                 <span class="badge camping-detail__chip" [class.camping-detail__chip--on]="c.hasWater">
-                  <i class="fas fa-tint mr-1" aria-hidden="true"></i> Agua: {{ c.hasWater ? 'Sí' : 'No' }}
+                  <i class="fas fa-tint mr-1" aria-hidden="true"></i> {{ 'campingDetail.water' | transloco }}: {{ (c.hasWater ? 'common.yes' : 'common.no') | transloco }}
                 </span>
                 <span class="badge camping-detail__chip" [class.camping-detail__chip--on]="c.hasElectricity">
-                  <i class="fas fa-bolt mr-1" aria-hidden="true"></i> Luz: {{ c.hasElectricity ? 'Sí' : 'No' }}
+                  <i class="fas fa-bolt mr-1" aria-hidden="true"></i> {{ 'campingDetail.electricity' | transloco }}: {{ (c.hasElectricity ? 'common.yes' : 'common.no') | transloco }}
                 </span>
               </div>
 
               <a [href]="mapsUrl()" class="btn btn-outline-primary btn-block mb-3" target="_blank" rel="noopener noreferrer">
-                <i class="fas fa-map-marked-alt mr-1" aria-hidden="true"></i> Abrir en Google Maps
+                <i class="fas fa-map-marked-alt mr-1" aria-hidden="true"></i> {{ 'campingDetail.openMaps' | transloco }}
               </a>
 
-              <p class="small text-muted mb-2">Coordenadas: {{ c.latitude | number: '1.4-4' }}, {{ c.longitude | number: '1.4-4' }}</p>
+              <p class="small text-muted mb-2">{{ 'campingDetail.coordinates' | transloco: { lat: (c.latitude | number: '1.4-4'), lng: (c.longitude | number: '1.4-4') } }}</p>
             </div>
           </div>
         </div>
@@ -114,10 +114,10 @@
 
     <div class="container camping-detail__reviews pb-4">
       <div class="camping-detail__prose camping-detail__reviews-panel">
-        <h2 class="camping-detail__h2">Opiniones</h2>
+        <h2 class="camping-detail__h2">{{ 'campingDetail.reviewsTitle' | transloco }}</h2>
 
         @if (!reviews().length) {
-          <p class="text-muted mb-0 camping-detail__reviews-empty">Aún no hay opiniones para este camping.</p>
+          <p class="text-muted mb-0 camping-detail__reviews-empty">{{ 'campingDetail.reviewsEmpty' | transloco }}</p>
         } @else {
           <ul class="list-unstyled camping-detail__review-list mb-0">
             @for (r of reviews(); track r.id) {
@@ -127,7 +127,7 @@
                     <span class="camping-detail__review-author">{{ reviewAuthorDisplay(r) }}</span>
                     <div
                       class="camping-detail__rating camping-detail__rating--inline"
-                      [attr.aria-label]="'Valoración ' + r.rating + ' de 5'">
+                      [attr.aria-label]="'campingDetail.reviewRatingAria' | transloco: { rating: r.rating }">
                       @for (star of [1,2,3,4,5]; track star) {
                         <i
                           class="fas fa-star camping-detail__star"
@@ -147,7 +147,7 @@
                           [disabled]="reviewRowActionsDisabled()"
                           (click)="startEditReview(r)">
                           <i class="fas fa-pen mr-1" aria-hidden="true"></i>
-                          Editar
+                          {{ 'campingDetail.reviewEdit' | transloco }}
                         </button>
                       }
                       @if (canDeleteReview(r)) {
@@ -157,7 +157,7 @@
                           [disabled]="reviewRowActionsDisabled()"
                           (click)="confirmDeleteReview(r)">
                           <i class="fas fa-trash-alt mr-1" aria-hidden="true"></i>
-                          Eliminar
+                          {{ 'campingDetail.reviewDelete' | transloco }}
                         </button>
                       }
                     </div>
@@ -170,7 +170,7 @@
                     class="camping-detail__review-form camping-detail__review-edit-form mt-2">
                     <div class="form-group mb-3">
                       <span [id]="'edit-review-rating-label-' + r.id" class="d-block mb-2 camping-detail__star-picker-heading">
-                        Valoración
+                        {{ 'campingDetail.ratingLabel' | transloco }}
                       </span>
                       <div
                         class="camping-detail__star-picker"
@@ -183,7 +183,7 @@
                             [class.camping-detail__star-btn--on]="editReviewPickerRating() >= star - 0.5"
                             role="radio"
                             [attr.aria-checked]="editReviewForm.controls.rating.value === star"
-                            [attr.aria-label]="star + ' de 5 estrellas'"
+                            [attr.aria-label]="('campingDetail.starAria' | transloco: { star })"
                             (mouseenter)="editReviewStarHover.set(star)"
                             (mouseleave)="editReviewStarHover.set(null)"
                             (click)="setEditReviewRating(star)">
@@ -196,18 +196,18 @@
                       </p>
                     </div>
                     <div class="form-group">
-                      <label [attr.for]="'edit-review-comment-' + r.id" class="mb-1">Comentario</label>
+                      <label [attr.for]="'edit-review-comment-' + r.id" class="mb-1">{{ 'campingDetail.comment' | transloco }}</label>
                       <textarea
                         [id]="'edit-review-comment-' + r.id"
                         class="form-control"
                         rows="4"
                         formControlName="comment"
-                        placeholder="Cuéntanos tu experiencia (mínimo 10 caracteres)"></textarea>
+                        [placeholder]="'campingDetail.commentPlaceholder' | transloco"></textarea>
                       @if (editReviewForm.controls.comment.touched && editReviewForm.controls.comment.errors?.['required']) {
-                        <small class="text-danger d-block mt-1">El comentario es obligatorio.</small>
+                        <small class="text-danger d-block mt-1">{{ 'common.validation.commentRequired' | transloco }}</small>
                       }
                       @if (editReviewForm.controls.comment.touched && editReviewForm.controls.comment.errors?.['minlength']) {
-                        <small class="text-danger d-block mt-1">Escribe al menos 10 caracteres.</small>
+                        <small class="text-danger d-block mt-1">{{ 'common.validation.commentMinLength' | transloco }}</small>
                       }
                     </div>
                     <div class="d-flex flex-wrap align-items-center gap-2">
@@ -215,14 +215,14 @@
                         type="submit"
                         class="btn btn-primary btn-sm"
                         [disabled]="editReviewForm.invalid || reviewRowBusyId() === r.id">
-                        Guardar cambios
+                        {{ 'campingDetail.saveChanges' | transloco }}
                       </button>
                       <button
                         type="button"
                         class="btn btn-outline-secondary btn-sm"
                         [disabled]="reviewRowBusyId() === r.id"
                         (click)="cancelEditReview()">
-                        Cancelar
+                        {{ 'common.cancel' | transloco }}
                       </button>
                     </div>
                   </form>
@@ -235,7 +235,7 @@
         }
 
         <div class="camping-detail__reviews-composer-head">
-          <h3 class="h6 camping-detail__reviews-form-title mb-0">Tu opinión</h3>
+          <h3 class="h6 camping-detail__reviews-form-title mb-0">{{ 'campingDetail.yourReview' | transloco }}</h3>
           <button
             type="button"
             class="btn btn-sm camping-detail__reviews-toggle"
@@ -246,10 +246,10 @@
             (click)="toggleReviewComposer()">
             @if (reviewComposerOpen()) {
               <i class="fas fa-chevron-up mr-1" aria-hidden="true"></i>
-              Ocultar
+              {{ 'campingDetail.collapse' | transloco }}
             } @else {
               <i class="fas fa-chevron-down mr-1" aria-hidden="true"></i>
-              Añadir mi opinión
+              {{ 'campingDetail.addReview' | transloco }}
             }
           </button>
         </div>
@@ -257,24 +257,23 @@
         @if (reviewComposerOpen()) {
           <div id="review-composer-panel" class="camping-detail__reviews-composer-panel" role="region">
             @if (!auth.isLoggedIn()) {
-              <p class="text-muted small mb-2">Inicia sesión para dejar tu opinión sobre este camping.</p>
+              <p class="text-muted small mb-2">{{ 'campingDetail.loginToReview' | transloco }}</p>
               <button type="button" class="btn btn-outline-primary btn-sm" (click)="goLogin()">
-                Iniciar sesión
+                {{ 'campingDetail.loginButton' | transloco }}
               </button>
             } @else if (nextReviewEligibleAt(); as eligible) {
               <div class="alert alert-info mb-0 camping-detail__review-cooldown" role="status">
                 <p class="mb-2">
-                  <strong>Solo puedes publicar una opinión cada 7 días</strong> por el mismo camping.
+                  <strong>{{ 'campingDetail.cooldownTitle' | transloco }}</strong>
                 </p>
                 <p class="mb-0 small">
-                  Podrás añadir otra opinión a partir del
-                  <strong>{{ eligible | date: 'dd/MM/yyyy, HH:mm' }}</strong>.
+                  {{ 'campingDetail.cooldownBody' | transloco: { date: (eligible | date: 'dd/MM/yyyy, HH:mm') } }}
                 </p>
               </div>
             } @else {
               <form [formGroup]="reviewForm" (ngSubmit)="submitReview()" class="camping-detail__review-form">
                 <div class="form-group mb-3">
-                  <span id="review-rating-label" class="d-block mb-2 camping-detail__star-picker-heading">Valoración</span>
+                  <span id="review-rating-label" class="d-block mb-2 camping-detail__star-picker-heading">{{ 'campingDetail.ratingLabel' | transloco }}</span>
                   <div
                     class="camping-detail__star-picker"
                     role="radiogroup"
@@ -286,7 +285,7 @@
                         [class.camping-detail__star-btn--on]="reviewPickerRating() >= star - 0.5"
                         role="radio"
                         [attr.aria-checked]="reviewForm.controls.rating.value === star"
-                        [attr.aria-label]="star + ' de 5 estrellas'"
+                        [attr.aria-label]="('campingDetail.starAria' | transloco: { star })"
                         (mouseenter)="reviewStarHover.set(star)"
                         (mouseleave)="reviewStarHover.set(null)"
                         (click)="setReviewRating(star)">
@@ -299,25 +298,25 @@
                   </p>
                 </div>
                 <div class="form-group">
-                  <label for="review-comment" class="mb-1">Comentario</label>
+                  <label for="review-comment" class="mb-1">{{ 'campingDetail.comment' | transloco }}</label>
                   <textarea
                     id="review-comment"
                     class="form-control"
                     rows="4"
                     formControlName="comment"
-                    placeholder="Cuéntanos tu experiencia (mínimo 10 caracteres)"></textarea>
+                    [placeholder]="'campingDetail.commentPlaceholder' | transloco"></textarea>
                   @if (reviewForm.controls.comment.touched && reviewForm.controls.comment.errors?.['required']) {
-                    <small class="text-danger d-block mt-1">El comentario es obligatorio.</small>
+                    <small class="text-danger d-block mt-1">{{ 'common.validation.commentRequired' | transloco }}</small>
                   }
                   @if (reviewForm.controls.comment.touched && reviewForm.controls.comment.errors?.['minlength']) {
-                    <small class="text-danger d-block mt-1">Escribe al menos 10 caracteres.</small>
+                    <small class="text-danger d-block mt-1">{{ 'common.validation.commentMinLength' | transloco }}</small>
                   }
                 </div>
                 <button
                   type="submit"
                   class="btn btn-primary"
                   [disabled]="reviewForm.invalid || reviewSubmitBusy()">
-                  Publicar opinión
+                  {{ 'campingDetail.publishReview' | transloco }}
                 </button>
               </form>
             }
@@ -338,19 +337,19 @@
               [disabled]="favoriteBusy()"
               (click)="onFavoriteClick()">
               @if (isFavorite()) {
-                <i class="fas fa-heart-broken mr-1" aria-hidden="true"></i> Quitar de favoritos
+                <i class="fas fa-heart-broken mr-1" aria-hidden="true"></i> {{ 'campingDetail.removeFavorite' | transloco }}
               } @else {
-                <i class="fas fa-heart mr-1" aria-hidden="true"></i> Guardar en favoritos
+                <i class="fas fa-heart mr-1" aria-hidden="true"></i> {{ 'campingDetail.addFavorite' | transloco }}
               }
             </button>
             @if (!auth.isLoggedIn()) {
-              <span class="camping-detail__actions-hint text-muted small ml-md-2 mt-2 mt-md-0 d-block d-md-inline">Inicia sesión para guardar o planificar</span>
+              <span class="camping-detail__actions-hint text-muted small ml-md-2 mt-2 mt-md-0 d-block d-md-inline">{{ 'campingDetail.loginHintActions' | transloco }}</span>
             }
             <button
               type="button"
               class="btn btn-primary"
               (click)="openAddToTrip()">
-              <i class="fas fa-suitcase-rolling mr-1" aria-hidden="true"></i> Añadir a un viaje
+              <i class="fas fa-suitcase-rolling mr-1" aria-hidden="true"></i> {{ 'campingDetail.addToTrip' | transloco }}
             </button>
           </div>
         </div>
@@ -361,23 +360,23 @@
       <div class="container pb-4">
         <div class="card add-trip-panel shadow-sm">
           <div class="card-body">
-            <h3 class="h5">Añadir a un viaje</h3>
+            <h3 class="h5">{{ 'campingDetail.panelAddTrip' | transloco }}</h3>
             @if (availableTrips().length) {
               <div class="form-group mb-0">
-                <label for="trip-pick" class="mb-1">Viaje</label>
+                <label for="trip-pick" class="mb-1">{{ 'campingDetail.tripSelect' | transloco }}</label>
                 <select
                   id="trip-pick"
                   class="form-control"
                   [value]="selectedTripId() ?? ''"
                   (change)="onSelectTrip($event)">
-                  <option value="">— Elegir viaje —</option>
+                  <option value="">{{ 'campingDetail.tripPickPlaceholder' | transloco }}</option>
                   @for (t of availableTrips(); track t.id) {
                     <option [value]="t.id">
                       {{ t.name }} ({{ t.startDate | date: 'dd/MM/yy' }} – {{ t.endDate | date: 'dd/MM/yy' }})
                     </option>
                   }
                 </select>
-                <p class="text-muted small mt-2 mb-0">Solo se listan viajes en los que aún no está este camping.</p>
+                <p class="text-muted small mt-2 mb-0">{{ 'campingDetail.tripPickerHint' | transloco }}</p>
               </div>
               <div class="d-flex flex-wrap align-items-center mt-3">
                 <button
@@ -385,14 +384,14 @@
                   class="btn btn-primary"
                   (click)="addCampsiteToSelectedTrip()"
                   [disabled]="addToTripBusy()">
-                  Añadir
+                  {{ 'campingDetail.add' | transloco }}
                 </button>
-                <button type="button" class="btn btn-link" (click)="closeAddToTrip()">Cerrar</button>
+                <button type="button" class="btn btn-link" (click)="closeAddToTrip()">{{ 'campingDetail.close' | transloco }}</button>
               </div>
             } @else {
-              <p class="text-muted mb-2">No quedan viajes disponibles para añadir este camping, o aún no tienes viajes.</p>
-              <a routerLink="/trips" class="btn btn-sm btn-primary mr-2">Gestionar viajes</a>
-              <button type="button" class="btn btn-sm btn-link" (click)="closeAddToTrip()">Cerrar</button>
+              <p class="text-muted mb-2">{{ 'campingDetail.noTripsLeft' | transloco }}</p>
+              <a routerLink="/trips" class="btn btn-sm btn-primary mr-2">{{ 'campingDetail.manageTrips' | transloco }}</a>
+              <button type="button" class="btn btn-sm btn-link" (click)="closeAddToTrip()">{{ 'campingDetail.close' | transloco }}</button>
             }
           </div>
         </div>

@@ -6,11 +6,8 @@
         <div class="login-image-overlay">
           <div class="login-image-content">
             <img [src]="authHeroMarkUrl" alt="" class="login-hero-mark" width="220" height="220" decoding="async">
-            <h2>Verificá tu correo</h2>
-            <p>
-              Ingresá el código de 6 dígitos que te enviamos por email para activar tu cuenta
-              en CampingPlace.
-            </p>
+            <h2>{{ 'auth.verify.heroTitle' | transloco }}</h2>
+            <p>{{ 'auth.verify.heroParagraph' | transloco }}</p>
           </div>
         </div>
       </div>
@@ -20,18 +17,16 @@
       <div class="login-form-panel">
 
         <a class="login-brand" routerLink="/campings">
-          <img [src]="authFormBrandLogoUrl()" alt="CampingPlace" class="login-brand-logo" width="220" height="44" decoding="async">
+          <img [src]="authFormBrandLogoUrl()" [attr.alt]="'nav.brandAlt' | transloco" class="login-brand-logo" width="220" height="44" decoding="async">
         </a>
 
-        <h2 class="login-title">Verificar email</h2>
-        <p class="login-subtitle">
-          Te enviamos un código a tu correo. Ingresalo aquí para continuar.
-        </p>
+        <h2 class="login-title">{{ 'auth.verify.title' | transloco }}</h2>
+        <p class="login-subtitle">{{ 'auth.verify.subtitle' | transloco }}</p>
 
         <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
 
           <div class="form-group mb-3">
-            <label class="cp-form-label" for="verify-email">Correo electrónico</label>
+            <label class="cp-form-label" for="verify-email">{{ 'common.email' | transloco }}</label>
             <div class="cp-input-group">
               <i class="fas fa-envelope cp-input-icon"></i>
               <input
@@ -40,19 +35,19 @@
                 class="form-control"
                 [class.is-invalid]="f['email'].invalid && f['email'].touched"
                 formControlName="email"
-                placeholder="tu@correo.com"
+                [placeholder]="'auth.login.placeholderEmail' | transloco"
                 autocomplete="email">
             </div>
             @if (f['email'].invalid && f['email'].touched) {
               <small class="text-danger mt-1 d-block">
-                @if (f['email'].errors?.['required']) { El correo es requerido. }
-                @else { Ingresá un correo válido. }
+                @if (f['email'].errors?.['required']) { {{ 'common.validation.emailRequired' | transloco }} }
+                @else { {{ 'auth.verify.emailVerifyHint' | transloco }} }
               </small>
             }
           </div>
 
           <div class="form-group mb-3">
-            <label class="cp-form-label" for="verify-code">Código de verificación</label>
+            <label class="cp-form-label" for="verify-code">{{ 'auth.verify.codeLabel' | transloco }}</label>
             <div class="cp-input-group">
               <i class="fas fa-key cp-input-icon"></i>
               <input
@@ -68,8 +63,8 @@
             </div>
             @if (f['code'].invalid && f['code'].touched) {
               <small class="text-danger mt-1 d-block">
-                @if (f['code'].errors?.['required']) { El código es requerido. }
-                @else { Ingresá los 6 dígitos del correo. }
+                @if (f['code'].errors?.['required']) { {{ 'common.validation.codeRequired' | transloco }} }
+                @else { {{ 'auth.verify.codeDigitsHint' | transloco }} }
               </small>
             }
           </div>
@@ -78,27 +73,27 @@
             [disabled]="resendDisabled"
             (click)="onResend()">
             @if (resendLoading) {
-              Enviando…
+              {{ 'auth.verify.resendSending' | transloco }}
             } @else {
-              Reenviar código
+              {{ 'auth.verify.resend' | transloco }}
             }
           </button>
 
           @if (resendCooldownSec > 0) {
             <p class="small text-muted text-center mb-3">
-              Podés reenviar en {{ resendCooldownSec }}s
+              {{ 'auth.verify.resendCooldown' | transloco: { seconds: resendCooldownSec } }}
             </p>
           }
 
           <button type="submit" class="btn btn-login-submit w-100">
-            Verificar email
+            {{ 'auth.verify.submit' | transloco }}
           </button>
         </form>
 
         <div class="login-footer">
-          <a routerLink="/auth/login">Volver al inicio de sesión</a>
+          <a routerLink="/auth/login">{{ 'auth.verify.backLogin' | transloco }}</a>
           <span class="mx-1">·</span>
-          <a routerLink="/auth/register">Crear otra cuenta</a>
+          <a routerLink="/auth/register">{{ 'auth.verify.anotherAccount' | transloco }}</a>
         </div>
 
       </div>
