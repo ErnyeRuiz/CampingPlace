@@ -311,7 +311,7 @@
   },
   "map": {
     "title": "Campsite map",
-    "placeholder": "Google Maps integration goes here"
+    "placeholder": "Interactive map view coming soon."
   },
   "adminApp": {
     "campsites": {
