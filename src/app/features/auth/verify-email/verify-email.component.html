@@ -16,7 +16,7 @@
     <div class="col-12 col-md-6">
       <div class="login-form-panel">
 
-        <a class="login-brand" routerLink="/campings">
+        <a class="login-brand" routerLink="/campings" [replaceUrl]="true">
           <img [src]="authFormBrandLogoUrl()" [attr.alt]="'nav.brandAlt' | transloco" class="login-brand-logo" width="220" height="44" decoding="async">
         </a>
 

@@ -17,6 +17,7 @@ import { isAppInternalPath } from '../../../core/utils/return-url';
 
 
 import { authHeroMarkUrl, injectAuthFormBrandLogoUrl } from '../../../core/branding/app-branding';
+import { APP_HOME_PATH } from '../../../core/constants/permissions';
 
 /** First integer in the API message (e.g. AdminAccountNotReady(1234)). */
 function parseSecondsFromMessage(message: string): number | null {
@@ -195,7 +196,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           if (returnUrl && isAppInternalPath(returnUrl)) {
             this.router.navigateByUrl(returnUrl);
           } else {
-            this.router.navigate(['/campings']);
+            void this.router.navigate([APP_HOME_PATH], { replaceUrl: true });
           }
         }
       },

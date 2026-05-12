@@ -1,6 +1,15 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpContext } from "@angular/common/http";
 import { Injectable, inject, signal, computed } from "@angular/core";
-import { finalize, map, Observable, take, tap } from "rxjs";
+import { Router } from "@angular/router";
+import {
+  catchError,
+  finalize,
+  map,
+  Observable,
+  of,
+  take,
+  tap,
+} from "rxjs";
 import { environment } from "../../../../environments/environment";
 import { LoginRequest } from "../../models/auth/login-request";
 import { ApiResponse } from "../../models/api/api-response";
@@ -10,12 +19,16 @@ import { ResetPasswordRequest } from "../../models/auth/reset-password-request";
 import { VerifyEmailRequest } from "../../models/auth/verify-email-request";
 import { LoginResponse } from "../../models/auth/login-response";
 import { LocalStorageService } from "../local-storage.service";
+import { AuthRefreshCoordinator } from "../auth-refresh.coordinator";
+import { suppressHttpErrorFeedback } from "../../context/http-feedback-context";
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
     
   private readonly http = inject(HttpClient);
   private readonly storage = inject(LocalStorageService);
+  private readonly coordinator  = inject(AuthRefreshCoordinator);
+  private readonly router        = inject(Router);
   private readonly baseUrl = `${environment.apiUrl}/auth`;
 
   readonly loading = signal(false);
@@ -124,20 +137,72 @@ export class AuthService {
         map(response => response.data),
         tap(data => {
           if (data?.token) {
-            this.storage.saveAuthSession(data);
-            this._currentUser.set(data);
+            this.applySession(data);
           }
         }),
-        finalize(() => this.loading.set(false))
+      finalize(() => this.loading.set(false)),
     );
   }
 
+  /** Persiste tokens y perfil tras login o refresh exitoso. */
+  public applySession(data: LoginResponse): void {
+    if (!data?.token) {
+      return;
+    }
+    this.storage.saveAuthSession(data);
+    this._currentUser.set(data);
+  }
+
   /**
-   * Logout a user, remove the JWT token and the current user signal
+   * Revoca refresh en servidor y borra sesión local (siempre, aunque falle la red).
    */
-  public logout(): void {
-    this.storage.clearAuthSession();
-    this._currentUser.set(null);
+  public logout(): Observable<void> {
+    const refreshToken = this.storage.getRefreshToken();
+    const ctx = new HttpContext().set(suppressHttpErrorFeedback, true);
+    if (!refreshToken) {
+      this.clearLocalSession();
+      return of(void 0);
+    }
+    return this.http
+      .post<ApiResponse<unknown>>(
+        `${this.baseUrl}/logout`,
+        { refreshToken },
+        { context: ctx },
+      )
+      .pipe(
+        take(1),
+        map(() => void 0),
+        catchError(() => of(void 0)),
+        finalize(() => this.clearLocalSession()),
+      );
+  }
+
+  /**
+   * Renueva tokens con el refresh almacenado (cola única en {@link AuthRefreshCoordinator}).
+   * Si falla, limpia sesión y navega a login.
+   */
+  public refreshWithStoredRefreshToken(): Observable<void> {
+    const refreshToken = this.storage.getRefreshToken();
+    if (!refreshToken) {
+      this.clearSessionAndRedirectToLogin();
+      return of(void 0);
+    }
+    return this.coordinator.refresh(refreshToken).pipe(
+      tap((data) => this.applySession(data)),
+      map(() => void 0),
+      catchError(() => {
+        this.clearSessionAndRedirectToLogin();
+        return of(void 0);
+      }),
+    );
+  }
+
+  /** Limpia almacenamiento y envía a login (sesión inválida o refresh fallido). */
+  public clearSessionAndRedirectToLogin(): void {
+    this.clearLocalSession();
+    void this.router.navigate(['/auth/login'], {
+      queryParams: { returnUrl: this.router.url },
+    });
   }
 
   /**
@@ -156,10 +221,11 @@ export class AuthService {
     this._currentUser.set(next);
   }
 
-  /**
-   * Load the stored user from local storage
-   * @returns The stored user or null
-   */
+  private clearLocalSession(): void {
+    this.storage.clearAuthSession();
+    this._currentUser.set(null);
+  }
+
   private loadStoredUser(): LoginResponse | null {
     return this.storage.getStoredAuthUser();
   }

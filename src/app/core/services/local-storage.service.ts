@@ -32,6 +32,10 @@ export class LocalStorageService {
     return localStorage.getItem(LOCAL_STORAGE_KEYS.AUTH_TOKEN);
   }
 
+  getRefreshToken(): string | null {
+    return this.getStoredAuthUser()?.refreshToken ?? null;
+  }
+
   getStoredAuthUser(): LoginResponse | null {
     return this.getJson<LoginResponse>(LOCAL_STORAGE_KEYS.AUTH_USER);
   }

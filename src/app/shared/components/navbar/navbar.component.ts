@@ -8,6 +8,7 @@ import { AuthService } from '../../../core/services/http/auth.service';
 import { AuthorizationService } from '../../../core/services/authorization.service';
 import { LanguageService } from '../../../core/services/language.service';
 import { ThemeService } from '../../../core/services/theme.service';
+import { APP_HOME_PATH } from '../../../core/constants/permissions';
 
 interface NavItem {
   labelKey: string;
@@ -26,6 +27,9 @@ interface NavItem {
   styleUrl: './navbar.component.scss',
 })
 export class NavbarComponent {
+
+  /** Listado público principal; marca + Nav Inicio/Explorar. */
+  protected readonly appHomePath = APP_HOME_PATH;
 
   protected readonly authService  = inject(AuthService);
   protected readonly authz        = inject(AuthorizationService);
@@ -66,7 +70,7 @@ export class NavbarComponent {
     if (this.themeService.isDark()) {
       return true;
     }
-    return this.routePath() === '/campings';
+    return this.routePath() === APP_HOME_PATH;
   });
 
   /** Normalize the path by removing the query and hash */
@@ -78,14 +82,14 @@ export class NavbarComponent {
   protected readonly items: NavItem[] = [
     {
       labelKey: 'nav.home',
-      routerLink: '/campings',
+      routerLink: APP_HOME_PATH,
       routerLinkActive: 'active',
       routerLinkActiveOptions: { exact: true },
       class: 'fas fa-home mr-1',
     },
     {
       labelKey: 'nav.explore',
-      routerLink: '/campings',
+      routerLink: APP_HOME_PATH,
       fragment: 'explorar',
       routerLinkActive: 'active',
       routerLinkActiveOptions: { exact: false },
@@ -116,9 +120,10 @@ export class NavbarComponent {
   }
 
   logout(): void {
-    this.authService.logout();
     this.closeMenu();
-    this.router.navigate(['/campings']);
+    this.authService.logout().subscribe(() => {
+      void this.router.navigate([this.appHomePath], { replaceUrl: true });
+    });
   }
 
   protected navItemTrackId(item: NavItem): string {

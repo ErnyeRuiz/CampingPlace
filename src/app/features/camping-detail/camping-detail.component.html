@@ -1,7 +1,7 @@
 <section class="camping-detail">
   <div class="container py-3">
     <nav class="camping-detail__crumb" [attr.aria-label]="'a11y.breadcrumb' | transloco">
-      <a routerLink="/campings" class="camping-detail__crumb-link">{{ 'nav.home' | transloco }}</a>
+      <a routerLink="/campings" [replaceUrl]="true" class="camping-detail__crumb-link">{{ 'nav.home' | transloco }}</a>
       <span class="camping-detail__crumb-sep" aria-hidden="true">/</span>
       <span class="text-muted">{{ 'campingDetail.breadcrumbDetail' | transloco }}</span>
     </nav>

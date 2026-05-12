@@ -5,7 +5,10 @@
   <div class="container">
 
     <!-- Brand -->
-    <a class="navbar-brand" routerLink="/campings" (click)="closeMenu()">
+    <a class="navbar-brand"
+       [routerLink]="appHomePath"
+       [replaceUrl]="true"
+       (click)="closeMenu()">
       <img
         [src]="brandLogoSrc()"
         [attr.alt]="'nav.brandAlt' | transloco"
@@ -36,6 +39,7 @@
             <a class="nav-link"
                [routerLink]="item.routerLink"
                [fragment]="item.fragment"
+               [replaceUrl]="true"
                [routerLinkActive]="item.routerLinkActive"
                [routerLinkActiveOptions]="item.routerLinkActiveOptions"
                (click)="closeMenu()">
