@@ -108,7 +108,7 @@
             @if (!favoritesList().length) {
               <p class="text-muted mb-0">
                 {{ 'profile.favoritesEmpty' | transloco }}
-                <a routerLink="/campings">{{ 'profile.favoritesCatalog' | transloco }}</a>.
+                <a routerLink="/campings" [replaceUrl]="true">{{ 'profile.favoritesCatalog' | transloco }}</a>.
               </p>
             } @else {
               <div class="row">

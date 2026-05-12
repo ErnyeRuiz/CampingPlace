@@ -3,6 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { ToastComponent } from './shared/components/toast/toast.component';
 import { LoaderComponent } from './shared/components/loader/loader.component';
 import { LanguageService } from './core/services/language.service';
+import { SessionRenewalService } from './core/services/session-renewal.service';
 
 @Component({
   selector: 'cp-root',
@@ -14,4 +15,6 @@ import { LanguageService } from './core/services/language.service';
 export class App {
   /** Inicializa idioma persistente (`LanguageService`) al arrancar la app. */
   private readonly _language = inject(LanguageService);
+  /** Registra renovación proactiva (JWT + visibility) para PWA. */
+  private readonly _sessionRenewal = inject(SessionRenewalService);
 }

@@ -5,6 +5,7 @@ import { AuthService } from '../../../core/services/http/auth.service';
 import { AuthorizationService } from '../../../core/services/authorization.service';
 import { ThemeService } from '../../../core/services/theme.service';
 import { AppBranding } from '../../../core/branding/app-branding';
+import { APP_HOME_PATH } from '../../../core/constants/permissions';
 
 @Component({
   selector: 'cp-admin-navbar',
@@ -50,12 +51,13 @@ export class AdminNavbarComponent {
 
   goPublic(): void {
     this.closeMenu();
-    void this.router.navigateByUrl('/campings');
+    void this.router.navigateByUrl(APP_HOME_PATH, { replaceUrl: true });
   }
 
   logout(): void {
     this.closeMenu();
-    this.auth.logout();
-    void this.router.navigateByUrl('/campings');
+    this.auth.logout().subscribe(() => {
+      void this.router.navigateByUrl(APP_HOME_PATH, { replaceUrl: true });
+    });
   }
 }

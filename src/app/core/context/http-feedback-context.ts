@@ -8,6 +8,11 @@ export const suppressHttpSuccessFeedback = new HttpContextToken<boolean>(
   () => false,
 );
 
+/** Cuando es `true`, no se muestra toast de error (p. ej. logout en segundo plano). */
+export const suppressHttpErrorFeedback = new HttpContextToken<boolean>(
+  () => false,
+);
+
 export function httpContextSuppressSuccessFeedback(): HttpContext {
   return new HttpContext().set(suppressHttpSuccessFeedback, true);
 }

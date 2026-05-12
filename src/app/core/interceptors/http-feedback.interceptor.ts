@@ -11,7 +11,10 @@ import { TranslocoService } from '@jsverse/transloco';
 import { LoadingService } from '../services/loading.service';
 import { ToastService } from '../services/toast.service';
 import { ApiResponse } from '../models/api/api-response';
-import { suppressHttpSuccessFeedback } from '../context/http-feedback-context';
+import {
+  suppressHttpErrorFeedback,
+  suppressHttpSuccessFeedback,
+} from '../context/http-feedback-context';
 
 function isMutation(req: HttpRequest<unknown>): boolean {
   return ['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method);
@@ -107,7 +110,11 @@ export const httpFeedbackInterceptor: HttpInterceptorFn = (req, next) => {
       }
     }),
     catchError((error: HttpErrorResponse) => {
-      if (!shouldSuppressLoginErrorToast(req, error)) {
+      const suppressErr = req.context.get(suppressHttpErrorFeedback);
+      if (
+        !suppressErr &&
+        !shouldSuppressLoginErrorToast(req, error)
+      ) {
         const apiMsg =
           normalizeUserFacingMessage(
             (error.error as ApiResponse<unknown> | null)?.message,
