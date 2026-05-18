@@ -118,9 +118,7 @@ export class TripDetailComponent implements OnInit {
   }
 
   getImageSrc(raw: string | null | undefined): string {
-    if (!raw) return this.imgFallback;
-    if (raw.startsWith('data:') || raw.startsWith('http')) return raw;
-    return `data:image/jpeg;base64,${raw}`;
+    return raw || this.imgFallback;
   }
 
   onCampsiteImgError(ev: Event): void {
@@ -180,7 +178,4 @@ export class TripDetailComponent implements OnInit {
     });
   }
 
-  protected readonly getImageFromBase64 = (base64: string): string => {
-    return `data:image/jpeg;base64,${base64}`;
-  }
 }

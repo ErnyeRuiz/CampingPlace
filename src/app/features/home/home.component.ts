@@ -137,10 +137,6 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  protected readonly getImageFromBase64 = (base64: string): string => {
-    return `data:image/jpeg;base64,${base64}`;
-  }
-
   protected readonly getProvinciaName = (id: number): string => {
     return this.provincias().find(provincia => provincia.idProvincia === id)?.descripcion ?? '';
   }

@@ -55,7 +55,7 @@
                   class="camping-detail__thumb"
                   [class.camping-detail__thumb--active]="$index === activeImageIdx()"
                   (click)="selectThumb($index)">
-                  <img [src]="imageSrc(img.imageBase64)" [attr.alt]="'campingDetail.thumbAlt' | transloco: { index: $index + 1 }" />
+                  <img [src]="img.imageUrl" [attr.alt]="'campingDetail.thumbAlt' | transloco: { index: $index + 1 }" />
                 </button>
               }
             </div>

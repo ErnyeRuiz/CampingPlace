@@ -141,13 +141,7 @@ export class ProfileComponent implements OnInit {
   }
 
   campsiteImageSrc(raw: string | null | undefined): string {
-    if (!raw) {
-      return '';
-    }
-    if (raw.startsWith('data:')) {
-      return raw;
-    }
-    return `data:image/jpeg;base64,${raw}`;
+    return raw ?? '';
   }
 
   onCampsiteImgError(ev: Event): void {

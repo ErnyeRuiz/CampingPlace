@@ -71,7 +71,7 @@
                 <div class="trip-campsite-card__image-wrap">
                   <img
                     class="card-img-top trip-campsite-card__image"
-                    [src]="getImageFromBase64(c.image ?? '')"
+                    [src]="getImageSrc(c.image)"
                     [attr.alt]="'tripDetail.favImageAlt' | transloco: { name: c.name }"
                     (error)="onCampsiteImgError($event)" />
                 </div>

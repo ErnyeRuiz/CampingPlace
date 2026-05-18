@@ -131,7 +131,7 @@ export class CampingDetailComponent implements OnInit {
       return null;
     }
     const i = Math.min(this.activeImageIdx(), c.images.length - 1);
-    return this.imageSrc(c.images[i].imageBase64);
+    return c.images[i].imageUrl ?? null;
   });
 
   readonly availableTrips = computed(() => {
@@ -404,16 +404,6 @@ export class CampingDetailComponent implements OnInit {
         },
         error: () => this.reviewSubmitBusy.set(false),
       });
-  }
-
-  imageSrc(base64: string): string {
-    if (!base64) {
-      return '';
-    }
-    if (base64.startsWith('data:')) {
-      return base64;
-    }
-    return `data:image/jpeg;base64,${base64}`;
   }
 
   goLogin(): void {
