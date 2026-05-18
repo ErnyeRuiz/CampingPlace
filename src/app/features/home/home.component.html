@@ -83,7 +83,7 @@
                   </span>
                 }
                 @if (campsite.images && campsite.images.length > 0) {
-                  <img [src]="getImageFromBase64(campsite.images[0].imageBase64)"
+                  <img [src]="campsite.images[0].imageUrl"
                        class="card-img-top"
                        loading="lazy">
                 } @else {

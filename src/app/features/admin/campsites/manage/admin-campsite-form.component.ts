@@ -99,11 +99,7 @@ export class AdminCampsiteFormComponent implements OnInit, OnDestroy {
   }
 
   imageDataUrl(img: CampsiteImageResponse): string {
-    const raw = img.imageBase64?.trim() ?? '';
-    if (raw.startsWith('data:')) {
-      return raw;
-    }
-    return `data:image/jpeg;base64,${raw}`;
+    return img.imageUrl ?? '';
   }
 
   isImageKept(id: number): boolean {
