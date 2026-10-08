@@ -1,3 +1,5 @@
+![CampingPlace — Web App](public/og-default.png)
+
 # CampingPlace
 
 Aplicación web para encontrar y explorar lugares de camping en Costa Rica. Es el
